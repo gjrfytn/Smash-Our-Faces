@@ -44,10 +44,10 @@ namespace Sof.Model
 
         public void Spawn(Unit unit, Position pos)
         {
-            if (_Tiles[pos.X, pos.Y].Unit != null)
+            if (this[pos].Unit != null)
                 throw new System.ArgumentException("Target position is occupied.", nameof(pos)); //TODO
 
-            _Tiles[pos.X, pos.Y].Unit = unit;
+            this[pos].Unit = unit;
         }
 
         public IEnumerable<Position> GetBestPath(Unit unit, Position pos) //TODO
@@ -61,15 +61,15 @@ namespace Sof.Model
 
         public void MoveUnit(Unit unit, Position pos)
         {
-            if (_Tiles[pos.X, pos.Y].Unit != null)
+            if (this[pos].Unit != null)
                 throw new System.ArgumentException("Target position is occupied.", nameof(pos)); //TODO
 
             var oldPos = GetUnitPos(unit);
             if (oldPos == null)
                 throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit)); //TODO
 
-            _Tiles[oldPos.X, oldPos.Y].Unit = null;
-            _Tiles[pos.X, pos.Y].Unit = unit;
+            this[oldPos].Unit = null;
+            this[pos].Unit = unit;
         }
 
         public IEnumerable<MovePoint> GetMoveRange(Unit unit)
