@@ -5,6 +5,7 @@ namespace Sof.Model
     {
         public Ground.Ground Ground { get; }
         public MapObject.MapObject Object { get; }
+        public Unit Unit { get; set; }
 
         public int MoveCost => Ground.MoveCost + Object.MoveCostModificator;
 

@@ -52,12 +52,13 @@ namespace Sof.Object
             for (var y = 0; y < _Map.Height; ++y)
                 for (var x = 0; x < _Map.Width; ++x)
                 {
+                    var pos = new Position(x, y);
                     var tile = Instantiate(_InteractionTile, new Vector3(x, y, 0), Quaternion.identity, transform);
 
-                    tile.Initialize(_Map[x, y]);
+                    tile.Initialize(_Map[pos]);
 
                     Ground ground;
-                    switch (_Map[x, y].Ground.Type)
+                    switch (_Map[pos].Ground.Type)
                     {
                         case GroundType.Water:
                             ground = _Water;
@@ -75,7 +76,7 @@ namespace Sof.Object
                     Instantiate(ground, new Vector3(x, y, 0), Quaternion.identity, tile.transform);
 
                     MapObject @object;
-                    switch (_Map[x, y].Object.Type)
+                    switch (_Map[pos].Object.Type)
                     {
                         case MapObjectType.None:
                             @object = null;
@@ -110,8 +111,8 @@ namespace Sof.Object
         {
             //TODO Делать внутри Object.Unit?
             var pos = new Position(5, 5);
-            var unit = new Model.Unit(_Map, pos, _UnitTemp.Speed, _UnitTemp.Health, _UnitTemp.Damage, 0);
-            _Map.Spawn(unit);
+            var unit = new Model.Unit(_Map, _UnitTemp.Speed, _UnitTemp.Health, _UnitTemp.Damage, 0);
+            _Map.Spawn(unit, pos);
             var unitObj = Instantiate(_UnitTemp, ConvertToWorldPos(pos), Quaternion.identity, transform);
             unitObj.Initialize(unit);
 
@@ -135,7 +136,9 @@ namespace Sof.Object
             _LineRenderer.positionCount = 0;
         }
 
-        public IEnumerable<Position> GetBestPath(Position from, Position to) => _Map.GetBestPath(from, to);
+        public IEnumerable<Position> GetBestPath(Unit unit, Position pos) => _Map.GetBestPath(unit.ModelUnit, pos);
+
+        public Position GetUnitPos(Unit unit) => _Map.GetUnitPos(unit.ModelUnit);
 
         private Vector2 ConvertToWorldPos(Position position)
         {

@@ -14,16 +14,14 @@ namespace Sof.Model
         private int _MovePointsLeft;
         private IEnumerable<Position> _CurrentPath;
 
-        public Position Pos { get; private set; }
         public int PlayerId { get; private set; }
 
-        public Unit(Map map,Position pos, int movePoints, int health, int damage, int playerId)
+        public Unit(Map map, int movePoints, int health, int damage, int playerId)
         {
             _Map = map;
             _MovePoints = movePoints;
             _Health = health;
             _Damage = damage;
-            Pos = pos;
             PlayerId = playerId;
         }
 
@@ -36,18 +34,18 @@ namespace Sof.Model
         {
             _TargetPos = pos;
 
-            _CurrentPath = _Map.GetBestPath(Pos, _TargetPos);
+            _CurrentPath = _Map.GetBestPath(this, _TargetPos);
         }
 
         public IEnumerable<Position> GetPathToTarget() => _CurrentPath;
 
         public void Move()
         {
-            Pos = _CurrentPath.Last(); //TODO nullref
+            _Map.MoveUnit(this, _CurrentPath.Last()); //TODO nullref
 
             _CurrentPath = null;
         }
 
-        public IEnumerable<MovePoint> GetMoveRange() => _Map.GetMoveRange(Pos,_MovePointsLeft);
+        public IEnumerable<MovePoint> GetMoveRange() => _Map.GetMoveRange(this);
     }
 }

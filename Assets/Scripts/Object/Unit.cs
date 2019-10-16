@@ -17,33 +17,31 @@ namespace Sof.Object
         [SerializeField]
         private int _Damage;
 
-        private Model.Unit _Unit;
+        public Model.Unit ModelUnit { get; private set; }
 
         public int Speed => _Speed;
         public int Health => _Health;
         public int Damage => _Damage;
 
-        public Position Pos => _Unit.Pos;
-
         public void Initialize(Model.Unit unit)
         {
-            _Unit = unit ?? throw new System.ArgumentNullException(nameof(unit));
+            ModelUnit = unit ?? throw new System.ArgumentNullException(nameof(unit));
         }
 
         public void Move(Position pos)
         {
-            _Unit.SetTargetPosition(pos);
+            ModelUnit.SetTargetPosition(pos);
 
-            var path = _Unit.GetPathToTarget();
+            var path = ModelUnit.GetPathToTarget();
 
-            _Unit.Move();
+            ModelUnit.Move();
 
             StartCoroutine(FollowPath(path));
         }
 
         public void ShowMoveArea()
         {
-            var moveArea = _Unit.GetMoveRange();
+            var moveArea = ModelUnit.GetMoveRange();
 
             foreach (var moveTile in moveArea)
                 Instantiate(_MoveTile, new Vector3(moveTile.Pos.X, moveTile.Pos.Y, 0), Quaternion.identity, transform);

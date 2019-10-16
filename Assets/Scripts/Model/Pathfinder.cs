@@ -41,7 +41,7 @@ namespace Sof.Model
 
             foreach (var neighbour in GetNeighbours(node.pos))
             {
-                var newCost = node.cost + _Map[neighbour.X, neighbour.Y].MoveCost;
+                var newCost = node.cost + _Map[neighbour].MoveCost;
                 if (!processedCells.ContainsKey(neighbour) || newCost < costs[neighbour])
                 {
                     processedCells[neighbour] = node.pos;

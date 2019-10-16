@@ -53,8 +53,8 @@ namespace Sof.Object
         {
             if (_SelectedUnit != null)
             {
-                var path = _Map.GetBestPath(_SelectedUnit.Pos, new Position((int)tile.transform.position.x, (int)tile.transform.position.y)); //TODO
-                _Map.DrawPath(new Position[] { _SelectedUnit.Pos }.Concat(path));
+                var path = _Map.GetBestPath(_SelectedUnit, new Position((int)tile.transform.position.x, (int)tile.transform.position.y)); //TODO
+                _Map.DrawPath(new Position[] { _Map.GetUnitPos(_SelectedUnit) }.Concat(path));
             }
         }
 
