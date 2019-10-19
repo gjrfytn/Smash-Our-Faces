@@ -23,9 +23,12 @@ namespace Sof.Object
         public int Health => _Health;
         public int Damage => _Damage;
 
-        public void Initialize(Model.Unit unit)
+        public void Initialize(Model.Map map, int playerId)
         {
-            ModelUnit = unit ?? throw new System.ArgumentNullException(nameof(unit));
+            if (map == null)
+                throw new System.ArgumentNullException(nameof(map));
+
+            ModelUnit = new Model.Unit(map, _Speed, _Health, _Damage, playerId);
         }
 
         public void Move(Position pos)

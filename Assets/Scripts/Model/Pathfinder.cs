@@ -34,6 +34,26 @@ namespace Sof.Model
             throw new Exception("Pathfinding error.");
         }
 
+        public IEnumerable<MovePoint> GetMoveRange(Position pos, int movePoints)
+        {
+            var processedCells = new Dictionary<Position, Position>();
+            var costs = new Dictionary<Position, int>();
+            var queue = new List<(Position pos, int cost)>();
+
+            processedCells[pos] = null;
+            costs[pos] = 0;
+            queue.Add((pos, 0));
+            while (queue.Any())
+            {
+                queue.Sort((a, b) => a.cost < b.cost ? -1 : (a.cost == b.cost ? 0 : 1));
+                var node = queue.First();
+                queue.Remove(node);
+                Spread(queue, processedCells, costs, node, movePoints);
+            }
+
+            return processedCells.Keys.Select(c => new MovePoint(c, costs[c]));
+        }
+
         private bool Spread(List<(Position pos, int cost)> queue, Dictionary<Position, Position> processedCells, Dictionary<Position, int> costs, (Position pos, int cost) node, Position target)
         {
             if (node.pos == target)
@@ -41,16 +61,30 @@ namespace Sof.Model
 
             foreach (var neighbour in GetNeighbours(node.pos))
             {
-                var newCost = node.cost + _Map[neighbour].MoveCost;
-                if (!processedCells.ContainsKey(neighbour) || newCost < costs[neighbour])
+                var neighbourCost = node.cost + _Map[neighbour].MoveCost;
+                if (!processedCells.ContainsKey(neighbour) || neighbourCost < costs[neighbour])
                 {
                     processedCells[neighbour] = node.pos;
-                    costs[neighbour] = newCost;
-                    queue.Add((neighbour, newCost));
+                    costs[neighbour] = neighbourCost;
+                    queue.Add((neighbour, neighbourCost));
                 }
             }
 
             return false;
+        }
+
+        private void Spread(List<(Position pos, int cost)> queue, Dictionary<Position, Position> processedCells, Dictionary<Position, int> costs, (Position pos, int cost) node, int movePoints)
+        {
+            foreach (var neighbour in GetNeighbours(node.pos))
+            {
+                var neighbourCost = node.cost + _Map[neighbour].MoveCost;
+                if (movePoints - neighbourCost >= 0 && (!processedCells.ContainsKey(neighbour) || neighbourCost < costs[neighbour]))
+                {
+                    processedCells[neighbour] = node.pos;
+                    costs[neighbour] = neighbourCost;
+                    queue.Add((neighbour, neighbourCost));
+                }
+            }
         }
 
         private IEnumerable<Position> MakePath(Position from, Position to, Dictionary<Position, Position> processedCells)

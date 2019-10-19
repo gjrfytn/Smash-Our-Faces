@@ -15,6 +15,7 @@ namespace Sof.Model
         private IEnumerable<Position> _CurrentPath;
 
         public int PlayerId { get; private set; }
+        public int MovePoints => _MovePointsLeft;
 
         public Unit(Map map, int movePoints, int health, int damage, int playerId)
         {
@@ -23,6 +24,8 @@ namespace Sof.Model
             _Health = health;
             _Damage = damage;
             PlayerId = playerId;
+
+            _MovePointsLeft = _MovePoints;
         }
 
         public void EndTurn()
@@ -41,7 +44,11 @@ namespace Sof.Model
 
         public void Move()
         {
-            _Map.MoveUnit(this, _CurrentPath.Last()); //TODO nullref
+            // TODO
+            // if(_CurrentPath == null)
+            // throw or do nothing???
+
+            _Map.MoveUnit(this, _CurrentPath.Last());
 
             _CurrentPath = null;
         }

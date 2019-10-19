@@ -9,9 +9,13 @@ namespace Sof.Object
         [SerializeField]
         private Map _Map;
 
+        [SerializeField]
+        private Unit _UnitTemp;
+
         private int _PlayerCount = 2;
         private int _CurrentPlayerId;
         private Unit _SelectedUnit;
+        private Unit _SpawnedUnit;
 
         private void Start()
         {
@@ -22,7 +26,13 @@ namespace Sof.Object
 
         private void Tile_TileLeftClicked(Tile tile)
         {
-            if (_SelectedUnit == null)
+            if (_SpawnedUnit != null)
+            {
+                _Map.Spawn(_SpawnedUnit, new Position((int)tile.transform.position.x, (int)tile.transform.position.y));//TODO
+                _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                _SpawnedUnit = null;
+            }
+            else if (_SelectedUnit == null)
             {
                 if (tile.Unit != null)
                 {
@@ -51,21 +61,27 @@ namespace Sof.Object
 
         private void Tile_TileHovered(Tile tile)
         {
-            if (_SelectedUnit != null)
+            if (_SpawnedUnit != null)
+            {
+                _SpawnedUnit.transform.position = tile.transform.position;
+            }
+            else if (_SelectedUnit != null)
             {
                 var path = _Map.GetBestPath(_SelectedUnit, new Position((int)tile.transform.position.x, (int)tile.transform.position.y)); //TODO
                 _Map.DrawPath(new Position[] { _Map.GetUnitPos(_SelectedUnit) }.Concat(path));
             }
         }
 
-        public void Spawn()
+        public void Spawn(int playerId)
         {
-
+            _SpawnedUnit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(new Position(_Map.ModelMap.Width / 2, _Map.ModelMap.Height / 2)), Quaternion.identity, transform);
+            _SpawnedUnit.Initialize(_Map.ModelMap, playerId);
+            _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
         }
 
         public void EndTurn()
         {
-            if (_CurrentPlayerId == _CurrentPlayerId - 1)
+            if (_CurrentPlayerId == _PlayerCount - 1)
                 _CurrentPlayerId = 0;
             else
                 _CurrentPlayerId++;

@@ -9,7 +9,8 @@ namespace Sof.Model
 {
     public class Map
     {
-        private Tile[,] _Tiles;
+        private readonly Pathfinder _Pathfinder;
+        private readonly Tile[,] _Tiles;
 
         public int Width => _Tiles.GetLength(0);
         public int Height => _Tiles.GetLength(1);
@@ -18,6 +19,8 @@ namespace Sof.Model
 
         public Map(string mapXml)
         {
+            _Pathfinder = new Pathfinder(this);
+
             var doc = XDocument.Parse(mapXml);
 
             var tiles = new List<(int x, int y, Tile tile)>();
@@ -44,52 +47,32 @@ namespace Sof.Model
 
         public void Spawn(Unit unit, Position pos)
         {
-            if (this[pos].Unit != null)
-                throw new System.ArgumentException("Target position is occupied.", nameof(pos)); //TODO
+            CheckTileIsVacant(pos);
 
             this[pos].Unit = unit;
         }
 
-        public IEnumerable<Position> GetBestPath(Unit unit, Position pos) //TODO
-        {
-            var currentPos = GetUnitPos(unit);
-            if (currentPos == null)
-                throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit)); //TODO
-
-            return new Pathfinder(this).GetBestPath(currentPos, pos);
-        }
+        public IEnumerable<Position> GetBestPath(Unit unit, Position pos) => _Pathfinder.GetBestPath(GetUnitPos(unit), pos);
 
         public void MoveUnit(Unit unit, Position pos)
         {
-            if (this[pos].Unit != null)
-                throw new System.ArgumentException("Target position is occupied.", nameof(pos)); //TODO
+            CheckTileIsVacant(pos);
 
-            var oldPos = GetUnitPos(unit);
-            if (oldPos == null)
-                throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit)); //TODO
-
-            this[oldPos].Unit = null;
+            this[GetUnitPos(unit)].Unit = null;
             this[pos].Unit = unit;
         }
 
-        public IEnumerable<MovePoint> GetMoveRange(Unit unit)
+        private void CheckTileIsVacant(Position pos)
         {
-            var pos = GetUnitPos(unit);
-
-            return new MovePoint[]
-            {
-                new MovePoint(new Position(pos.X-1, pos.Y+1), 2),
-                new MovePoint(new Position(pos.X, pos.Y+1), 1),
-                new MovePoint(new Position(pos.X+1, pos.Y+1), 2),
-                new MovePoint(new Position(pos.X+1, pos.Y), 1),
-                new MovePoint(new Position(pos.X+1, pos.Y-1), 2),
-                new MovePoint(new Position(pos.X, pos.Y-1), 1),
-                new MovePoint(new Position(pos.X-1, pos.Y-1), 2),
-                new MovePoint(new Position(pos.X-1, pos.Y), 1),
-            }; //TODO
+            if (this[pos].Unit != null)
+                throw new System.ArgumentException("Target position is occupied.", nameof(pos));
         }
 
-        public Position GetUnitPos(Unit unit)
+        public IEnumerable<MovePoint> GetMoveRange(Unit unit) => _Pathfinder.GetMoveRange(GetUnitPos(unit), unit.MovePoints);
+
+        public Position GetUnitPos(Unit unit) => TryGetUnitPos(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
+
+        public Position TryGetUnitPos(Unit unit)
         {
             for (var y = 0; y < Height; ++y)
                 for (var x = 0; x < Width; ++x)

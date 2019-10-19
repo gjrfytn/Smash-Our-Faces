@@ -11,9 +11,6 @@ namespace Sof.Object
     public class Map : MonoBehaviour
     {
         [SerializeField]
-        private Unit _UnitTemp;
-
-        [SerializeField]
         private TextAsset _MapFile;
 
         [SerializeField]
@@ -37,28 +34,29 @@ namespace Sof.Object
         [SerializeField]
         private Tile _InteractionTile;
 
+        public Model.Map ModelMap { get; private set; }
+
         private LineRenderer _LineRenderer;
 
-        private Model.Map _Map;
         private List<Tile> _Tiles;
 
         private void Start()
         {
             _LineRenderer = GetComponent<LineRenderer>();
 
-            _Map = new Model.Map(_MapFile.text);
+            ModelMap = new Model.Map(_MapFile.text);
 
             _Tiles = new List<Tile>();
-            for (var y = 0; y < _Map.Height; ++y)
-                for (var x = 0; x < _Map.Width; ++x)
+            for (var y = 0; y < ModelMap.Height; ++y)
+                for (var x = 0; x < ModelMap.Width; ++x)
                 {
                     var pos = new Position(x, y);
                     var tile = Instantiate(_InteractionTile, new Vector3(x, y, 0), Quaternion.identity, transform);
 
-                    tile.Initialize(_Map[pos]);
+                    tile.Initialize(ModelMap[pos]);
 
                     Ground ground;
-                    switch (_Map[pos].Ground.Type)
+                    switch (ModelMap[pos].Ground.Type)
                     {
                         case GroundType.Water:
                             ground = _Water;
@@ -76,7 +74,7 @@ namespace Sof.Object
                     Instantiate(ground, new Vector3(x, y, 0), Quaternion.identity, tile.transform);
 
                     MapObject @object;
-                    switch (_Map[pos].Object.Type)
+                    switch (ModelMap[pos].Object.Type)
                     {
                         case MapObjectType.None:
                             @object = null;
@@ -107,16 +105,11 @@ namespace Sof.Object
                 }
         }
 
-        public void Spawn()
+        public void Spawn(Unit unit, Position pos)
         {
-            //TODO Делать внутри Object.Unit?
-            var pos = new Position(5, 5);
-            var unit = new Model.Unit(_Map, _UnitTemp.Speed, _UnitTemp.Health, _UnitTemp.Damage, 0);
-            _Map.Spawn(unit, pos);
-            var unitObj = Instantiate(_UnitTemp, ConvertToWorldPos(pos), Quaternion.identity, transform);
-            unitObj.Initialize(unit);
+            ModelMap.Spawn(unit.ModelUnit, pos);
 
-            _Tiles.Single(t => t.transform.position.x == 5 && t.transform.position.y == 5).Unit = unitObj;
+            _Tiles.Single(t => t.transform.position.x == pos.X && t.transform.position.y == pos.Y).Unit = unit;
         }
 
         public void DrawPath(IEnumerable<Position> points)
@@ -136,13 +129,10 @@ namespace Sof.Object
             _LineRenderer.positionCount = 0;
         }
 
-        public IEnumerable<Position> GetBestPath(Unit unit, Position pos) => _Map.GetBestPath(unit.ModelUnit, pos);
+        public IEnumerable<Position> GetBestPath(Unit unit, Position pos) => ModelMap.GetBestPath(unit.ModelUnit, pos);
 
-        public Position GetUnitPos(Unit unit) => _Map.GetUnitPos(unit.ModelUnit);
+        public Position GetUnitPos(Unit unit) => ModelMap.GetUnitPos(unit.ModelUnit);
 
-        private Vector2 ConvertToWorldPos(Position position)
-        {
-            return new Vector2(position.X, position.Y);
-        }
+        public static Vector2 ConvertToWorldPos(Position position) => new Vector2(position.X, position.Y);
     }
 }
