@@ -9,6 +9,8 @@ namespace Sof.Model
 
         public int MoveCost => Ground.MoveCost + Object.MoveCostModificator;
 
+        public bool Blocked => Unit != null;
+
         public Tile(Ground.Ground ground, MapObject.MapObject @object)
         {
             Ground = ground;

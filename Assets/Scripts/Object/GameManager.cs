@@ -52,7 +52,7 @@ namespace Sof.Object
                 _SelectedUnit.HideMoveArea();
                 _SelectedUnit = null;
             }
-            else
+            else if (tile.Unit == null)
             {
                 _SelectedUnit.Move(new Position((int)tile.transform.position.x, (int)tile.transform.position.y)); //TODO
                 _Map.ClearPath();
@@ -83,7 +83,7 @@ namespace Sof.Object
             }
             else if (_SelectedUnit != null)
             {
-                var path = _Map.GetBestPath(_SelectedUnit, new Position((int)tile.transform.position.x, (int)tile.transform.position.y)); //TODO
+                var path = _Map.GetClosestPath(_SelectedUnit, new Position((int)tile.transform.position.x, (int)tile.transform.position.y)); //TODO
                 _Map.DrawPath(new Position[] { _Map.GetUnitPos(_SelectedUnit) }.Concat(path));
             }
         }

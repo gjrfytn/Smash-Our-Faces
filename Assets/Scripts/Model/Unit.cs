@@ -35,7 +35,7 @@ namespace Sof.Model
 
         public void Move(Position pos)
         {
-            var path = _Map.GetPath(this, pos);
+            var path = _Map.GetClosestPath(this, pos);
 
             var traversedPath = new List<Position>();
             foreach (var movePoint in path)

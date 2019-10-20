@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Sof.Model
@@ -13,7 +12,7 @@ namespace Sof.Model
             _Map = map;
         }
 
-        public IEnumerable<Position> GetPath(Position from, Position to)
+        public IEnumerable<Position> GetClosestPath(Position from, Position to)
         {
             var processedCells = new Dictionary<Position, Position>();
             var costs = new Dictionary<Position, int>();
@@ -31,7 +30,7 @@ namespace Sof.Model
                     return MakePath(from, to, processedCells);
             }
 
-            throw new Exception("Pathfinding error.");
+            return MakePath(from, GetClosestPositions(to, processedCells.Keys).OrderBy(p => costs[p]).First(), processedCells);
         }
 
         public IEnumerable<MovePoint> GetMoveRange(Position pos, int movePoints)
@@ -60,15 +59,16 @@ namespace Sof.Model
                 return true;
 
             foreach (var neighbour in GetNeighbours(node.pos))
-            {
-                var neighbourCost = node.cost + _Map[neighbour].MoveCost;
-                if (!processedCells.ContainsKey(neighbour) || neighbourCost < costs[neighbour])
+                if (!_Map[neighbour].Blocked)
                 {
-                    processedCells[neighbour] = node.pos;
-                    costs[neighbour] = neighbourCost;
-                    queue.Add((neighbour, neighbourCost));
+                    var neighbourCost = node.cost + _Map[neighbour].MoveCost;
+                    if (!processedCells.ContainsKey(neighbour) || neighbourCost < costs[neighbour])
+                    {
+                        processedCells[neighbour] = node.pos;
+                        costs[neighbour] = neighbourCost;
+                        queue.Add((neighbour, neighbourCost));
+                    }
                 }
-            }
 
             return false;
         }
@@ -76,15 +76,16 @@ namespace Sof.Model
         private void Spread(List<(Position pos, int cost)> queue, Dictionary<Position, Position> processedCells, Dictionary<Position, int> costs, (Position pos, int cost) node, int movePoints)
         {
             foreach (var neighbour in GetNeighbours(node.pos))
-            {
-                var neighbourCost = node.cost + _Map[neighbour].MoveCost;
-                if (movePoints - neighbourCost >= 0 && (!processedCells.ContainsKey(neighbour) || neighbourCost < costs[neighbour]))
+                if (!_Map[neighbour].Blocked)
                 {
-                    processedCells[neighbour] = node.pos;
-                    costs[neighbour] = neighbourCost;
-                    queue.Add((neighbour, neighbourCost));
+                    var neighbourCost = node.cost + _Map[neighbour].MoveCost;
+                    if (movePoints - neighbourCost >= 0 && (!processedCells.ContainsKey(neighbour) || neighbourCost < costs[neighbour]))
+                    {
+                        processedCells[neighbour] = node.pos;
+                        costs[neighbour] = neighbourCost;
+                        queue.Add((neighbour, neighbourCost));
+                    }
                 }
-            }
         }
 
         private IEnumerable<Position> MakePath(Position from, Position to, Dictionary<Position, Position> processedCells)
@@ -119,6 +120,15 @@ namespace Sof.Model
                 neighbours.Add(new Position(pos.X, pos.Y - 1));
 
             return neighbours;
+        }
+
+        private IEnumerable<Position> GetClosestPositions(Position pos, IEnumerable<Position> options)
+        {
+            var orderedPositions = options.Select(p => new { Pos = p, Dist = UnityEngine.Mathf.Abs(p.X - pos.X) + UnityEngine.Mathf.Abs(p.Y - pos.Y) })
+                                          .OrderBy(p => p.Dist)
+                                          .ToArray();
+
+            return orderedPositions.Where(p => p.Dist == orderedPositions.First().Dist).Select(p => p.Pos);
         }
     }
 }

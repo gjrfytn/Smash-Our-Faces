@@ -130,7 +130,7 @@ namespace Sof.Object
             _LineRenderer.positionCount = 0;
         }
 
-        public IEnumerable<Position> GetBestPath(Unit unit, Position pos) => ModelMap.GetPath(unit.ModelUnit, pos);
+        public IEnumerable<Position> GetClosestPath(Unit unit, Position pos) => ModelMap.GetClosestPath(unit.ModelUnit, pos);
 
         public Position GetUnitPos(Unit unit) => ModelMap.GetUnitPos(unit.ModelUnit);
 
