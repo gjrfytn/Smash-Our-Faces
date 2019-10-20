@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Sof.Model
 {
-    internal class Pathfinder
+    internal class Pathfinder //TODO Refactor duplication
     {
         private readonly Map _Map;
 
