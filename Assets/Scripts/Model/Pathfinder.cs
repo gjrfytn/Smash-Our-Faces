@@ -13,7 +13,7 @@ namespace Sof.Model
             _Map = map;
         }
 
-        public IEnumerable<Position> GetBestPath(Position from, Position to)
+        public IEnumerable<Position> GetPath(Position from, Position to)
         {
             var processedCells = new Dictionary<Position, Position>();
             var costs = new Dictionary<Position, int>();

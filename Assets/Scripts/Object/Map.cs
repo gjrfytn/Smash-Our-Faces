@@ -45,6 +45,7 @@ namespace Sof.Object
             _LineRenderer = GetComponent<LineRenderer>();
 
             ModelMap = new Model.Map(_MapFile.text);
+            ModelMap.UnitMoved += ModelMap_UnitMoved;
 
             _Tiles = new List<Tile>();
             for (var y = 0; y < ModelMap.Height; ++y)
@@ -107,9 +108,9 @@ namespace Sof.Object
 
         public void Spawn(Unit unit, Position pos)
         {
-            ModelMap.Spawn(unit.ModelUnit, pos);
+            ModelMap.Spawn(unit.ModelUnit, pos); //TODO UnitSpawned event
 
-            _Tiles.Single(t => t.transform.position.x == pos.X && t.transform.position.y == pos.Y).Unit = unit;
+            _Tiles.Single(t => t.transform.position.x == pos.X && t.transform.position.y == pos.Y).Unit = unit; //TODO ^^^
         }
 
         public void DrawPath(IEnumerable<Position> points)
@@ -129,10 +130,20 @@ namespace Sof.Object
             _LineRenderer.positionCount = 0;
         }
 
-        public IEnumerable<Position> GetBestPath(Unit unit, Position pos) => ModelMap.GetBestPath(unit.ModelUnit, pos);
+        public IEnumerable<Position> GetBestPath(Unit unit, Position pos) => ModelMap.GetPath(unit.ModelUnit, pos);
 
         public Position GetUnitPos(Unit unit) => ModelMap.GetUnitPos(unit.ModelUnit);
 
         public static Vector2 ConvertToWorldPos(Position position) => new Vector2(position.X, position.Y);
+
+        private void ModelMap_UnitMoved(Model.Unit unit)
+        {
+            var fromTile = _Tiles.Single(t => t.Unit != null ? t.Unit.ModelUnit == unit : false);
+            var newPos = ModelMap.GetUnitPos(unit);
+            var toTile = _Tiles.Single(t => t.transform.position.x == newPos.X && t.transform.position.y == newPos.Y);
+
+            toTile.Unit = fromTile.Unit;
+            fromTile.Unit = null;
+        }
     }
 }

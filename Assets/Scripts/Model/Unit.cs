@@ -10,12 +10,12 @@ namespace Sof.Model
         private readonly int _Health;
         private readonly int _Damage;
 
-        private Position _TargetPos;
         private int _MovePointsLeft;
-        private IEnumerable<Position> _CurrentPath;
 
         public int PlayerId { get; private set; }
         public int MovePoints => _MovePointsLeft;
+
+        public event System.Action<IEnumerable<Position>> UnitMovedAlongPath;
 
         public Unit(Map map, int movePoints, int health, int damage, int playerId)
         {
@@ -33,24 +33,26 @@ namespace Sof.Model
             _MovePointsLeft = _MovePoints;
         }
 
-        public void SetTargetPosition(Position pos)
+        public void Move(Position pos)
         {
-            _TargetPos = pos;
+            var path = _Map.GetPath(this, pos);
 
-            _CurrentPath = _Map.GetBestPath(this, _TargetPos);
-        }
+            var traversedPath = new List<Position>();
+            foreach (var movePoint in path)
+            {
+                var movePointsAfterMove = _MovePointsLeft - _Map[movePoint].MoveCost;
+                if (movePointsAfterMove >= 0)
+                    traversedPath.Add(movePoint);
 
-        public IEnumerable<Position> GetPathToTarget() => _CurrentPath;
+                _MovePointsLeft = movePointsAfterMove;
+            }
 
-        public void Move()
-        {
-            // TODO
-            // if(_CurrentPath == null)
-            // throw or do nothing???
+            if (traversedPath.Any())
+            {
+                _Map.MoveUnit(this, traversedPath.Last());
 
-            _Map.MoveUnit(this, _CurrentPath.Last());
-
-            _CurrentPath = null;
+                UnitMovedAlongPath?.Invoke(traversedPath);
+            }
         }
 
         public IEnumerable<MovePoint> GetMoveRange() => _Map.GetMoveRange(this);

@@ -1,6 +1,7 @@
 ﻿using Sof.Model;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Sof.Object
@@ -23,31 +24,31 @@ namespace Sof.Object
         public int Health => _Health;
         public int Damage => _Damage;
 
-        public void Initialize(Model.Map map, int playerId)
+        private GameManager _GameManager;
+
+        public void Initialize(GameManager gameManager, Model.Map map, int playerId)
         {
+            if (gameManager == null)
+                throw new System.ArgumentNullException(nameof(gameManager));
+
             if (map == null)
                 throw new System.ArgumentNullException(nameof(map));
 
+            _GameManager = gameManager;
+
             ModelUnit = new Model.Unit(map, _Speed, _Health, _Damage, playerId);
+            ModelUnit.UnitMovedAlongPath += ModelUnit_UnitMovedAlongPath; ;
         }
 
-        public void Move(Position pos)
-        {
-            ModelUnit.SetTargetPosition(pos);
-
-            var path = ModelUnit.GetPathToTarget();
-
-            ModelUnit.Move();
-
-            StartCoroutine(FollowPath(path));
-        }
+        public void Move(Position pos) => ModelUnit.Move(pos);
 
         public void ShowMoveArea()
         {
-            var moveArea = ModelUnit.GetMoveRange();
+            var moveArea = ModelUnit.GetMoveRange().ToArray();
 
-            foreach (var moveTile in moveArea)
-                Instantiate(_MoveTile, new Vector3(moveTile.Pos.X, moveTile.Pos.Y, 0), Quaternion.identity, transform);
+            if (moveArea.Length > 1)
+                foreach (var moveTile in moveArea)
+                    Instantiate(_MoveTile, new Vector3(moveTile.Pos.X, moveTile.Pos.Y, 0), Quaternion.identity, transform);
         }
 
         public void HideMoveArea()
@@ -58,6 +59,9 @@ namespace Sof.Object
 
         private IEnumerator FollowPath(IEnumerable<Position> path)
         {
+            _GameManager.DisableUIInteraction = true;
+            HideMoveArea();
+
             foreach (var point in path)
             {
                 var pointVec = new Vector3(point.X, point.Y, 0);
@@ -68,6 +72,14 @@ namespace Sof.Object
                     yield return null;
                 }
             }
+
+            ShowMoveArea();
+            _GameManager.DisableUIInteraction = false;
+        }
+
+        private void ModelUnit_UnitMovedAlongPath(IEnumerable<Position> path)
+        {
+            StartCoroutine(FollowPath(path));
         }
     }
 }

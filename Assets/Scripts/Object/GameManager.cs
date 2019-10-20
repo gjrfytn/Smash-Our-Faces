@@ -12,6 +12,8 @@ namespace Sof.Object
         [SerializeField]
         private Unit _UnitTemp;
 
+        public bool DisableUIInteraction { private get; set; } //TODO Make dedicated UIManager
+
         private int _PlayerCount = 2;
         private int _CurrentPlayerId;
         private Unit _SelectedUnit;
@@ -26,6 +28,9 @@ namespace Sof.Object
 
         private void Tile_TileLeftClicked(Tile tile)
         {
+            if (DisableUIInteraction)
+                return;
+
             if (_SpawnedUnit != null)
             {
                 _Map.Spawn(_SpawnedUnit, new Position((int)tile.transform.position.x, (int)tile.transform.position.y));//TODO
@@ -54,13 +59,22 @@ namespace Sof.Object
 
         private void Tile_TileRightClicked(Tile tile)
         {
-            _Map.ClearPath();
-            _SelectedUnit.HideMoveArea();
-            _SelectedUnit = null;
+            if (DisableUIInteraction)
+                return;
+
+            if (_SelectedUnit != null)
+            {
+                _Map.ClearPath();
+                _SelectedUnit.HideMoveArea();
+                _SelectedUnit = null;
+            }
         }
 
         private void Tile_TileHovered(Tile tile)
         {
+            if (DisableUIInteraction)
+                return;
+
             if (_SpawnedUnit != null)
             {
                 _SpawnedUnit.transform.position = tile.transform.position;
@@ -75,7 +89,7 @@ namespace Sof.Object
         public void Spawn(int playerId)
         {
             _SpawnedUnit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(new Position(_Map.ModelMap.Width / 2, _Map.ModelMap.Height / 2)), Quaternion.identity, transform);
-            _SpawnedUnit.Initialize(_Map.ModelMap, playerId);
+            _SpawnedUnit.Initialize(this, _Map.ModelMap, playerId);
             _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
         }
 

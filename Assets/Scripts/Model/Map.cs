@@ -17,6 +17,8 @@ namespace Sof.Model
 
         public Tile this[Position pos] => _Tiles[pos.X, pos.Y];
 
+        public event System.Action<Unit> UnitMoved;
+
         public Map(string mapXml)
         {
             _Pathfinder = new Pathfinder(this);
@@ -52,7 +54,7 @@ namespace Sof.Model
             this[pos].Unit = unit;
         }
 
-        public IEnumerable<Position> GetBestPath(Unit unit, Position pos) => _Pathfinder.GetBestPath(GetUnitPos(unit), pos);
+        public IEnumerable<Position> GetPath(Unit unit, Position pos) => _Pathfinder.GetPath(GetUnitPos(unit), pos);
 
         public void MoveUnit(Unit unit, Position pos)
         {
@@ -60,6 +62,8 @@ namespace Sof.Model
 
             this[GetUnitPos(unit)].Unit = null;
             this[pos].Unit = unit;
+
+            UnitMoved?.Invoke(unit);
         }
 
         private void CheckTileIsVacant(Position pos)
