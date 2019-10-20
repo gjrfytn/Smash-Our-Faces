@@ -17,6 +17,8 @@ namespace Sof.Object
         private int _Health;
         [SerializeField]
         private int _Damage;
+        [SerializeField]
+        private int _AttackRange;
 
         public Model.Unit ModelUnit { get; private set; }
 
@@ -37,8 +39,10 @@ namespace Sof.Object
             _GameManager = gameManager;
             _GameManager.TurnEnded += GameManager_TurnEnded;
 
-            ModelUnit = new Model.Unit(map, _Speed, _Health, _Damage, playerId);
-            ModelUnit.UnitMovedAlongPath += ModelUnit_UnitMovedAlongPath; ;
+            ModelUnit = new Model.Unit(map, _Speed, _Health, _Damage, _AttackRange, playerId);
+            ModelUnit.UnitMovedAlongPath += ModelUnit_UnitMovedAlongPath;
+            ModelUnit.Attacked += ModelUnit_Attacked;
+            ModelUnit.TookHit += ModelUnit_TookHit;
         }
 
         public void Move(Position pos) => ModelUnit.Move(pos);
@@ -56,6 +60,30 @@ namespace Sof.Object
         {
             for (var i = 0; i < transform.childCount; ++i)
                 Destroy(transform.GetChild(i).gameObject);
+        }
+
+        private void ModelUnit_UnitMovedAlongPath(IEnumerable<Position> path)
+        {
+            StartCoroutine(FollowPath(path));
+        }
+
+        private void ModelUnit_Attacked()
+        {
+            StartCoroutine(PlayAttack());
+        }
+
+        private void ModelUnit_TookHit(int damage)
+        {
+            _GameManager.OnUnitHit(this, damage);
+        }
+
+        private void GameManager_TurnEnded()
+        {
+            HideMoveArea();
+
+            ModelUnit.EndTurn();
+
+            ShowMoveArea();
         }
 
         private IEnumerator FollowPath(IEnumerable<Position> path)
@@ -78,18 +106,19 @@ namespace Sof.Object
             _GameManager.DisableUIInteraction = false;
         }
 
-        private void ModelUnit_UnitMovedAlongPath(IEnumerable<Position> path)
+        private IEnumerator PlayAttack()
         {
-            StartCoroutine(FollowPath(path));
-        }
-
-        private void GameManager_TurnEnded()
-        {
+            _GameManager.DisableUIInteraction = true;
             HideMoveArea();
 
-            ModelUnit.EndTurn();
+            transform.localRotation = Quaternion.Euler(0, 0, -30);
+
+            yield return new WaitForSeconds(0.5f);
+
+            transform.localRotation = Quaternion.Euler(0, 0, 0);
 
             ShowMoveArea();
+            _GameManager.DisableUIInteraction = false;
         }
     }
 }

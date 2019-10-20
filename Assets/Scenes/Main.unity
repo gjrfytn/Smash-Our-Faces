@@ -579,7 +579,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d472260431bf08a409babf96a0f7756a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Canvas: {fileID: 665777959}
   _Map: {fileID: 1403569718}
+  _DamageText: {fileID: 6599352221744685332, guid: e1ff80df3cf974646b53f1c1a68be909,
+    type: 3}
   _UnitTemp: {fileID: 1557350346382895989, guid: 3f011cab9a916d741864bdd6f85ff5e2,
     type: 3}
 --- !u!4 &808029997
@@ -852,6 +855,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c8686c2f71673044ba0ef017a5d9a13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _GameManager: {fileID: 808029996}
   _MapFile: {fileID: 4900000, guid: e38f2e639322129419cba90867340f25, type: 3}
   _Water: {fileID: -458843704545115546, guid: 2961d39438b75954ea8926016e236921, type: 3}
   _Grass: {fileID: 158238395368309876, guid: 0109718ed645207468c266e92967eb59, type: 3}

@@ -11,6 +11,9 @@ namespace Sof.Object
     public class Map : MonoBehaviour
     {
         [SerializeField]
+        private GameManager _GameManager;
+
+        [SerializeField]
         private TextAsset _MapFile;
 
         [SerializeField]
@@ -54,7 +57,7 @@ namespace Sof.Object
                     var pos = new Position(x, y);
                     var tile = Instantiate(_InteractionTile, new Vector3(x, y, 0), Quaternion.identity, transform);
 
-                    tile.Initialize(ModelMap[pos]);
+                    tile.Initialize(ModelMap[pos], _GameManager);
 
                     Ground ground;
                     switch (ModelMap[pos].Ground.Type)

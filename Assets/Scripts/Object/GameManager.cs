@@ -7,7 +7,13 @@ namespace Sof.Object
     public class GameManager : MonoBehaviour
     {
         [SerializeField]
+        private Canvas _Canvas;
+
+        [SerializeField]
         private Map _Map;
+
+        [SerializeField]
+        private DamageText _DamageText;
 
         [SerializeField]
         private Unit _UnitTemp;
@@ -21,14 +27,23 @@ namespace Sof.Object
         private Unit _SelectedUnit;
         private Unit _SpawnedUnit;
 
-        private void Start()
+        public void OnTileHover(Tile tile)
         {
-            Tile.TileLeftClicked += Tile_TileLeftClicked;
-            Tile.TileRightClicked += Tile_TileRightClicked;
-            Tile.TileHovered += Tile_TileHovered;
+            if (DisableUIInteraction)
+                return;
+
+            if (_SpawnedUnit != null)
+            {
+                _SpawnedUnit.transform.position = tile.transform.position;
+            }
+            else if (_SelectedUnit != null)
+            {
+                var path = _Map.GetClosestPath(_SelectedUnit, new Position((int)tile.transform.position.x, (int)tile.transform.position.y)); //TODO
+                _Map.DrawPath(new Position[] { _Map.GetUnitPos(_SelectedUnit) }.Concat(path));
+            }
         }
 
-        private void Tile_TileLeftClicked(Tile tile)
+        public void OnTileLeftClick(Tile tile)
         {
             if (DisableUIInteraction)
                 return;
@@ -52,14 +67,19 @@ namespace Sof.Object
                 _SelectedUnit.HideMoveArea();
                 _SelectedUnit = null;
             }
-            else if (tile.Unit == null)
+            else if (tile.Unit != null)
+            {
+                if (_SelectedUnit.ModelUnit.IsInAttackRange(tile.Unit.ModelUnit))
+                    _SelectedUnit.ModelUnit.Attack(tile.Unit.ModelUnit);
+            }
+            else
             {
                 _SelectedUnit.Move(new Position((int)tile.transform.position.x, (int)tile.transform.position.y)); //TODO
                 _Map.ClearPath();
             }
         }
 
-        private void Tile_TileRightClicked(Tile tile)
+        public void OnTileRightClick(Tile tile)
         {
             if (DisableUIInteraction)
                 return;
@@ -72,22 +92,6 @@ namespace Sof.Object
             }
         }
 
-        private void Tile_TileHovered(Tile tile)
-        {
-            if (DisableUIInteraction)
-                return;
-
-            if (_SpawnedUnit != null)
-            {
-                _SpawnedUnit.transform.position = tile.transform.position;
-            }
-            else if (_SelectedUnit != null)
-            {
-                var path = _Map.GetClosestPath(_SelectedUnit, new Position((int)tile.transform.position.x, (int)tile.transform.position.y)); //TODO
-                _Map.DrawPath(new Position[] { _Map.GetUnitPos(_SelectedUnit) }.Concat(path));
-            }
-        }
-
         public void Spawn(int playerId)
         {
             if (DisableUIInteraction)
@@ -96,6 +100,13 @@ namespace Sof.Object
             _SpawnedUnit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(new Position(_Map.ModelMap.Width / 2, _Map.ModelMap.Height / 2)), Quaternion.identity, transform);
             _SpawnedUnit.Initialize(this, _Map.ModelMap, playerId);
             _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
+        }
+
+        internal void OnUnitHit(Unit unit, int damage)
+        {
+            const float offset = 0.3f;
+            var damageText = Instantiate(_DamageText, Camera.main.WorldToScreenPoint(unit.transform.position + offset * Vector3.up), Quaternion.identity, _Canvas.transform);
+            damageText.Damage = damage;
         }
 
         public void EndTurn()

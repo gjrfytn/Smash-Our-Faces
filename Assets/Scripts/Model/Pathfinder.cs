@@ -124,7 +124,7 @@ namespace Sof.Model
 
         private IEnumerable<Position> GetClosestPositions(Position pos, IEnumerable<Position> options)
         {
-            var orderedPositions = options.Select(p => new { Pos = p, Dist = UnityEngine.Mathf.Abs(p.X - pos.X) + UnityEngine.Mathf.Abs(p.Y - pos.Y) })
+            var orderedPositions = options.Select(p => new { Pos = p, Dist = p.Distance(pos) })
                                           .OrderBy(p => p.Dist)
                                           .ToArray();
 
