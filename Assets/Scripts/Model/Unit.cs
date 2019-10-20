@@ -12,18 +12,18 @@ namespace Sof.Model
 
         private int _MovePointsLeft;
 
-        public int PlayerId { get; private set; }
+        public int FactionId { get; private set; }
         public int MovePoints => _MovePointsLeft;
 
         public event System.Action<IEnumerable<Position>> UnitMovedAlongPath;
 
-        public Unit(Map map, int movePoints, int health, int damage, int playerId)
+        public Unit(Map map, int movePoints, int health, int damage, int factionId)
         {
             _Map = map;
             _MovePoints = movePoints;
             _Health = health;
             _Damage = damage;
-            PlayerId = playerId;
+            FactionId = factionId;
 
             _MovePointsLeft = _MovePoints;
         }

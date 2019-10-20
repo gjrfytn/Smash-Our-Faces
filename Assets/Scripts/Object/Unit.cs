@@ -35,6 +35,7 @@ namespace Sof.Object
                 throw new System.ArgumentNullException(nameof(map));
 
             _GameManager = gameManager;
+            _GameManager.TurnEnded += _GameManager_TurnEnded;
 
             ModelUnit = new Model.Unit(map, _Speed, _Health, _Damage, playerId);
             ModelUnit.UnitMovedAlongPath += ModelUnit_UnitMovedAlongPath; ;
@@ -80,6 +81,15 @@ namespace Sof.Object
         private void ModelUnit_UnitMovedAlongPath(IEnumerable<Position> path)
         {
             StartCoroutine(FollowPath(path));
+        }
+
+        private void _GameManager_TurnEnded()
+        {
+            HideMoveArea();
+
+            ModelUnit.EndTurn();
+
+            ShowMoveArea();
         }
     }
 }

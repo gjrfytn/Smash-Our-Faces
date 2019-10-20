@@ -14,6 +14,8 @@ namespace Sof.Object
 
         public bool DisableUIInteraction { private get; set; } //TODO Make dedicated UIManager
 
+        public event System.Action TurnEnded;
+
         private int _PlayerCount = 2;
         private int _CurrentPlayerId;
         private Unit _SelectedUnit;
@@ -88,6 +90,9 @@ namespace Sof.Object
 
         public void Spawn(int playerId)
         {
+            if (DisableUIInteraction)
+                return;
+
             _SpawnedUnit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(new Position(_Map.ModelMap.Width / 2, _Map.ModelMap.Height / 2)), Quaternion.identity, transform);
             _SpawnedUnit.Initialize(this, _Map.ModelMap, playerId);
             _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
@@ -95,10 +100,15 @@ namespace Sof.Object
 
         public void EndTurn()
         {
+            if (DisableUIInteraction)
+                return;
+
             if (_CurrentPlayerId == _PlayerCount - 1)
                 _CurrentPlayerId = 0;
             else
                 _CurrentPlayerId++;
+
+            TurnEnded?.Invoke();
         }
     }
 }
