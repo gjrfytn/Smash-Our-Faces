@@ -47,7 +47,7 @@ namespace Sof.Object
         {
             _LineRenderer = GetComponent<LineRenderer>();
 
-            ModelMap = new Model.Map(_MapFile.text);
+            ModelMap = new Model.Map(new XmlMap(_MapFile.text));
             ModelMap.UnitMoved += ModelMap_UnitMoved;
 
             _Tiles = new List<Tile>();
