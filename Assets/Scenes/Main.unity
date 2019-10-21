@@ -863,11 +863,35 @@ MonoBehaviour:
     type: 3}
   _Castle: {fileID: 46811160666234884, guid: 82d071842c790f746b48c0ad9693f8a6, type: 3}
   _House: {fileID: 8737258528564989986, guid: 0be3a6ae2b025ea49a75949ecd851940, type: 3}
-  _Road: {fileID: -7912411595410882212, guid: 96ca834418a60e3478665614474447dd, type: 3}
   _Bridge: {fileID: -1516250077583184794, guid: 1c49b0db164183544946aa861f3772ec,
     type: 3}
   _Forest: {fileID: -8025885814465985968, guid: 9333d4a478639a042bdeafa42e78f8ac,
     type: 3}
+  _RoadTiles:
+    Cross: {fileID: 8954540998617759054, guid: b02376a7bed6c3142af6f272f945cf50, type: 3}
+    EndDown: {fileID: 2818013848207455521, guid: e9ace8980eada9544ad6d27bf6f5baf3,
+      type: 3}
+    EndLeft: {fileID: -8680796932930136469, guid: d8f8c9c545bf2454195df816269ac844,
+      type: 3}
+    EndRight: {fileID: 2233516167380365536, guid: 79fa254029108d341939430039827a4d,
+      type: 3}
+    EndUp: {fileID: 5687882509389688651, guid: e07c09ff006f8f548ba65eadb1803221, type: 3}
+    Hor: {fileID: 8951556356263543046, guid: c161e250743df4243b3ecb34f22f952f, type: 3}
+    TDown: {fileID: 8311226889890705434, guid: 11eed7ec218159b4ca94e0659492322a, type: 3}
+    TLeft: {fileID: -8791396532260486140, guid: 46c56ca298e4ef0498b7066ade907b18,
+      type: 3}
+    TRight: {fileID: -6457066227828907120, guid: 51d89229198e9b3438459ac4e390c68d,
+      type: 3}
+    TUp: {fileID: -6015312787424975193, guid: 9128735c51a9f6b4292f2e294c9383b7, type: 3}
+    TurnDownLeft: {fileID: -4264034117020009740, guid: 49316ac2aa9deb944a5359fc27c45eaf,
+      type: 3}
+    TurnDownRight: {fileID: -2549930684739732691, guid: 9825a14163038e34187e87df5b800a92,
+      type: 3}
+    TurnLeft: {fileID: 3572356910044300430, guid: 79c99d4c1091bb143a0fdf2b863648e5,
+      type: 3}
+    TurnRight: {fileID: 1121861869975188187, guid: 155eec6c81255874e9284453c792807f,
+      type: 3}
+    Vert: {fileID: -7912411595410882212, guid: 96ca834418a60e3478665614474447dd, type: 3}
   _InteractionTile: {fileID: 3539218030639880723, guid: dfd969ee28eea7542bc3916c0c37eaa7,
     type: 3}
 --- !u!4 &1403569719

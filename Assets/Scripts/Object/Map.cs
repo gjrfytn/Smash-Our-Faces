@@ -10,6 +10,26 @@ namespace Sof.Object
     [RequireComponent(typeof(LineRenderer))]
     public class Map : MonoBehaviour
     {
+        [System.Serializable]
+        internal class RoadTiles
+        {
+            public MapObject Cross;
+            public MapObject EndDown;
+            public MapObject EndLeft;
+            public MapObject EndRight;
+            public MapObject EndUp;
+            public MapObject Hor;
+            public MapObject TDown;
+            public MapObject TLeft;
+            public MapObject TRight;
+            public MapObject TUp;
+            public MapObject TurnDownLeft;
+            public MapObject TurnDownRight;
+            public MapObject TurnLeft;
+            public MapObject TurnRight;
+            public MapObject Vert;
+        }
+
         [SerializeField]
         private GameManager _GameManager;
 
@@ -28,11 +48,11 @@ namespace Sof.Object
         [SerializeField]
         private MapObject _House;
         [SerializeField]
-        private MapObject _Road;
-        [SerializeField]
         private MapObject _Bridge;
         [SerializeField]
         private MapObject _Forest;
+        [SerializeField]
+        private RoadTiles _RoadTiles;
 
         [SerializeField]
         private Tile _InteractionTile;
@@ -93,7 +113,7 @@ namespace Sof.Object
                             @object = _Bridge;
                             break;
                         case MapObjectType.Road:
-                            @object = _Road;
+                            @object = ChooseRoadPiece(pos);
                             break;
                         case MapObjectType.Forest:
                             @object = _Forest;
@@ -147,6 +167,54 @@ namespace Sof.Object
 
             toTile.Unit = fromTile.Unit;
             fromTile.Unit = null;
+        }
+
+        private MapObject ChooseRoadPiece(Position pos)
+        {
+            var hasRoadLeft = pos.X != 0 && CheckIfTileHasRoad(new Position(pos.X - 1, pos.Y));
+            var hasRoadUp = pos.Y != ModelMap.Height - 1 && CheckIfTileHasRoad(new Position(pos.X, pos.Y + 1));
+            var hasRoadRight = pos.X != ModelMap.Width - 1 && CheckIfTileHasRoad(new Position(pos.X + 1, pos.Y));
+            var hasRoadDown = pos.Y != 0 && CheckIfTileHasRoad(new Position(pos.X, pos.Y - 1));
+
+            if (hasRoadLeft && hasRoadUp && hasRoadRight && hasRoadDown)
+                return _RoadTiles.Cross;
+            else if (hasRoadLeft && hasRoadUp && hasRoadRight)
+                return _RoadTiles.TUp;
+            else if (hasRoadLeft && hasRoadUp && hasRoadDown)
+                return _RoadTiles.TLeft;
+            else if (hasRoadLeft && hasRoadRight && hasRoadDown)
+                return _RoadTiles.TDown;
+            else if (hasRoadUp && hasRoadRight && hasRoadDown)
+                return _RoadTiles.TRight;
+            else if (hasRoadLeft && hasRoadUp)
+                return _RoadTiles.TurnDownLeft;
+            else if (hasRoadLeft && hasRoadDown)
+                return _RoadTiles.TurnLeft;
+            else if (hasRoadRight && hasRoadDown)
+                return _RoadTiles.TurnRight;
+            else if (hasRoadUp && hasRoadRight)
+                return _RoadTiles.TurnDownRight;
+            else if (hasRoadUp && hasRoadDown)
+                return _RoadTiles.Vert;
+            else if (hasRoadLeft && hasRoadRight)
+                return _RoadTiles.Hor;
+            else if (hasRoadLeft)
+                return _RoadTiles.EndRight;
+            else if (hasRoadDown)
+                return _RoadTiles.EndUp;
+            else if (hasRoadRight)
+                return _RoadTiles.EndLeft;
+            else if (hasRoadUp)
+                return _RoadTiles.EndDown;
+
+            throw new System.Exception("todo");
+        }
+
+        private bool CheckIfTileHasRoad(Position pos)
+        {
+            var type = ModelMap[pos].Object.Type;
+
+            return type == MapObjectType.Road || type == MapObjectType.Bridge;
         }
     }
 }
