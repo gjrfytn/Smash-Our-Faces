@@ -43,6 +43,7 @@ namespace Sof.Object
             ModelUnit.UnitMovedAlongPath += ModelUnit_UnitMovedAlongPath;
             ModelUnit.Attacked += ModelUnit_Attacked;
             ModelUnit.TookHit += ModelUnit_TookHit;
+            ModelUnit.Died += ModelUnit_Died;
         }
 
         public void Move(Position pos) => ModelUnit.Move(pos);
@@ -75,6 +76,13 @@ namespace Sof.Object
         private void ModelUnit_TookHit(int damage)
         {
             _GameManager.OnUnitHit(this, damage);
+        }
+
+        private void ModelUnit_Died()
+        {
+            _GameManager.TurnEnded -= GameManager_TurnEnded;
+
+            Destroy(gameObject);
         }
 
         private void GameManager_TurnEnded()

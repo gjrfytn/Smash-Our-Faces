@@ -54,6 +54,8 @@ namespace Sof.Model
             this[pos].Unit = unit;
         }
 
+        public void Remove(Unit unit) => this[GetUnitPos(unit)].Unit = null;
+
         public IEnumerable<Position> GetClosestPath(Unit unit, Position pos) => _Pathfinder.GetClosestPath(GetUnitPos(unit), pos);
 
         public void MoveUnit(Unit unit, Position pos)

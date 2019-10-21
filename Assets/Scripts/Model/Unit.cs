@@ -20,6 +20,7 @@ namespace Sof.Model
         public event System.Action<IEnumerable<Position>> UnitMovedAlongPath;
         public event System.Action Attacked;
         public event System.Action<int> TookHit;
+        public event System.Action Died;
 
         public Unit(Map map, int movePoints, int health, int damage, int attackRange, int factionId)
         {
@@ -74,9 +75,16 @@ namespace Sof.Model
 
         public void TakeHit(int damage)
         {
-            _HealthLeft -= damage;
+            _HealthLeft = UnityEngine.Mathf.Max(0, _HealthLeft - damage);
 
             TookHit?.Invoke(damage);
+
+            if (_HealthLeft == 0)
+            {
+                _Map.Remove(this);
+
+                Died?.Invoke();
+            }
         }
 
         public IEnumerable<MovePoint> GetMoveRange() => _Map.GetMoveRange(this);
