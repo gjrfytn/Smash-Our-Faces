@@ -78,10 +78,7 @@ namespace Sof.Object
                 }
             }
             else if (_SelectedUnit == tile.Unit)
-            {
-                _SelectedUnit.HideMoveArea();
-                _SelectedUnit = null;
-            }
+                DeselectUnit();
             else if (tile.Unit != null)
             {
                 if (tile.Unit.ModelUnit.FactionId != _SelectedUnit.ModelUnit.FactionId && _SelectedUnit.ModelUnit.IsInAttackRange(tile.Unit.ModelUnit))
@@ -102,8 +99,7 @@ namespace Sof.Object
             if (_SelectedUnit != null)
             {
                 _Map.ClearPath();
-                _SelectedUnit.HideMoveArea();
-                _SelectedUnit = null;
+                DeselectUnit();
             }
         }
 
@@ -139,6 +135,9 @@ namespace Sof.Object
             if (DisableUIInteraction)
                 return;
 
+            if (_SelectedUnit != null)
+                DeselectUnit();
+
             if (_CurrentPlayerId == _PlayerIds.Last())
                 _CurrentPlayerId = _PlayerIds.First();
             else
@@ -151,6 +150,12 @@ namespace Sof.Object
             _Notifier.ShowNotification($"Player {_CurrentPlayerId} turn");
 
             TurnEnded?.Invoke();
+        }
+
+        private void DeselectUnit()
+        {
+            _SelectedUnit.HideMoveArea();
+            _SelectedUnit = null;
         }
     }
 }

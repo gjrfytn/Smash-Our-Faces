@@ -90,11 +90,7 @@ namespace Sof.Object
 
         private void GameManager_TurnEnded()
         {
-            HideMoveArea();
-
             ModelUnit.EndTurn();
-
-            ShowMoveArea();
         }
 
         private IEnumerator FollowPath(IEnumerable<Position> path)
