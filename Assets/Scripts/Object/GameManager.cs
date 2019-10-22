@@ -12,6 +12,8 @@ namespace Sof.Object
         private Canvas _Canvas;
         [SerializeField]
         private TurnIndicator _TurnIndicator;
+        [SerializeField]
+        private Notifier _Notifier;
 
         [SerializeField]
         private Map _Map;
@@ -61,7 +63,10 @@ namespace Sof.Object
             {
                 _Map.Spawn(_SpawnedUnit, new Position((int)tile.transform.position.x, (int)tile.transform.position.y));//TODO
                 _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
-                _PlayerIds.Add(_SpawnedUnit.ModelUnit.FactionId);
+
+                if (!_PlayerIds.Contains(_SpawnedUnit.ModelUnit.FactionId))
+                    _PlayerIds.Add(_SpawnedUnit.ModelUnit.FactionId);
+
                 _SpawnedUnit = null;
             }
             else if (_SelectedUnit == null)
@@ -121,6 +126,8 @@ namespace Sof.Object
 
         internal void OnCriticalUnitDeath(int factionId)
         {
+            _Notifier.ShowNotification($"Player {_CurrentPlayerId} have lost!");
+
             if (_CurrentPlayerId == factionId)
                 EndTurn();
 
@@ -141,6 +148,7 @@ namespace Sof.Object
             }
 
             _TurnIndicator.SetCurrentPlayer(_CurrentPlayerId);
+            _Notifier.ShowNotification($"Player {_CurrentPlayerId} turn");
 
             TurnEnded?.Invoke();
         }
