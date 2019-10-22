@@ -39,7 +39,7 @@ namespace Sof.Object
             _GameManager = gameManager;
             _GameManager.TurnEnded += GameManager_TurnEnded;
 
-            ModelUnit = new Model.Unit(map, _Speed, _Health, _Damage, _AttackRange, playerId);
+            ModelUnit = new Model.Unit(map, _Speed, _Health, _Damage, _AttackRange, playerId, true);
             ModelUnit.UnitMovedAlongPath += ModelUnit_UnitMovedAlongPath;
             ModelUnit.Attacked += ModelUnit_Attacked;
             ModelUnit.TookHit += ModelUnit_TookHit;
@@ -81,6 +81,9 @@ namespace Sof.Object
         private void ModelUnit_Died()
         {
             _GameManager.TurnEnded -= GameManager_TurnEnded;
+
+            if (ModelUnit.Critical)
+                _GameManager.OnCriticalUnitDeath(ModelUnit.FactionId);
 
             Destroy(gameObject);
         }

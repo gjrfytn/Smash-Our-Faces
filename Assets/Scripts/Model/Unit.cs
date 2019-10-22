@@ -15,6 +15,7 @@ namespace Sof.Model
         private int _HealthLeft;
 
         public int FactionId { get; private set; }
+        public bool Critical { get; private set; }
         public int MovePoints => _MovePointsLeft;
 
         public event System.Action<IEnumerable<Position>> UnitMovedAlongPath;
@@ -22,7 +23,7 @@ namespace Sof.Model
         public event System.Action<int> TookHit;
         public event System.Action Died;
 
-        public Unit(Map map, int movePoints, int health, int damage, int attackRange, int factionId)
+        public Unit(Map map, int movePoints, int health, int damage, int attackRange, int factionId, bool critical)
         {
             _Map = map;
             _MovePoints = movePoints;
@@ -30,6 +31,7 @@ namespace Sof.Model
             _Damage = damage;
             _AttackRange = attackRange;
             FactionId = factionId;
+            Critical = critical;
 
             _MovePointsLeft = _MovePoints;
             _HealthLeft = _Health;
@@ -66,6 +68,9 @@ namespace Sof.Model
         {
             if (!IsInAttackRange(unit))
                 throw new System.ArgumentException("Unit is out of attack range.", nameof(unit));
+
+            if(FactionId == unit.FactionId)
+                throw new System.ArgumentException("Cannot attack friendly unit.", nameof(unit));
 
             unit.TakeHit(_Damage);
             _MovePointsLeft = 0;

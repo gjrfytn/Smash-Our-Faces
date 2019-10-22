@@ -1,5 +1,6 @@
 ﻿using Sof.Model;
 using Sof.UI;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -25,7 +26,7 @@ namespace Sof.Object
 
         public event System.Action TurnEnded;
 
-        private int _PlayerCount = 2;
+        private List<int> _PlayerIds = new List<int> { 0 };
         private int _CurrentPlayerId;
         private Unit _SelectedUnit;
         private Unit _SpawnedUnit;
@@ -60,11 +61,12 @@ namespace Sof.Object
             {
                 _Map.Spawn(_SpawnedUnit, new Position((int)tile.transform.position.x, (int)tile.transform.position.y));//TODO
                 _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                _PlayerIds.Add(_SpawnedUnit.ModelUnit.FactionId);
                 _SpawnedUnit = null;
             }
             else if (_SelectedUnit == null)
             {
-                if (tile.Unit != null)
+                if (tile.Unit != null && tile.Unit.ModelUnit.FactionId == _CurrentPlayerId)
                 {
                     _SelectedUnit = tile.Unit;
                     _SelectedUnit.ShowMoveArea();
@@ -77,7 +79,7 @@ namespace Sof.Object
             }
             else if (tile.Unit != null)
             {
-                if (_SelectedUnit.ModelUnit.IsInAttackRange(tile.Unit.ModelUnit))
+                if (tile.Unit.ModelUnit.FactionId != _SelectedUnit.ModelUnit.FactionId && _SelectedUnit.ModelUnit.IsInAttackRange(tile.Unit.ModelUnit))
                     _SelectedUnit.ModelUnit.Attack(tile.Unit.ModelUnit);
             }
             else
@@ -117,15 +119,26 @@ namespace Sof.Object
             damageText.Damage = damage;
         }
 
+        internal void OnCriticalUnitDeath(int factionId)
+        {
+            if (_CurrentPlayerId == factionId)
+                EndTurn();
+
+            _PlayerIds.Remove(factionId);
+        }
+
         public void EndTurn()
         {
             if (DisableUIInteraction)
                 return;
 
-            if (_CurrentPlayerId == _PlayerCount - 1)
-                _CurrentPlayerId = 0;
+            if (_CurrentPlayerId == _PlayerIds.Last())
+                _CurrentPlayerId = _PlayerIds.First();
             else
-                _CurrentPlayerId++;
+            {
+                var playerIndex = _PlayerIds.IndexOf(_CurrentPlayerId);
+                _CurrentPlayerId = _PlayerIds[playerIndex + 1];
+            }
 
             _TurnIndicator.SetCurrentPlayer(_CurrentPlayerId);
 
