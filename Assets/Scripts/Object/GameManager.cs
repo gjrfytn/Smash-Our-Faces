@@ -1,4 +1,5 @@
 ﻿using Sof.Model;
+using Sof.UI;
 using System.Linq;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace Sof.Object
     {
         [SerializeField]
         private Canvas _Canvas;
+        [SerializeField]
+        private TurnIndicator _TurnIndicator;
 
         [SerializeField]
         private Map _Map;
@@ -26,6 +29,11 @@ namespace Sof.Object
         private int _CurrentPlayerId;
         private Unit _SelectedUnit;
         private Unit _SpawnedUnit;
+
+        private void Start()
+        {
+            _TurnIndicator.SetCurrentPlayer(_CurrentPlayerId);
+        }
 
         public void OnTileHover(Tile tile)
         {
@@ -118,6 +126,8 @@ namespace Sof.Object
                 _CurrentPlayerId = 0;
             else
                 _CurrentPlayerId++;
+
+            _TurnIndicator.SetCurrentPlayer(_CurrentPlayerId);
 
             TurnEnded?.Invoke();
         }
