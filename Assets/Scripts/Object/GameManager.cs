@@ -81,7 +81,9 @@ namespace Sof.Object
                 DeselectUnit();
             else if (tile.Unit != null)
             {
-                if (tile.Unit.ModelUnit.FactionId != _SelectedUnit.ModelUnit.FactionId && _SelectedUnit.ModelUnit.IsInAttackRange(tile.Unit.ModelUnit))
+                if (tile.Unit.ModelUnit.FactionId != _SelectedUnit.ModelUnit.FactionId &&
+                    _SelectedUnit.ModelUnit.IsInAttackRange(tile.Unit.ModelUnit) &&
+                    _SelectedUnit.ModelUnit.MovePoints != 0)
                     _SelectedUnit.ModelUnit.Attack(tile.Unit.ModelUnit);
             }
             else
@@ -98,7 +100,6 @@ namespace Sof.Object
 
             if (_SelectedUnit != null)
             {
-                _Map.ClearPath();
                 DeselectUnit();
             }
         }
@@ -154,6 +155,7 @@ namespace Sof.Object
 
         private void DeselectUnit()
         {
+            _Map.ClearPath();
             _SelectedUnit.HideMoveArea();
             _SelectedUnit = null;
         }

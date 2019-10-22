@@ -18,6 +18,8 @@ namespace Sof.Model
         public bool Critical { get; private set; }
         public int MovePoints => _MovePointsLeft;
 
+        private bool Dead => _HealthLeft == 0;
+
         public event System.Action<IEnumerable<Position>> UnitMovedAlongPath;
         public event System.Action Attacked;
         public event System.Action<int> TookHit;
@@ -44,6 +46,10 @@ namespace Sof.Model
 
         public void Move(Position pos)
         {
+            CheckIsAlive();
+
+            //if (_MovePointsLeft == 0) //TODO ??
+
             var path = _Map.GetClosestPath(this, pos);
 
             var traversedPath = new List<Position>();
@@ -53,7 +59,7 @@ namespace Sof.Model
                 if (movePointsAfterMove >= 0)
                     traversedPath.Add(movePoint);
 
-                _MovePointsLeft = movePointsAfterMove;
+                _MovePointsLeft = UnityEngine.Mathf.Max(0, movePointsAfterMove);
             }
 
             if (traversedPath.Any())
@@ -66,10 +72,15 @@ namespace Sof.Model
 
         public void Attack(Unit unit)
         {
+            CheckIsAlive();
+
+            if (_MovePointsLeft == 0) //TODO ??
+                throw new System.InvalidOperationException("Unit has no move points.");
+
             if (!IsInAttackRange(unit))
                 throw new System.ArgumentException("Unit is out of attack range.", nameof(unit));
 
-            if(FactionId == unit.FactionId)
+            if (FactionId == unit.FactionId)
                 throw new System.ArgumentException("Cannot attack friendly unit.", nameof(unit));
 
             unit.TakeHit(_Damage);
@@ -84,7 +95,7 @@ namespace Sof.Model
 
             TookHit?.Invoke(damage);
 
-            if (_HealthLeft == 0)
+            if (Dead)
             {
                 _Map.Remove(this);
 
@@ -100,6 +111,12 @@ namespace Sof.Model
             var otherPos = _Map.GetUnitPos(unit);
 
             return myPos.Distance(otherPos) <= _AttackRange;
+        }
+
+        private void CheckIsAlive()
+        {
+            if (Dead)
+                throw new System.InvalidOperationException("Unit is dead.");
         }
     }
 }
