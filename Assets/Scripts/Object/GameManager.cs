@@ -104,7 +104,7 @@ namespace Sof.Object
             }
         }
 
-        public void Spawn(int playerId)
+        public void DebugCreateUnit(int playerId)
         {
             if (DisableUIInteraction)
                 return;

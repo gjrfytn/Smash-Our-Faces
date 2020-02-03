@@ -1,4 +1,4 @@
-﻿namespace Sof.Model.Ground
+﻿namespace Sof.Auxiliary
 {
     public enum GroundType
     {

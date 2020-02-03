@@ -7,7 +7,7 @@ namespace Sof.Model
         public MapObject.MapObject Object { get; }
         public Unit Unit { get; set; }
 
-        public int MoveCost => Ground.MoveCost + Object.MoveCostModificator;
+        public int MoveCost => Ground.MoveCost + (Object?.MoveCostModificator ?? 0);
 
         public bool Blocked => Unit != null;
 

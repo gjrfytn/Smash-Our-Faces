@@ -1,4 +1,4 @@
-﻿namespace Sof.Model.MapObject
+﻿namespace Sof.Auxiliary
 {
     public enum MapObjectType
     {

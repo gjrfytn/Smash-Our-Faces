@@ -15,7 +15,7 @@ namespace Sof.UI
 
         private void Start()
         {
-            _SpawnUnitButton.onClick.AddListener(() => _GameManager.Spawn(int.Parse(_UnitPlayerIdInputField.text)));
+            _SpawnUnitButton.onClick.AddListener(() => _GameManager.DebugCreateUnit(int.Parse(_UnitPlayerIdInputField.text)));
         }
     }
 }

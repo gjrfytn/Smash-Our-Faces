@@ -1,6 +1,5 @@
-﻿using Sof.Model;
-using Sof.Model.Ground;
-using Sof.Model.MapObject;
+﻿using Sof.Auxiliary;
+using Sof.Model;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -80,15 +79,15 @@ namespace Sof.Object
                     tile.Initialize(ModelMap[pos], _GameManager);
 
                     Ground ground;
-                    switch (ModelMap[pos].Ground.Type)
+                    switch (ModelMap[pos].Ground)
                     {
-                        case GroundType.Water:
+                        case Model.Ground.Water _:
                             ground = _Water;
                             break;
-                        case GroundType.Grass:
+                        case Model.Ground.Grass _:
                             ground = _Grass;
                             break;
-                        case GroundType.Mountain:
+                        case Model.Ground.Mountain _:
                             ground = _Mountain;
                             break;
                         default:
@@ -98,24 +97,24 @@ namespace Sof.Object
                     Instantiate(ground, new Vector3(x, y, 0), Quaternion.identity, tile.transform);
 
                     MapObject @object;
-                    switch (ModelMap[pos].Object.Type)
+                    switch (ModelMap[pos].Object)
                     {
-                        case MapObjectType.None:
+                        case null:
                             @object = null;
                             break;
-                        case MapObjectType.Castle:
+                        case Model.MapObject.Castle _:
                             @object = _Castle;
                             break;
-                        case MapObjectType.House:
+                        case Model.MapObject.House _:
                             @object = _House;
                             break;
-                        case MapObjectType.Bridge:
+                        case Model.MapObject.Bridge _:
                             @object = _Bridge;
                             break;
-                        case MapObjectType.Road:
+                        case Model.MapObject.Road _:
                             @object = ChooseRoadPiece(pos);
                             break;
-                        case MapObjectType.Forest:
+                        case Model.MapObject.Forest _:
                             @object = _Forest;
                             break;
                         default:
@@ -210,11 +209,6 @@ namespace Sof.Object
             throw new System.Exception("todo");
         }
 
-        private bool CheckIfTileHasRoad(Position pos)
-        {
-            var type = ModelMap[pos].Object.Type;
-
-            return type == MapObjectType.Road || type == MapObjectType.Bridge;
-        }
+        private bool CheckIfTileHasRoad(Position pos) => ModelMap[pos].Object is Model.MapObject.Road || ModelMap[pos].Object is Model.MapObject.Bridge;
     }
 }
