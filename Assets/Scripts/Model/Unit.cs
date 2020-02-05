@@ -71,6 +71,8 @@ namespace Sof.Model
             }
         }
 
+        public bool CanAttack(Unit unit) => FactionId != unit.FactionId && IsInAttackRange(unit) && MovePoints != 0;
+
         public void Attack(Unit unit)
         {
             CheckIsAlive();
@@ -106,7 +108,7 @@ namespace Sof.Model
 
         public IEnumerable<MovePoint> GetMoveRange() => _Map.GetMoveRange(this);
 
-        public bool IsInAttackRange(Unit unit)
+        private bool IsInAttackRange(Unit unit)
         {
             var myPos = _Map.GetUnitPos(this);
             var otherPos = _Map.GetUnitPos(unit);

@@ -76,14 +76,18 @@ namespace Sof.Object
                     _SelectedUnit = tile.Unit;
                     _SelectedUnit.ShowMoveArea();
                 }
+                else if (tile.ModelTile.Object is Model.MapObject.Castle castle /*TODO && castle.FactionId == _CurrentPlayerId*/)
+                {
+                    var unit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle)), Quaternion.identity, transform);
+                    unit.Initialize(this, _Map.ModelMap, _CurrentPlayerId);
+                    castle.PurchaseUnit(unit.ModelUnit, _Map.ModelMap);
+                }
             }
             else if (_SelectedUnit == tile.Unit)
                 DeselectUnit();
             else if (tile.Unit != null)
             {
-                if (tile.Unit.ModelUnit.FactionId != _SelectedUnit.ModelUnit.FactionId &&
-                    _SelectedUnit.ModelUnit.IsInAttackRange(tile.Unit.ModelUnit) &&
-                    _SelectedUnit.ModelUnit.MovePoints != 0)
+                if (_SelectedUnit.ModelUnit.CanAttack(tile.Unit.ModelUnit))
                     _SelectedUnit.ModelUnit.Attack(tile.Unit.ModelUnit);
             }
             else
