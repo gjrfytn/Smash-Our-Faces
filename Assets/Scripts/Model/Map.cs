@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Sof.Model.MapObject;
+using System.Collections.Generic;
 
 namespace Sof.Model
 {
@@ -22,6 +23,8 @@ namespace Sof.Model
         }
 
         public void Spawn(Unit unit, Position pos) => this[pos].PlaceUnit(unit);
+        public void Spawn(Unit unit, Castle castle) => Spawn(unit, GetMapObjectPos(castle));
+
         public void Remove(Unit unit) => this[GetUnitPos(unit)].RemoveUnit();
 
         public IEnumerable<Position> GetClosestPath(Unit unit, Position pos) => _Pathfinder.GetClosestPath(GetUnitPos(unit), pos);
@@ -43,6 +46,18 @@ namespace Sof.Model
             for (var y = 0; y < Height; ++y)
                 for (var x = 0; x < Width; ++x)
                     if (_Tiles[x, y].Unit == unit)
+                        return new Position(x, y);
+
+            return null;
+        }
+
+        public Position GetMapObjectPos(MapObject.MapObject mapObject) => TryGetMapObjectPos(mapObject) ?? throw new System.ArgumentException("Map does not contain specified object.", nameof(mapObject));
+
+        public Position TryGetMapObjectPos(MapObject.MapObject mapObject)
+        {
+            for (var y = 0; y < Height; ++y)
+                for (var x = 0; x < Width; ++x)
+                    if (_Tiles[x, y].Object == mapObject)
                         return new Position(x, y);
 
             return null;

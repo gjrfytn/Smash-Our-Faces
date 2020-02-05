@@ -2,7 +2,7 @@
 
 namespace Sof.Object
 {
-    internal class MapObject : MonoBehaviour
+    public class MapObject : MonoBehaviour
     {
     }
 }
