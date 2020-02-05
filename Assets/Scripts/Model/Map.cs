@@ -21,31 +21,17 @@ namespace Sof.Model
             _Tiles = mapFile.Load();
         }
 
-        public void Spawn(Unit unit, Position pos)
-        {
-            CheckTileIsVacant(pos);
-
-            this[pos].Unit = unit;
-        }
-
-        public void Remove(Unit unit) => this[GetUnitPos(unit)].Unit = null;
+        public void Spawn(Unit unit, Position pos) => this[pos].PlaceUnit(unit);
+        public void Remove(Unit unit) => this[GetUnitPos(unit)].RemoveUnit();
 
         public IEnumerable<Position> GetClosestPath(Unit unit, Position pos) => _Pathfinder.GetClosestPath(GetUnitPos(unit), pos);
 
         public void MoveUnit(Unit unit, Position pos)
         {
-            CheckTileIsVacant(pos);
-
-            this[GetUnitPos(unit)].Unit = null;
-            this[pos].Unit = unit;
+            Remove(unit);
+            Spawn(unit, pos);
 
             UnitMoved?.Invoke(unit);
-        }
-
-        private void CheckTileIsVacant(Position pos)
-        {
-            if (this[pos].Unit != null)
-                throw new System.ArgumentException("Target position is occupied.", nameof(pos));
         }
 
         public IEnumerable<MovePoint> GetMoveRange(Unit unit) => _Pathfinder.GetMoveRange(GetUnitPos(unit), unit.MovePoints);
