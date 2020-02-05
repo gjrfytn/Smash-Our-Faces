@@ -25,17 +25,24 @@ namespace Sof.Object
         private Unit _UnitTemp;
 
         public bool DisableUIInteraction { private get; set; } //TODO Make dedicated UIManager
+        public IEnumerable<Faction> Factions => _Factions;
 
         public event System.Action TurnEnded;
 
-        private List<int> _PlayerIds = new List<int> { 0 };
-        private int _CurrentPlayerId;
+        private List<Faction> _Factions;
+        private Faction _CurrentPlayerFaction;
         private Unit _SelectedUnit;
         private Unit _SpawnedUnit;
 
+        private void Awake()
+        {
+            _Factions = new List<Faction> { new Faction("Faction 1", 100), new Faction("Faction 2", 100) };
+        }
+
         private void Start()
         {
-            _TurnIndicator.SetCurrentPlayer(_CurrentPlayerId);
+            _CurrentPlayerFaction = _Factions[0];
+            _TurnIndicator.SetCurrentPlayer(_CurrentPlayerFaction);
         }
 
         public void OnTileHover(Tile tile)
@@ -64,14 +71,14 @@ namespace Sof.Object
                 _Map.Spawn(_SpawnedUnit, new Position((int)tile.transform.position.x, (int)tile.transform.position.y));//TODO
                 _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
 
-                if (!_PlayerIds.Contains(_SpawnedUnit.ModelUnit.FactionId))
-                    _PlayerIds.Add(_SpawnedUnit.ModelUnit.FactionId);
+                if (!_Factions.Contains(_SpawnedUnit.ModelUnit.Faction))
+                    _Factions.Add(_SpawnedUnit.ModelUnit.Faction);
 
                 _SpawnedUnit = null;
             }
             else if (_SelectedUnit == null)
             {
-                if (tile.Unit != null && tile.Unit.ModelUnit.FactionId == _CurrentPlayerId)
+                if (tile.Unit != null && tile.Unit.ModelUnit.Faction == _CurrentPlayerFaction)
                 {
                     _SelectedUnit = tile.Unit;
                     _SelectedUnit.ShowMoveArea();
@@ -79,7 +86,7 @@ namespace Sof.Object
                 else if (tile.ModelTile.Object is Model.MapObject.Castle castle /*TODO && castle.FactionId == _CurrentPlayerId*/)
                 {
                     var unit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle)), Quaternion.identity, transform);
-                    unit.Initialize(this, _Map.ModelMap, _CurrentPlayerId);
+                    unit.Initialize(this, _Map.ModelMap, _CurrentPlayerFaction);
                     castle.PurchaseUnit(unit.ModelUnit, _Map.ModelMap);
                 }
             }
@@ -108,13 +115,13 @@ namespace Sof.Object
             }
         }
 
-        public void DebugCreateUnit(int playerId)
+        public void DebugCreateUnit(Faction faction)
         {
             if (DisableUIInteraction)
                 return;
 
             _SpawnedUnit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(new Position(_Map.ModelMap.Width / 2, _Map.ModelMap.Height / 2)), Quaternion.identity, transform);
-            _SpawnedUnit.Initialize(this, _Map.ModelMap, playerId);
+            _SpawnedUnit.Initialize(this, _Map.ModelMap, faction);
             _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
         }
 
@@ -125,14 +132,14 @@ namespace Sof.Object
             damageText.Damage = damage;
         }
 
-        internal void OnCriticalUnitDeath(int factionId)
+        internal void OnCriticalUnitDeath(Faction faction)
         {
-            _Notifier.ShowNotification($"Player {_CurrentPlayerId} have lost!");
+            _Notifier.ShowNotification($"{faction.Name} have lost!");
 
-            if (_CurrentPlayerId == factionId)
+            if (_CurrentPlayerFaction == faction)
                 EndTurn();
 
-            _PlayerIds.Remove(factionId);
+            _Factions.Remove(faction);
         }
 
         public void EndTurn()
@@ -143,16 +150,16 @@ namespace Sof.Object
             if (_SelectedUnit != null)
                 DeselectUnit();
 
-            if (_CurrentPlayerId == _PlayerIds.Last())
-                _CurrentPlayerId = _PlayerIds.First();
+            if (_CurrentPlayerFaction == _Factions.Last())
+                _CurrentPlayerFaction = _Factions.First();
             else
             {
-                var playerIndex = _PlayerIds.IndexOf(_CurrentPlayerId);
-                _CurrentPlayerId = _PlayerIds[playerIndex + 1];
+                var playerIndex = _Factions.IndexOf(_CurrentPlayerFaction);
+                _CurrentPlayerFaction = _Factions[playerIndex + 1];
             }
 
-            _TurnIndicator.SetCurrentPlayer(_CurrentPlayerId);
-            _Notifier.ShowNotification($"Player {_CurrentPlayerId} turn");
+            _TurnIndicator.SetCurrentPlayer(_CurrentPlayerFaction);
+            _Notifier.ShowNotification($"{_CurrentPlayerFaction.Name} turn");
 
             TurnEnded?.Invoke();
         }

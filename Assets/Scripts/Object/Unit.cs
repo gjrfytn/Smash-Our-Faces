@@ -28,7 +28,7 @@ namespace Sof.Object
 
         private GameManager _GameManager;
 
-        public void Initialize(GameManager gameManager, Model.Map map, int playerId)
+        public void Initialize(GameManager gameManager, Model.Map map, Faction faction)
         {
             if (gameManager == null)
                 throw new System.ArgumentNullException(nameof(gameManager));
@@ -39,7 +39,7 @@ namespace Sof.Object
             _GameManager = gameManager;
             _GameManager.TurnEnded += GameManager_TurnEnded;
 
-            ModelUnit = new Model.Unit(map, _Speed, _Health, _Damage, _AttackRange, playerId, true);
+            ModelUnit = new Model.Unit(map, _Speed, _Health, _Damage, _AttackRange, faction, true);
             ModelUnit.UnitMovedAlongPath += ModelUnit_UnitMovedAlongPath;
             ModelUnit.Attacked += ModelUnit_Attacked;
             ModelUnit.TookHit += ModelUnit_TookHit;
@@ -83,7 +83,7 @@ namespace Sof.Object
             _GameManager.TurnEnded -= GameManager_TurnEnded;
 
             if (ModelUnit.Critical)
-                _GameManager.OnCriticalUnitDeath(ModelUnit.FactionId);
+                _GameManager.OnCriticalUnitDeath(ModelUnit.Faction);
 
             Destroy(gameObject);
         }

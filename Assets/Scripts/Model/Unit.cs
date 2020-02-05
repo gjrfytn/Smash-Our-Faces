@@ -14,7 +14,7 @@ namespace Sof.Model
         private int _MovePointsLeft;
         private int _HealthLeft;
 
-        public int FactionId { get; private set; }
+        public Faction Faction { get; private set; }
         public bool Critical { get; private set; }
         public int GoldCost { get; private set; }
         public int MovePoints => _MovePointsLeft;
@@ -26,14 +26,14 @@ namespace Sof.Model
         public event System.Action<int> TookHit;
         public event System.Action Died;
 
-        public Unit(Map map, int movePoints, int health, int damage, int attackRange, int factionId, bool critical)
+        public Unit(Map map, int movePoints, int health, int damage, int attackRange, Faction faction, bool critical)
         {
             _Map = map;
             _MovePoints = movePoints;
             _Health = health;
             _Damage = damage;
             _AttackRange = attackRange;
-            FactionId = factionId;
+            Faction = faction;
             Critical = critical;
 
             _MovePointsLeft = _MovePoints;
@@ -71,7 +71,7 @@ namespace Sof.Model
             }
         }
 
-        public bool CanAttack(Unit unit) => FactionId != unit.FactionId && IsInAttackRange(unit) && MovePoints != 0;
+        public bool CanAttack(Unit unit) => Faction != unit.Faction && IsInAttackRange(unit) && MovePoints != 0;
 
         public void Attack(Unit unit)
         {
@@ -83,7 +83,7 @@ namespace Sof.Model
             if (!IsInAttackRange(unit))
                 throw new System.ArgumentException("Unit is out of attack range.", nameof(unit));
 
-            if (FactionId == unit.FactionId)
+            if (Faction == unit.Faction)
                 throw new System.ArgumentException("Cannot attack friendly unit.", nameof(unit));
 
             unit.TakeHit(_Damage);

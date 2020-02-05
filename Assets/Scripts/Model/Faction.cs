@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace Sof.Model
 {
     public class Faction
@@ -24,7 +26,25 @@ namespace Sof.Model
             }
         }
 
-        Treasury _Treasury = new Treasury(500); //TODO temp
+        private static List<string> _FactionNames = new List<string>();
+
+        private readonly Treasury _Treasury;
+
+        public string Name { get; }
+
+        public Faction(string name, int gold)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new System.ArgumentException("Name cannot be empty or whitespace.", nameof(name));
+
+            if (_FactionNames.Contains(name))
+                throw new System.ArgumentException($"Faction with name \"{name}\" already exists.", nameof(name));
+
+            _FactionNames.Add(name);
+
+            Name = name;
+            _Treasury = new Treasury(gold);
+        }
 
         public void PurchaseUnit(Unit unit)
         {
