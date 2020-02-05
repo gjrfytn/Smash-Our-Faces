@@ -66,7 +66,7 @@ namespace Sof.Auxiliary
                 case MapObjectType.None:
                     return null;
                 case MapObjectType.Castle:
-                    return new Castle();
+                    return new Castle(null, 10); //TODO
                 case MapObjectType.House:
                     return new House();
                 case MapObjectType.Bridge:

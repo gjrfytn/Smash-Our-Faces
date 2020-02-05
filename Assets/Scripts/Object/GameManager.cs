@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Sof.Object
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : MonoBehaviour, ITime
     {
         [SerializeField]
         private Canvas _Canvas;

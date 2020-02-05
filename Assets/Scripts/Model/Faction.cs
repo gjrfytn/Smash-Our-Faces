@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Sof.Model
 {
@@ -23,6 +22,14 @@ namespace Sof.Model
                     throw new System.Exception("No gold to buy unit.");
 
                 _Gold -= unit.GoldCost;
+            }
+
+            public void AddGold(int gold)
+            {
+                if (gold < 0)
+                    throw new System.ArgumentOutOfRangeException(nameof(gold), gold, "Added gold cannot be negative.");
+
+                _Gold += gold;
             }
         }
 
@@ -49,6 +56,11 @@ namespace Sof.Model
         public void PurchaseUnit(Unit unit)
         {
             _Treasury.PurchaseUnit(unit);
+        }
+
+        public void RecieveIncome(int income)
+        {
+            _Treasury.AddGold(income);
         }
     }
 }

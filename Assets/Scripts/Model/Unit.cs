@@ -5,6 +5,7 @@ namespace Sof.Model
 {
     public class Unit
     {
+        private readonly ITime _Time;
         private readonly Map _Map;
         private readonly int _MovePoints;
         private readonly int _Health;
@@ -26,8 +27,9 @@ namespace Sof.Model
         public event System.Action<int> TookHit;
         public event System.Action Died;
 
-        public Unit(Map map, int movePoints, int health, int damage, int attackRange, Faction faction, bool critical)
+        public Unit(ITime time, Map map, int movePoints, int health, int damage, int attackRange, Faction faction, bool critical)
         {
+            _Time = time;
             _Map = map;
             _MovePoints = movePoints;
             _Health = health;
@@ -38,11 +40,8 @@ namespace Sof.Model
 
             _MovePointsLeft = _MovePoints;
             _HealthLeft = _Health;
-        }
 
-        public void EndTurn()
-        {
-            _MovePointsLeft = _MovePoints;
+            _Time.TurnEnded += EndTurn;
         }
 
         public void Move(Position pos)
@@ -100,6 +99,8 @@ namespace Sof.Model
 
             if (Dead)
             {
+                _Time.TurnEnded -= EndTurn;
+
                 _Map.Remove(this);
 
                 Died?.Invoke();
@@ -107,6 +108,11 @@ namespace Sof.Model
         }
 
         public IEnumerable<MovePoint> GetMoveRange() => _Map.GetMoveRange(this);
+
+        private void EndTurn()
+        {
+            _MovePointsLeft = _MovePoints;
+        }
 
         private bool IsInAttackRange(Unit unit)
         {
