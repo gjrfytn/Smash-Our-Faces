@@ -2,6 +2,6 @@
 {
     public interface IMapFile
     {
-        Tile[,] Load();
+        TileDefinition[,] Load();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Sof.Model.MapObject;
+﻿using Sof.Model.Ground;
+using Sof.Model.MapObject;
 using System.Collections.Generic;
 
 namespace Sof.Model
@@ -6,6 +7,8 @@ namespace Sof.Model
     public class Map
     {
         private readonly Pathfinder _Pathfinder;
+        private readonly ITime _Time;
+
         private readonly Tile[,] _Tiles;
 
         public int Width => _Tiles.GetLength(0);
@@ -15,11 +18,12 @@ namespace Sof.Model
 
         public event System.Action<Unit> UnitMoved;
 
-        public Map(IMapFile mapFile)
+        public Map(IMapFile mapFile, ITime time)
         {
             _Pathfinder = new Pathfinder(this);
+            _Time = time;
 
-            _Tiles = mapFile.Load();
+            _Tiles = ConstructTiles(mapFile.Load());
         }
 
         public void Spawn(Unit unit, Position pos) => this[pos].PlaceUnit(unit);
@@ -61,6 +65,53 @@ namespace Sof.Model
                         return new Position(x, y);
 
             return null;
+        }
+
+        private Tile[,] ConstructTiles(TileDefinition[,] definitions)
+        {
+            var tiles = new Tile[definitions.GetLength(0), definitions.GetLength(1)];
+
+            for (var y = 0; y < definitions.GetLength(1); ++y)
+                for (var x = 0; x < definitions.GetLength(0); ++x)
+                    tiles[x, y] = new Tile(CreateGround(definitions[x, y].Ground), CreateObject(definitions[x, y].MapObject));
+
+            return tiles;
+        }
+
+        private Ground.Ground CreateGround(GroundType type)
+        {
+            switch (type)
+            {
+                case GroundType.Water:
+                    return new Water();
+                case GroundType.Grass:
+                    return new Grass();
+                case GroundType.Mountain:
+                    return new Mountain();
+                default:
+                    throw new System.ArgumentOutOfRangeException(nameof(type));
+            }
+        }
+
+        private MapObject.MapObject CreateObject(MapObjectType type)
+        {
+            switch (type)
+            {
+                case MapObjectType.None:
+                    return null;
+                case MapObjectType.Castle:
+                    return new Castle(_Time, 10); //TODO
+                case MapObjectType.House:
+                    return new House();
+                case MapObjectType.Bridge:
+                    return new Bridge();
+                case MapObjectType.Road:
+                    return new Road();
+                case MapObjectType.Forest:
+                    return new Forest();
+                default:
+                    throw new System.ArgumentOutOfRangeException(nameof(type));
+            }
         }
     }
 }
