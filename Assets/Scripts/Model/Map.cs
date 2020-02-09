@@ -18,12 +18,15 @@ namespace Sof.Model
 
         public event System.Action<Unit> UnitMoved;
 
-        public Map(IMapFile mapFile, ITime time)
+        public Map(IMapFile mapFile, IScenario scenario, ITime time)
         {
             _Pathfinder = new Pathfinder(this);
             _Time = time;
 
             _Tiles = ConstructTiles(mapFile.Load());
+
+            foreach (var occupation in scenario.Occupations)
+                occupation.Apply((Castle)this[occupation.Position].Object);
         }
 
         public void Spawn(Unit unit, Position pos) => this[pos].PlaceUnit(unit);

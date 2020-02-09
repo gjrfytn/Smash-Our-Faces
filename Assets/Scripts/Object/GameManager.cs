@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Sof.Object
 {
-    public class GameManager : MonoBehaviour, ITime
+    public class GameManager : MonoBehaviour, ITime, IScenario //TODO temp
     {
         [SerializeField]
         private Canvas _Canvas;
@@ -25,7 +25,10 @@ namespace Sof.Object
         private Unit _UnitTemp;
 
         public bool DisableUIInteraction { private get; set; } //TODO Make dedicated UIManager
+
         public IEnumerable<Faction> Factions => _Factions;
+        public IEnumerable<Occupation> Occupations => new[] { new Occupation(new Position(2, 2), _Factions[0]), new Occupation(new Position(7, 7), _Factions[1]) };
+
 
         public event System.Action TurnEnded;
 

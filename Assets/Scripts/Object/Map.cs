@@ -66,7 +66,7 @@ namespace Sof.Object
         {
             _LineRenderer = GetComponent<LineRenderer>();
 
-            ModelMap = new Model.Map(new XmlMap(_MapFile.text), _GameManager);
+            ModelMap = new Model.Map(new XmlMap(_MapFile.text), _GameManager, _GameManager);
             ModelMap.UnitMoved += ModelMap_UnitMoved;
 
             _Tiles = new List<Tile>();
