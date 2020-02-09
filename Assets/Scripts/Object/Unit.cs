@@ -45,8 +45,6 @@ namespace Sof.Object
             ModelUnit.Died += ModelUnit_Died;
         }
 
-        public void Move(Position pos) => ModelUnit.Move(pos);
-
         public void ShowMoveArea()
         {
             var moveArea = ModelUnit.GetMoveRange().ToArray();

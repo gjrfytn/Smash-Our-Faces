@@ -86,7 +86,7 @@ namespace Sof.Object
                     _SelectedUnit = tile.Unit;
                     _SelectedUnit.ShowMoveArea();
                 }
-                else if (tile.ModelTile.Object is Model.MapObject.Castle castle /*TODO && castle.FactionId == _CurrentPlayerId*/)
+                else if (tile.ModelTile.Object is Model.MapObject.Castle castle && castle.Faction == _CurrentPlayerFaction)
                 {
                     var unit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle)), Quaternion.identity, transform);
                     unit.Initialize(this, _Map.ModelMap, _CurrentPlayerFaction);
@@ -102,7 +102,7 @@ namespace Sof.Object
             }
             else
             {
-                _SelectedUnit.Move(new Position((int)tile.transform.position.x, (int)tile.transform.position.y)); //TODO
+                _SelectedUnit.ModelUnit.Move(new Position((int)tile.transform.position.x, (int)tile.transform.position.y)); //TODO
                 _Map.ClearPath();
             }
         }
