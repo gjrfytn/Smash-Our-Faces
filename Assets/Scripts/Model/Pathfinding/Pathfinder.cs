@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Sof.Model
+namespace Sof.Model.Pathfinding
 {
     internal class Pathfinder //TODO Refactor duplication
     {
-        private readonly Map _Map;
+        private readonly IMap _Map;
 
-        public Pathfinder(Map map)
+        public Pathfinder(IMap map)
         {
             _Map = map;
         }
@@ -59,9 +59,9 @@ namespace Sof.Model
                 return true;
 
             foreach (var neighbour in GetNeighbours(node.pos))
-                if (!_Map[neighbour].Blocked)
+                if (!_Map.IsBlocked(neighbour))
                 {
-                    var neighbourCost = node.cost + _Map[neighbour].MoveCost;
+                    var neighbourCost = node.cost + _Map.GetMoveCost(neighbour);
                     if (!processedCells.ContainsKey(neighbour) || neighbourCost < costs[neighbour])
                     {
                         processedCells[neighbour] = node.pos;
@@ -76,9 +76,9 @@ namespace Sof.Model
         private void Spread(List<(Position pos, int cost)> queue, Dictionary<Position, Position> processedCells, Dictionary<Position, int> costs, (Position pos, int cost) node, int movePoints)
         {
             foreach (var neighbour in GetNeighbours(node.pos))
-                if (!_Map[neighbour].Blocked)
+                if (!_Map.IsBlocked(neighbour))
                 {
-                    var neighbourCost = node.cost + _Map[neighbour].MoveCost;
+                    var neighbourCost = node.cost + _Map.GetMoveCost(neighbour);
                     if (movePoints - neighbourCost >= 0 && (!processedCells.ContainsKey(neighbour) || neighbourCost < costs[neighbour]))
                     {
                         processedCells[neighbour] = node.pos;

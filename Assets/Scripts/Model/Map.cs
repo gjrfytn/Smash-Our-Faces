@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Sof.Model
 {
-    public class Map
+    public class Map : Pathfinding.IMap
     {
-        private readonly Pathfinder _Pathfinder;
+        private readonly Pathfinding.Pathfinder _Pathfinder;
         private readonly ITime _Time;
 
         private readonly Tile[,] _Tiles;
@@ -20,7 +20,7 @@ namespace Sof.Model
 
         public Map(IMapFile mapFile, IScenario scenario, ITime time)
         {
-            _Pathfinder = new Pathfinder(this);
+            _Pathfinder = new Pathfinding.Pathfinder(this);
             _Time = time;
 
             _Tiles = ConstructTiles(mapFile.Load());
@@ -69,6 +69,9 @@ namespace Sof.Model
 
             return null;
         }
+
+        public bool IsBlocked(Position pos) => this[pos].Blocked;
+        public int GetMoveCost(Position pos) => this[pos].MoveCost;
 
         private Tile[,] ConstructTiles(TileDefinition[,] definitions)
         {
