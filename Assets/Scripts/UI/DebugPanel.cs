@@ -22,6 +22,7 @@ namespace Sof.UI
             _SpawnUnitButton.onClick.AddListener(() => _GameManager.DebugCreateUnit(_SelectedFaction));
 
             _UnitFactionDropdown.AddOptions(_GameManager.Factions.Select(f => f.Name).ToList());
+            _SelectedFaction = _GameManager.Factions.First();
         }
     }
 }
