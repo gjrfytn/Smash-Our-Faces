@@ -29,17 +29,26 @@ namespace Sof.Model
                 occupation.Apply((Castle)this[occupation.Position].Object);
         }
 
-        public void Spawn(Unit unit, Position pos) => this[pos].PlaceUnit(unit);
-        public void Spawn(Unit unit, Castle castle) => Spawn(unit, GetMapObjectPos(castle));
+        public void Spawn(Unit unit, Tile tile) => tile.PlaceUnit(unit); //TODO
+        public void Spawn(Unit unit, Castle castle) => Spawn(unit, GetMapObjectTile(castle));
 
         public void Remove(Unit unit) => this[GetUnitPos(unit)].RemoveUnit();
 
-        public IEnumerable<Position> GetClosestPath(Unit unit, Position pos) => _Pathfinder.GetClosestPath(GetUnitPos(unit), pos);
+        public IEnumerable<Position> GetClosestPath(Unit unit, Tile tile) => _Pathfinder.GetClosestPath(GetUnitPos(unit), GetTilePos(tile));
 
-        public void MoveUnit(Unit unit, Position pos)
+        public void MoveUnit(Unit unit, Tile tile)
         {
             Remove(unit);
-            Spawn(unit, pos);
+            Spawn(unit, tile);
+
+            UnitMoved?.Invoke(unit);
+        }
+
+        [System.Obsolete("Use MoveUnit.")]
+        public void MoveUnitOld(Unit unit, Position pos)
+        {
+            Remove(unit);
+            Spawn(unit, this[pos]);
 
             UnitMoved?.Invoke(unit);
         }
@@ -70,8 +79,32 @@ namespace Sof.Model
             return null;
         }
 
+        private Tile GetMapObjectTile(MapObject.MapObject mapObject) => TryGetMapObjectTile(mapObject) ?? throw new System.ArgumentException("Map does not contain specified object.", nameof(mapObject));
+
+        private Tile TryGetMapObjectTile(MapObject.MapObject mapObject)
+        {
+            for (var y = 0; y < Height; ++y)
+                for (var x = 0; x < Width; ++x)
+                    if (_Tiles[x, y].Object == mapObject)
+                        return _Tiles[x, y];
+
+            return null;
+        }
+
         public bool IsBlocked(Position pos) => this[pos].Blocked;
         public int GetMoveCost(Position pos) => this[pos].MoveCost;
+
+        private Position GetTilePos(Tile tile) => TryGetTilePos(tile) ?? throw new System.ArgumentException("Map does not contain specified tile.", nameof(tile));
+
+        private Position TryGetTilePos(Tile tile)
+        {
+            for (var y = 0; y < Height; ++y)
+                for (var x = 0; x < Width; ++x)
+                    if (_Tiles[x, y] == tile)
+                        return new Position(x, y);
+
+            return null;
+        }
 
         private Tile[,] ConstructTiles(TileDefinition[,] definitions)
         {

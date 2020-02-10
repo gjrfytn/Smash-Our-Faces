@@ -44,13 +44,13 @@ namespace Sof.Model
             _Time.TurnEnded += EndTurn;
         }
 
-        public void Move(Position pos)
+        public void Move(Tile tile)
         {
             CheckIsAlive();
 
             //if (_MovePointsLeft == 0) //TODO ??
 
-            var path = _Map.GetClosestPath(this, pos);
+            var path = _Map.GetClosestPath(this, tile);
 
             var traversedPath = new List<Position>();
             foreach (var movePoint in path)
@@ -64,7 +64,7 @@ namespace Sof.Model
 
             if (traversedPath.Any())
             {
-                _Map.MoveUnit(this, traversedPath.Last());
+                _Map.MoveUnitOld(this, traversedPath.Last());
 
                 UnitMovedAlongPath?.Invoke(traversedPath);
             }

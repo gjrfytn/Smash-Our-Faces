@@ -59,8 +59,8 @@ namespace Sof.Object
             }
             else if (_SelectedUnit != null)
             {
-                var path = _Map.GetClosestPath(_SelectedUnit, new Position((int)tile.transform.position.x, (int)tile.transform.position.y)); //TODO
-                _Map.DrawPath(new Position[] { _Map.GetUnitPos(_SelectedUnit) }.Concat(path));
+                var path = _Map.ModelMap.GetClosestPath(_SelectedUnit.ModelUnit, tile.ModelTile);
+                _Map.DrawPath(new Position[] { _Map.ModelMap.GetUnitPos(_SelectedUnit.ModelUnit) }.Concat(path));
             }
         }
 
@@ -71,7 +71,7 @@ namespace Sof.Object
 
             if (_SpawnedUnit != null)
             {
-                _Map.Spawn(_SpawnedUnit, new Position((int)tile.transform.position.x, (int)tile.transform.position.y));//TODO
+                _Map.Spawn(_SpawnedUnit, tile);//TODO
                 _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
 
                 if (!_Factions.Contains(_SpawnedUnit.ModelUnit.Faction))
@@ -102,7 +102,7 @@ namespace Sof.Object
             }
             else
             {
-                _SelectedUnit.ModelUnit.Move(new Position((int)tile.transform.position.x, (int)tile.transform.position.y)); //TODO
+                _SelectedUnit.ModelUnit.Move(tile.ModelTile);
                 _Map.ClearPath();
             }
         }

@@ -128,11 +128,11 @@ namespace Sof.Object
                 }
         }
 
-        public void Spawn(Unit unit, Position pos)
+        public void Spawn(Unit unit, Tile tile)
         {
-            ModelMap.Spawn(unit.ModelUnit, pos); //TODO UnitSpawned event
+            ModelMap.Spawn(unit.ModelUnit, tile.ModelTile); //TODO UnitSpawned event
 
-            _Tiles.Single(t => t.transform.position.x == pos.X && t.transform.position.y == pos.Y).Unit = unit; //TODO ^^^
+            tile.Unit = unit;
         }
 
         public void DrawPath(IEnumerable<Position> points)
@@ -151,10 +151,6 @@ namespace Sof.Object
         {
             _LineRenderer.positionCount = 0;
         }
-
-        public IEnumerable<Position> GetClosestPath(Unit unit, Position pos) => ModelMap.GetClosestPath(unit.ModelUnit, pos);
-
-        public Position GetUnitPos(Unit unit) => ModelMap.GetUnitPos(unit.ModelUnit);
 
         public static Vector2 ConvertToWorldPos(Position position) => new Vector2(position.X, position.Y);
 
