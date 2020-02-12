@@ -1,6 +1,7 @@
 ﻿using Sof.Model.Ground;
 using Sof.Model.MapObject;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Sof.Model
 {
@@ -34,7 +35,7 @@ namespace Sof.Model
 
         public void Remove(Unit unit) => this[GetUnitPos(unit)].RemoveUnit();
 
-        public IEnumerable<Position> GetClosestPath(Unit unit, Tile tile) => _Pathfinder.GetClosestPath(GetUnitPos(unit), GetTilePos(tile));
+        public IEnumerable<Tile> GetClosestPath(Unit unit, Tile tile) => _Pathfinder.GetClosestPath(GetUnitPos(unit), GetTilePos(tile)).Select(p => this[p]);
 
         public void MoveUnit(Unit unit, Tile tile)
         {
@@ -55,6 +56,7 @@ namespace Sof.Model
 
         public IEnumerable<MovePoint> GetMoveRange(Unit unit) => _Pathfinder.GetMoveRange(GetUnitPos(unit), unit.MovePoints);
 
+        [System.Obsolete("TODO")] //TODO
         public Position GetUnitPos(Unit unit) => TryGetUnitPos(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
 
         public Position TryGetUnitPos(Unit unit)
@@ -63,6 +65,18 @@ namespace Sof.Model
                 for (var x = 0; x < Width; ++x)
                     if (_Tiles[x, y].Unit == unit)
                         return new Position(x, y);
+
+            return null;
+        }
+
+        public Tile GetUnitTile(Unit unit) => TryGetUnitTile(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
+
+        public Tile TryGetUnitTile(Unit unit)
+        {
+            for (var y = 0; y < Height; ++y)
+                for (var x = 0; x < Width; ++x)
+                    if (_Tiles[x, y].Unit == unit)
+                        return _Tiles[x, y];
 
             return null;
         }

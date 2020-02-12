@@ -22,7 +22,7 @@ namespace Sof.Model
 
         private bool Dead => _HealthLeft == 0;
 
-        public event System.Action<IEnumerable<Position>> UnitMovedAlongPath;
+        public event System.Action<IEnumerable<Tile>> UnitMovedAlongPath;
         public event System.Action Attacked;
         public event System.Action<int> TookHit;
         public event System.Action Died;
@@ -52,19 +52,19 @@ namespace Sof.Model
 
             var path = _Map.GetClosestPath(this, tile);
 
-            var traversedPath = new List<Position>();
-            foreach (var movePoint in path)
+            var traversedPath = new List<Tile>();
+            foreach (var pathTile in path)
             {
-                var movePointsAfterMove = _MovePointsLeft - _Map[movePoint].MoveCost;
+                var movePointsAfterMove = _MovePointsLeft - pathTile.MoveCost;
                 if (movePointsAfterMove >= 0)
-                    traversedPath.Add(movePoint);
+                    traversedPath.Add(pathTile);
 
                 _MovePointsLeft = UnityEngine.Mathf.Max(0, movePointsAfterMove);
             }
 
             if (traversedPath.Any())
             {
-                _Map.MoveUnitOld(this, traversedPath.Last());
+                _Map.MoveUnit(this, traversedPath.Last());
 
                 UnitMovedAlongPath?.Invoke(traversedPath);
             }

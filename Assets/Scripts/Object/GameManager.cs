@@ -60,7 +60,7 @@ namespace Sof.Object
             else if (_SelectedUnit != null)
             {
                 var path = _Map.ModelMap.GetClosestPath(_SelectedUnit.ModelUnit, tile.ModelTile);
-                _Map.DrawPath(new Position[] { _Map.ModelMap.GetUnitPos(_SelectedUnit.ModelUnit) }.Concat(path));
+                _Map.DrawPath(new Model.Tile[] { _Map.ModelMap.GetUnitTile(_SelectedUnit.ModelUnit) }.Concat(path));
             }
         }
 
@@ -89,7 +89,7 @@ namespace Sof.Object
                 else if (tile.ModelTile.Object is Model.MapObject.Castle castle && castle.Faction == _CurrentPlayerFaction)
                 {
                     var unit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle)), Quaternion.identity, transform);
-                    unit.Initialize(this, _Map.ModelMap, _CurrentPlayerFaction);
+                    unit.Initialize(this, _Map, _CurrentPlayerFaction);
                     castle.PurchaseUnit(unit.ModelUnit, _Map.ModelMap);
                 }
             }
@@ -124,7 +124,7 @@ namespace Sof.Object
                 return;
 
             _SpawnedUnit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(new Position(_Map.ModelMap.Width / 2, _Map.ModelMap.Height / 2)), Quaternion.identity, transform);
-            _SpawnedUnit.Initialize(this, _Map.ModelMap, faction);
+            _SpawnedUnit.Initialize(this, _Map, faction);
             _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
         }
 

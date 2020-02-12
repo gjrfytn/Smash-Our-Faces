@@ -135,22 +135,24 @@ namespace Sof.Object
             tile.Unit = unit;
         }
 
-        public void DrawPath(IEnumerable<Position> points)
+        public void DrawPath(IEnumerable<Model.Tile> pathTiles)
         {
-            if (points is null)
-                throw new System.ArgumentNullException(nameof(points));
+            if (pathTiles is null)
+                throw new System.ArgumentNullException(nameof(pathTiles));
 
             const float zOffset = -0.1f;
-            var pArr = points.ToArray();
+            var tArr = pathTiles.ToArray();
 
-            _LineRenderer.positionCount = pArr.Length;
-            _LineRenderer.SetPositions(pArr.Select(ConvertToWorldPos).Select(v => new Vector3(v.x, v.y, zOffset)).ToArray());
+            _LineRenderer.positionCount = tArr.Length;
+            _LineRenderer.SetPositions(tArr.Select(GetWorldPos).Select(p => new Vector3(p.x, p.y, zOffset)).ToArray());
         }
 
         public void ClearPath()
         {
             _LineRenderer.positionCount = 0;
         }
+
+        public Vector2 GetWorldPos(Model.Tile tile) => _Tiles.Single(t => t.ModelTile == tile).transform.position;
 
         public static Vector2 ConvertToWorldPos(Position position) => new Vector2(position.X, position.Y);
 

@@ -27,8 +27,9 @@ namespace Sof.Object
         public int Damage => _Damage;
 
         private GameManager _GameManager;
+        private Map _Map;
 
-        public void Initialize(GameManager gameManager, Model.Map map, Faction faction)
+        public void Initialize(GameManager gameManager, Map map, Faction faction)
         {
             if (gameManager == null)
                 throw new System.ArgumentNullException(nameof(gameManager));
@@ -37,8 +38,9 @@ namespace Sof.Object
                 throw new System.ArgumentNullException(nameof(map));
 
             _GameManager = gameManager;
+            _Map = map;
 
-            ModelUnit = new Model.Unit(gameManager, map, _Speed, _Health, _Damage, _AttackRange, faction, true);
+            ModelUnit = new Model.Unit(gameManager, map.ModelMap, _Speed, _Health, _Damage, _AttackRange, faction, true);
             ModelUnit.UnitMovedAlongPath += ModelUnit_UnitMovedAlongPath;
             ModelUnit.Attacked += ModelUnit_Attacked;
             ModelUnit.TookHit += ModelUnit_TookHit;
@@ -60,7 +62,7 @@ namespace Sof.Object
                 Destroy(transform.GetChild(i).gameObject);
         }
 
-        private void ModelUnit_UnitMovedAlongPath(IEnumerable<Position> path)
+        private void ModelUnit_UnitMovedAlongPath(IEnumerable<Model.Tile> path)
         {
             StartCoroutine(FollowPath(path));
         }
@@ -83,17 +85,17 @@ namespace Sof.Object
             Destroy(gameObject);
         }
 
-        private IEnumerator FollowPath(IEnumerable<Position> path)
+        private IEnumerator FollowPath(IEnumerable<Model.Tile> path)
         {
             _GameManager.DisableUIInteraction = true;
             HideMoveArea();
 
-            foreach (var point in path)
+            foreach (var tile in path)
             {
-                var pointVec = new Vector3(point.X, point.Y, 0);
-                while (transform.position != pointVec)
+                Vector3 tilePos = _Map.GetWorldPos(tile);
+                while (transform.position != tilePos)
                 {
-                    transform.position = Vector3.MoveTowards(transform.position, pointVec, Time.deltaTime);
+                    transform.position = Vector3.MoveTowards(transform.position, tilePos, Time.deltaTime);
 
                     yield return null;
                 }
