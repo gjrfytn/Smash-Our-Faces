@@ -67,7 +67,6 @@ namespace Sof.Object
             _LineRenderer = GetComponent<LineRenderer>();
 
             ModelMap = new Model.Map(new XmlMap(_MapFile.text), _GameManager, _GameManager);
-            ModelMap.UnitMoved += ModelMap_UnitMoved;
 
             _Tiles = new List<Tile>();
             for (var y = 0; y < ModelMap.Height; ++y)
@@ -124,13 +123,6 @@ namespace Sof.Object
                 }
         }
 
-        public void Spawn(Unit unit, Tile tile)
-        {
-            ModelMap.Spawn(unit.ModelUnit, tile.ModelTile); //TODO UnitSpawned event
-
-            tile.Unit = unit;
-        }
-
         public void DrawPath(IEnumerable<Model.Tile> pathTiles)
         {
             if (pathTiles is null)
@@ -151,16 +143,6 @@ namespace Sof.Object
         public Vector2 GetWorldPos(Model.Tile tile) => _Tiles.Single(t => t.ModelTile == tile).transform.position;
 
         public static Vector2 ConvertToWorldPos(Position position) => new Vector2(position.X, position.Y);
-
-        private void ModelMap_UnitMoved(Model.Unit unit)
-        {
-            var fromTile = _Tiles.Single(t => t.Unit != null ? t.Unit.ModelUnit == unit : false);
-            var newPos = ModelMap.GetUnitPos(unit);
-            var toTile = _Tiles.Single(t => t.transform.position.x == newPos.X && t.transform.position.y == newPos.Y);
-
-            toTile.Unit = fromTile.Unit;
-            fromTile.Unit = null;
-        }
 
         private MapObject ChooseRoadPiece(Position pos)
         {

@@ -8,7 +8,6 @@ namespace Sof.Object
         private MapObject _Object;
 
         public Model.Tile ModelTile { get; private set; }
-        public Unit Unit { get; set; }
 
         public void Initialize(Model.Tile tile, GameManager gameManager)
         {

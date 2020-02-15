@@ -34,8 +34,9 @@ namespace Sof.Object
 
         private List<Faction> _Factions;
         private Faction _CurrentPlayerFaction;
-        private Unit _SelectedUnit;
+        private Model.Unit _SelectedUnit;
         private Unit _SpawnedUnit;
+        private List<Unit> _Units = new List<Unit>(); //TODO unit removement
 
         private void Awake()
         {
@@ -59,8 +60,8 @@ namespace Sof.Object
             }
             else if (_SelectedUnit != null)
             {
-                var path = _Map.ModelMap.GetClosestPath(_SelectedUnit.ModelUnit, tile.ModelTile);
-                _Map.DrawPath(new Model.Tile[] { _Map.ModelMap.GetUnitTile(_SelectedUnit.ModelUnit) }.Concat(path));
+                var path = _Map.ModelMap.GetClosestPath(_SelectedUnit, tile.ModelTile);
+                _Map.DrawPath(new Model.Tile[] { _Map.ModelMap.GetUnitTile(_SelectedUnit) }.Concat(path));
             }
         }
 
@@ -71,7 +72,7 @@ namespace Sof.Object
 
             if (_SpawnedUnit != null)
             {
-                _Map.Spawn(_SpawnedUnit, tile);//TODO
+                _Map.ModelMap.Spawn(_SpawnedUnit.ModelUnit, tile.ModelTile);
                 _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
 
                 if (!_Factions.Contains(_SpawnedUnit.ModelUnit.Faction))
@@ -81,22 +82,22 @@ namespace Sof.Object
             }
             else if (_SelectedUnit == null)
             {
-                if (tile.Unit != null && tile.Unit.ModelUnit.Faction == _CurrentPlayerFaction)
+                if (tile.ModelTile.Unit != null && tile.ModelTile.Unit.Faction == _CurrentPlayerFaction)
                 {
-                    _SelectedUnit = tile.Unit;
-                    _SelectedUnit.ShowMoveArea();
+                    _SelectedUnit = tile.ModelTile.Unit;
+                    GetUnitObject(_SelectedUnit).ShowMoveArea();
                 }
             }
-            else if (_SelectedUnit == tile.Unit)
+            else if (_SelectedUnit == tile.ModelTile.Unit)
                 DeselectUnit();
-            else if (tile.Unit != null)
+            else if (tile.ModelTile.Unit != null)
             {
-                if (_SelectedUnit.ModelUnit.CanAttack(tile.Unit.ModelUnit))
-                    _SelectedUnit.ModelUnit.Attack(tile.Unit.ModelUnit);
+                if (_SelectedUnit.CanAttack(tile.ModelTile.Unit))
+                    _SelectedUnit.Attack(tile.ModelTile.Unit);
             }
             else
             {
-                _SelectedUnit.ModelUnit.Move(tile.ModelTile);
+                _SelectedUnit.Move(tile.ModelTile);
                 _Map.ClearPath();
             }
         }
@@ -119,6 +120,7 @@ namespace Sof.Object
             {
                 var unit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle.ModelCastle)), Quaternion.identity, transform);
                 unit.Initialize(this, _Map, _CurrentPlayerFaction);
+                _Units.Add(unit);
                 castle.ModelCastle.PurchaseUnit(unit.ModelUnit, _Map.ModelMap);
             }
         }
@@ -131,6 +133,7 @@ namespace Sof.Object
             _SpawnedUnit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(new Position(_Map.ModelMap.Width / 2, _Map.ModelMap.Height / 2)), Quaternion.identity, transform);
             _SpawnedUnit.Initialize(this, _Map, faction);
             _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
+            _Units.Add(_SpawnedUnit);
         }
 
         internal void OnUnitHit(Unit unit, int damage)
@@ -175,8 +178,10 @@ namespace Sof.Object
         private void DeselectUnit()
         {
             _Map.ClearPath();
-            _SelectedUnit.HideMoveArea();
+            GetUnitObject(_SelectedUnit).HideMoveArea();
             _SelectedUnit = null;
         }
+
+        private Unit GetUnitObject(Model.Unit unit) => _Units.Single(u => u.ModelUnit == unit);
     }
 }

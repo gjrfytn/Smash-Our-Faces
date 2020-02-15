@@ -17,8 +17,6 @@ namespace Sof.Model
 
         public Tile this[Position pos] => _Tiles[pos.X, pos.Y];
 
-        public event System.Action<Unit> UnitMoved;
-
         public Map(IMapFile mapFile, IScenario scenario, ITime time)
         {
             _Pathfinder = new Pathfinding.Pathfinder(this);
@@ -41,8 +39,6 @@ namespace Sof.Model
         {
             Remove(unit);
             Spawn(unit, tile);
-
-            UnitMoved?.Invoke(unit);
         }
 
         [System.Obsolete("Use MoveUnit.")]
@@ -50,8 +46,6 @@ namespace Sof.Model
         {
             Remove(unit);
             Spawn(unit, this[pos]);
-
-            UnitMoved?.Invoke(unit);
         }
 
         public IEnumerable<MovePoint> GetMoveRange(Unit unit) => _Pathfinder.GetMoveRange(GetUnitPos(unit), unit.MovePoints);
