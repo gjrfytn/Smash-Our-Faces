@@ -114,13 +114,7 @@ namespace Sof.Model
             _MovePointsLeft = _MovePoints;
         }
 
-        private bool IsInAttackRange(Unit unit)
-        {
-            var myPos = _Map.GetUnitPos(this);
-            var otherPos = _Map.GetUnitPos(unit);
-
-            return myPos.Distance(otherPos) <= _AttackRange;
-        }
+        private bool IsInAttackRange(Unit unit) => _Map.Distance(this, unit) <= _AttackRange;
 
         private void CheckIsAlive()
         {

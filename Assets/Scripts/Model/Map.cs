@@ -30,8 +30,8 @@ namespace Sof.Model
 
         public void Spawn(Unit unit, Tile tile) => tile.PlaceUnit(unit); //TODO
         public void Spawn(Unit unit, Castle castle) => Spawn(unit, GetMapObjectTile(castle));
-
         public void Remove(Unit unit) => this[GetUnitPos(unit)].RemoveUnit();
+        public int Distance(Unit unit1, Unit unit2) => GetUnitPos(unit1).Distance(GetUnitPos(unit2));
 
         public IEnumerable<Tile> GetClosestPath(Unit unit, Tile tile) => _Pathfinder.GetClosestPath(GetUnitPos(unit), GetTilePos(tile)).Select(p => this[p]);
 
@@ -50,10 +50,9 @@ namespace Sof.Model
 
         public IEnumerable<MovePoint> GetMoveRange(Unit unit) => _Pathfinder.GetMoveRange(GetUnitPos(unit), unit.MovePoints);
 
-        [System.Obsolete("TODO")] //TODO
-        public Position GetUnitPos(Unit unit) => TryGetUnitPos(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
+        private Position GetUnitPos(Unit unit) => TryGetUnitPos(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
 
-        public Position TryGetUnitPos(Unit unit)
+        private Position TryGetUnitPos(Unit unit)
         {
             for (var y = 0; y < Height; ++y)
                 for (var x = 0; x < Width; ++x)
