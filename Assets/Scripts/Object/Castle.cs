@@ -2,11 +2,21 @@
 {
     public class Castle : MapObject
     {
-        private Model.MapObject.Castle _Castle;
+        private GameManager _GameManager;
 
-        public void Initialize(Model.MapObject.Castle castle)
+        public Model.MapObject.Castle ModelCastle { get; private set; }
+
+        public void Initialize(Model.MapObject.Castle castle, GameManager gameManager)
         {
-            _Castle = castle ?? throw new System.ArgumentNullException(nameof(castle));
+            ModelCastle = castle ?? throw new System.ArgumentNullException(nameof(castle));
+            _GameManager = gameManager ?? throw new System.ArgumentNullException(nameof(gameManager));
+        }
+
+        public override bool OnRightClick()
+        {
+            _GameManager.OnCastleRightClick(this);
+
+            return true;
         }
     }
 }

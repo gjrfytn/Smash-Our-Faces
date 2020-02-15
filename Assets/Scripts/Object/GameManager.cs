@@ -86,12 +86,6 @@ namespace Sof.Object
                     _SelectedUnit = tile.Unit;
                     _SelectedUnit.ShowMoveArea();
                 }
-                else if (tile.ModelTile.Object is Model.MapObject.Castle castle && castle.Faction == _CurrentPlayerFaction)
-                {
-                    var unit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle)), Quaternion.identity, transform);
-                    unit.Initialize(this, _Map, _CurrentPlayerFaction);
-                    castle.PurchaseUnit(unit.ModelUnit, _Map.ModelMap);
-                }
             }
             else if (_SelectedUnit == tile.Unit)
                 DeselectUnit();
@@ -113,8 +107,19 @@ namespace Sof.Object
                 return;
 
             if (_SelectedUnit != null)
-            {
                 DeselectUnit();
+        }
+
+        public void OnCastleRightClick(Castle castle)
+        {
+            if (_SelectedUnit != null)
+                DeselectUnit();
+
+            if (castle.ModelCastle.Faction == _CurrentPlayerFaction)
+            {
+                var unit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle.ModelCastle)), Quaternion.identity, transform);
+                unit.Initialize(this, _Map, _CurrentPlayerFaction);
+                castle.ModelCastle.PurchaseUnit(unit.ModelUnit, _Map.ModelMap);
             }
         }
 

@@ -68,7 +68,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 848892575
-  m_SortingLayer: -1
+  m_SortingLayer: -2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1fc764fd4fadf8648a755f85e3ccd2e9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -149,7 +149,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 848892575
-  m_SortingLayer: -1
+  m_SortingLayer: -2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: d41e58f2d4d6fb94f898b8a276c03ffa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -171,7 +171,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3866200996672178089}
-  - component: {fileID: 46811160666234884}
+  - component: {fileID: -334192172217497059}
   m_Layer: 0
   m_Name: Castle
   m_TagString: Untagged
@@ -195,7 +195,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &46811160666234884
+--- !u!114 &-334192172217497059
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -204,6 +204,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 7859199534857313285}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a58c09166a0e9e746ba448b5d7fcd3b3, type: 3}
+  m_Script: {fileID: 11500000, guid: cf3e8978f246f374fb08f6941f1545ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

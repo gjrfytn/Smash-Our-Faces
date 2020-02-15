@@ -43,7 +43,7 @@ namespace Sof.Object
         private Ground _Mountain;
 
         [SerializeField]
-        private MapObject _Castle;
+        private Castle _Castle;
         [SerializeField]
         private MapObject _House;
         [SerializeField]
@@ -96,33 +96,29 @@ namespace Sof.Object
 
                     Instantiate(ground, new Vector3(x, y, 0), Quaternion.identity, tile.transform);
 
-                    MapObject @object;
                     switch (ModelMap[pos].Object)
                     {
                         case null:
-                            @object = null;
                             break;
-                        case Model.MapObject.Castle _:
-                            @object = _Castle;
+                        case Model.MapObject.Castle modelCastle:
+                            var castle = tile.InstantiateMapObject(_Castle);
+                            castle.Initialize(modelCastle, _GameManager);
                             break;
                         case Model.MapObject.House _:
-                            @object = _House;
+                            tile.InstantiateMapObject(_House);
                             break;
                         case Model.MapObject.Bridge _:
-                            @object = _Bridge;
+                            tile.InstantiateMapObject(_Bridge);
                             break;
                         case Model.MapObject.Road _:
-                            @object = ChooseRoadPiece(pos);
+                            tile.InstantiateMapObject(ChooseRoadPiece(pos));
                             break;
                         case Model.MapObject.Forest _:
-                            @object = _Forest;
+                            tile.InstantiateMapObject(_Forest);
                             break;
                         default:
                             throw new System.Exception("todo");
                     }
-
-                    if (@object != null)
-                        Instantiate(@object, new Vector3(x, y, 0), Quaternion.identity, tile.transform);
 
                     _Tiles.Add(tile);
                 }
