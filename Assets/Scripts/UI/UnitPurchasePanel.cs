@@ -26,6 +26,7 @@ namespace Sof.UI
 
             _UnitListDropdown.ClearOptions();
             _UnitListDropdown.AddOptions(_AvailableUnits.Select(u => u.name).ToList());
+            _SelectedUnit = _AvailableUnits[0];
         }
 
         private void Start()
