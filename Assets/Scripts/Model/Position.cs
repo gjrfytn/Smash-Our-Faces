@@ -8,6 +8,11 @@ namespace Sof.Model
         public int X { get; }
         public int Y { get; }
 
+        public Position Left => new Position(X - 1, Y);
+        public Position Above => new Position(X, Y + 1);
+        public Position Right => new Position(X + 1, Y);
+        public Position Below => new Position(X, Y - 1);
+
         public Position(int x, int y)
         {
             if (x < 0)

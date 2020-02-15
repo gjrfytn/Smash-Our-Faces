@@ -145,10 +145,10 @@ namespace Sof.Object
 
         private MapObject ChooseRoadPiece(Position pos)
         {
-            var hasRoadLeft = pos.X != 0 && CheckIfTileHasRoad(new Position(pos.X - 1, pos.Y));
-            var hasRoadUp = pos.Y != ModelMap.Height - 1 && CheckIfTileHasRoad(new Position(pos.X, pos.Y + 1));
-            var hasRoadRight = pos.X != ModelMap.Width - 1 && CheckIfTileHasRoad(new Position(pos.X + 1, pos.Y));
-            var hasRoadDown = pos.Y != 0 && CheckIfTileHasRoad(new Position(pos.X, pos.Y - 1));
+            var hasRoadLeft = pos.X != 0 && CheckIfTileHasRoad(pos.Left);
+            var hasRoadUp = pos.Y != ModelMap.Height - 1 && CheckIfTileHasRoad(pos.Above);
+            var hasRoadRight = pos.X != ModelMap.Width - 1 && CheckIfTileHasRoad(pos.Right);
+            var hasRoadDown = pos.Y != 0 && CheckIfTileHasRoad(pos.Below);
 
             if (hasRoadLeft && hasRoadUp && hasRoadRight && hasRoadDown)
                 return _RoadTiles.Cross;

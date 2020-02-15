@@ -108,16 +108,16 @@ namespace Sof.Model.Pathfinding
             var neighbours = new List<Position>();
 
             if (pos.X - 1 >= 0)
-                neighbours.Add(new Position(pos.X - 1, pos.Y));
+                neighbours.Add(pos.Left);
 
             if (pos.Y + 1 < _Map.Height)
-                neighbours.Add(new Position(pos.X, pos.Y + 1));
+                neighbours.Add(pos.Above);
 
             if (pos.X + 1 < _Map.Width)
-                neighbours.Add(new Position(pos.X + 1, pos.Y));
+                neighbours.Add(pos.Right);
 
             if (pos.Y - 1 >= 0)
-                neighbours.Add(new Position(pos.X, pos.Y - 1));
+                neighbours.Add(pos.Below);
 
             return neighbours;
         }
