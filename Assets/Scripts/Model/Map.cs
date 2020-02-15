@@ -50,18 +50,6 @@ namespace Sof.Model
 
         public IEnumerable<MovePoint> GetMoveRange(Unit unit) => _Pathfinder.GetMoveRange(GetUnitPos(unit), unit.MovePoints);
 
-        private Position GetUnitPos(Unit unit) => TryGetUnitPos(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
-
-        private Position TryGetUnitPos(Unit unit)
-        {
-            for (var y = 0; y < Height; ++y)
-                for (var x = 0; x < Width; ++x)
-                    if (_Tiles[x, y].Unit == unit)
-                        return new Position(x, y);
-
-            return null;
-        }
-
         public Tile GetUnitTile(Unit unit) => TryGetUnitTile(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
 
         public Tile TryGetUnitTile(Unit unit)
@@ -86,20 +74,20 @@ namespace Sof.Model
             return null;
         }
 
-        private Tile GetMapObjectTile(MapObject.MapObject mapObject) => TryGetMapObjectTile(mapObject) ?? throw new System.ArgumentException("Map does not contain specified object.", nameof(mapObject));
+        public bool IsBlocked(Position pos) => this[pos].Blocked;
+        public int GetMoveCost(Position pos) => this[pos].MoveCost;
 
-        private Tile TryGetMapObjectTile(MapObject.MapObject mapObject)
+        private Position GetUnitPos(Unit unit) => TryGetUnitPos(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
+
+        private Position TryGetUnitPos(Unit unit)
         {
             for (var y = 0; y < Height; ++y)
                 for (var x = 0; x < Width; ++x)
-                    if (_Tiles[x, y].Object == mapObject)
-                        return _Tiles[x, y];
+                    if (_Tiles[x, y].Unit == unit)
+                        return new Position(x, y);
 
             return null;
         }
-
-        public bool IsBlocked(Position pos) => this[pos].Blocked;
-        public int GetMoveCost(Position pos) => this[pos].MoveCost;
 
         private Position GetTilePos(Tile tile) => TryGetTilePos(tile) ?? throw new System.ArgumentException("Map does not contain specified tile.", nameof(tile));
 
@@ -109,6 +97,18 @@ namespace Sof.Model
                 for (var x = 0; x < Width; ++x)
                     if (_Tiles[x, y] == tile)
                         return new Position(x, y);
+
+            return null;
+        }
+
+        private Tile GetMapObjectTile(MapObject.MapObject mapObject) => TryGetMapObjectTile(mapObject) ?? throw new System.ArgumentException("Map does not contain specified object.", nameof(mapObject));
+
+        private Tile TryGetMapObjectTile(MapObject.MapObject mapObject)
+        {
+            for (var y = 0; y < Height; ++y)
+                for (var x = 0; x < Width; ++x)
+                    if (_Tiles[x, y].Object == mapObject)
+                        return _Tiles[x, y];
 
             return null;
         }
