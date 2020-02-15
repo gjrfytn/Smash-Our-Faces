@@ -31,7 +31,7 @@ namespace Sof.Model
         public void Spawn(Unit unit, Tile tile) => tile.PlaceUnit(unit); //TODO
         public void Spawn(Unit unit, Castle castle) => Spawn(unit, GetMapObjectTile(castle));
         public void Remove(Unit unit) => this[GetUnitPos(unit)].RemoveUnit();
-        public int Distance(Unit unit1, Unit unit2) => GetUnitPos(unit1).Distance(GetUnitPos(unit2));
+        public int Distance(Unit unit1, Unit unit2) => Distance(GetUnitTile(unit1), GetUnitTile(unit2));
 
         public IEnumerable<Tile> GetClosestPath(Unit unit, Tile tile) => _Pathfinder.GetClosestPath(GetUnitPos(unit), GetTilePos(tile)).Select(p => this[p]);
 
@@ -49,6 +49,17 @@ namespace Sof.Model
         }
 
         public IEnumerable<MovePoint> GetMoveRange(Unit unit) => _Pathfinder.GetMoveRange(GetUnitPos(unit), unit.MovePoints);
+        public IEnumerable<Tile> GetTilesInRange(Unit unit, int range)
+        {
+            var unitTile = GetUnitTile(unit);
+
+            var tiles = new List<Tile>();
+            for (var y = 0; y < Height; ++y)
+                for (var x = 0; x < Width; ++x)
+                    tiles.Add(_Tiles[x, y]);
+
+            return tiles.Where(t => Distance(unitTile, t) <= range);
+        }
 
         public Tile GetUnitTile(Unit unit) => TryGetUnitTile(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
 
@@ -123,6 +134,8 @@ namespace Sof.Model
 
             return tiles;
         }
+
+        private int Distance(Tile tile1, Tile tile2) => GetTilePos(tile1).Distance(GetTilePos(tile2));
 
         private Ground.Ground CreateGround(GroundType type)
         {

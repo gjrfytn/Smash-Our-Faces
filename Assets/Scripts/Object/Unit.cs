@@ -11,6 +11,8 @@ namespace Sof.Object
 #pragma warning disable 0649
         [SerializeField]
         private SpriteRenderer _MoveTile;
+        [SerializeField]
+        private SpriteRenderer _AttackTile;
 
         [SerializeField]
         private int _Speed;
@@ -43,16 +45,22 @@ namespace Sof.Object
             ModelUnit.Died += ModelUnit_Died;
         }
 
-        public void ShowMoveArea()
+        public void ShowUI()
         {
             var moveArea = ModelUnit.GetMoveRange().ToArray();
 
             if (moveArea.Length > 1)
                 foreach (var moveTile in moveArea)
                     Instantiate(_MoveTile, new Vector3(moveTile.Pos.X, moveTile.Pos.Y, 0), Quaternion.identity, transform);
+
+            var attackArea = ModelUnit.GetAttackArea().ToArray();
+
+            if (attackArea.Length > 1)
+                foreach (var attackTile in attackArea)
+                    Instantiate(_AttackTile, _Map.GetWorldPos(attackTile), Quaternion.identity, transform);
         }
 
-        public void HideMoveArea()
+        public void HideUI()
         {
             for (var i = 0; i < transform.childCount; ++i)
                 Destroy(transform.GetChild(i).gameObject);
@@ -84,7 +92,7 @@ namespace Sof.Object
         private IEnumerator FollowPath(IEnumerable<Model.Tile> path)
         {
             _GameManager.DisableUIInteraction = true;
-            HideMoveArea();
+            HideUI();
 
             foreach (var tile in path)
             {
@@ -97,14 +105,14 @@ namespace Sof.Object
                 }
             }
 
-            ShowMoveArea();
+            ShowUI();
             _GameManager.DisableUIInteraction = false;
         }
 
         private IEnumerator PlayAttack()
         {
             _GameManager.DisableUIInteraction = true;
-            HideMoveArea();
+            HideUI();
 
             transform.localRotation = Quaternion.Euler(0, 0, -30);
 
@@ -112,7 +120,7 @@ namespace Sof.Object
 
             transform.localRotation = Quaternion.Euler(0, 0, 0);
 
-            ShowMoveArea();
+            ShowUI();
             _GameManager.DisableUIInteraction = false;
         }
     }

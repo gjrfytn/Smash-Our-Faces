@@ -96,6 +96,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _MoveTile: {fileID: 4906527966561658463, guid: 7eeb01d10a3f8af44aaa1e67fcdfd978,
     type: 3}
+  _AttackTile: {fileID: 8866833394382630760, guid: 08f15c1cf8ecddd4ca361c1277a8fe8c,
+    type: 3}
   _Speed: 5
   _Health: 10
   _Damage: 2

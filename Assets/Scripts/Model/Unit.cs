@@ -108,6 +108,7 @@ namespace Sof.Model
         }
 
         public IEnumerable<MovePoint> GetMoveRange() => _Map.GetMoveRange(this);
+        public IEnumerable<Tile> GetAttackArea() => _Map.GetTilesInRange(this, _AttackRange); //TODO temp
 
         private void EndTurn() => _MovePointsLeft = _MovePoints;
 

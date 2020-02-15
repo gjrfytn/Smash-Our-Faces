@@ -90,7 +90,7 @@ namespace Sof.Object
                 if (tile.ModelTile.Unit != null && tile.ModelTile.Unit.Faction == _CurrentPlayerFaction)
                 {
                     _SelectedUnit = tile.ModelTile.Unit;
-                    GetUnitObject(_SelectedUnit).ShowMoveArea();
+                    GetUnitObject(_SelectedUnit).ShowUI();
                 }
             }
             else if (_SelectedUnit == tile.ModelTile.Unit)
@@ -190,7 +190,7 @@ namespace Sof.Object
         private void DeselectUnit()
         {
             _Map.ClearPath();
-            GetUnitObject(_SelectedUnit).HideMoveArea();
+            GetUnitObject(_SelectedUnit).HideUI();
             _SelectedUnit = null;
         }
 
