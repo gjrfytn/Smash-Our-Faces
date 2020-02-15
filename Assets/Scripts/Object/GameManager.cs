@@ -38,7 +38,7 @@ namespace Sof.Object
         private Faction _CurrentPlayerFaction;
         private Model.Unit _SelectedUnit;
         private Unit _SpawnedUnit;
-        private List<Unit> _Units = new List<Unit>(); //TODO unit removement
+        private readonly List<Unit> _Units = new List<Unit>(); //TODO unit removement
 
         private void Awake()
         {

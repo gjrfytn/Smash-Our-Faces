@@ -109,10 +109,7 @@ namespace Sof.Model
 
         public IEnumerable<MovePoint> GetMoveRange() => _Map.GetMoveRange(this);
 
-        private void EndTurn()
-        {
-            _MovePointsLeft = _MovePoints;
-        }
+        private void EndTurn() => _MovePointsLeft = _MovePoints;
 
         private bool IsInAttackRange(Unit unit) => _Map.Distance(this, unit) <= _AttackRange;
 

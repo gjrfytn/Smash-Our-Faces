@@ -13,9 +13,6 @@ namespace Sof.UI
             _Text = GetComponent<Text>();
         }
 
-        public void SetCurrentPlayer(Model.Faction faction)
-        {
-            _Text.text = $"{faction.Name} turn";
-        }
+        public void SetCurrentPlayer(Model.Faction faction) => _Text.text = $"{faction.Name} turn";
     }
 }

@@ -13,7 +13,7 @@ namespace Sof.UI
         private Text _NotificationText;
 #pragma warning restore 0649
 
-        private Queue<string> _NotificationQueue = new Queue<string>();
+        private readonly Queue<string> _NotificationQueue = new Queue<string>();
 
         private void Update()
         {

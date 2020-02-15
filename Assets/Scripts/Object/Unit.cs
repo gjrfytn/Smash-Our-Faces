@@ -33,14 +33,8 @@ namespace Sof.Object
 
         public void Initialize(GameManager gameManager, Map map, Faction faction)
         {
-            if (gameManager == null)
-                throw new System.ArgumentNullException(nameof(gameManager));
-
-            if (map == null)
-                throw new System.ArgumentNullException(nameof(map));
-
-            _GameManager = gameManager;
-            _Map = map;
+            _GameManager = gameManager != null ? gameManager : throw new System.ArgumentNullException(nameof(gameManager));
+            _Map = map != null ? map : throw new System.ArgumentNullException(nameof(map));
 
             ModelUnit = new Model.Unit(gameManager, map.ModelMap, _Speed, _Health, _Damage, _AttackRange, faction, true);
             ModelUnit.UnitMovedAlongPath += ModelUnit_UnitMovedAlongPath;

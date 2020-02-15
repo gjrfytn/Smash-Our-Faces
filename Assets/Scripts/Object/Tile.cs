@@ -12,11 +12,7 @@ namespace Sof.Object
         public void Initialize(Model.Tile tile, GameManager gameManager)
         {
             ModelTile = tile ?? throw new System.ArgumentNullException(nameof(tile));
-
-            if (gameManager == null)
-                throw new System.ArgumentNullException(nameof(gameManager));
-
-            _GameManager = gameManager;
+            _GameManager = gameManager != null ? gameManager : throw new System.ArgumentNullException(nameof(gameManager));
         }
 
         public T InstantiateMapObject<T>(T @object) where T : MapObject

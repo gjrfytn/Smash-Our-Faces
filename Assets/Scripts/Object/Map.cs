@@ -137,10 +137,7 @@ namespace Sof.Object
             _LineRenderer.SetPositions(tArr.Select(GetWorldPos).Select(p => new Vector3(p.x, p.y, zOffset)).ToArray());
         }
 
-        public void ClearPath()
-        {
-            _LineRenderer.positionCount = 0;
-        }
+        public void ClearPath() => _LineRenderer.positionCount = 0;
 
         public Vector2 GetWorldPos(Model.Tile tile) => _Tiles.Single(t => t.ModelTile == tile).transform.position;
 

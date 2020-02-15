@@ -33,7 +33,7 @@ namespace Sof.Model
             }
         }
 
-        private static List<string> _FactionNames = new List<string>();
+        private static readonly List<string> _FactionNames = new List<string>();
 
         private readonly Treasury _Treasury;
 
@@ -53,14 +53,8 @@ namespace Sof.Model
             _Treasury = new Treasury(gold);
         }
 
-        public void PurchaseUnit(Unit unit)
-        {
-            _Treasury.PurchaseUnit(unit);
-        }
+        public void PurchaseUnit(Unit unit) => _Treasury.PurchaseUnit(unit);
 
-        public void RecieveIncome(int income)
-        {
-            _Treasury.AddGold(income);
-        }
+        public void RecieveIncome(int income) => _Treasury.AddGold(income);
     }
 }
