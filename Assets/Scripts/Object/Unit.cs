@@ -50,8 +50,8 @@ namespace Sof.Object
             var moveArea = ModelUnit.GetMoveRange().ToArray();
 
             if (moveArea.Length > 1)
-                foreach (var moveTile in moveArea)
-                    Instantiate(_MoveTile, new Vector3(moveTile.Pos.X, moveTile.Pos.Y, 0), Quaternion.identity, transform);
+                foreach (var movePoint in moveArea)
+                    Instantiate(_MoveTile, _Map.GetWorldPos(movePoint.Tile), Quaternion.identity, transform);
 
             var attackArea = ModelUnit.GetAttackArea().ToArray();
 

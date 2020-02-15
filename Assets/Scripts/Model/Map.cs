@@ -48,7 +48,9 @@ namespace Sof.Model
             Spawn(unit, this[pos]);
         }
 
-        public IEnumerable<MovePoint> GetMoveRange(Unit unit) => _Pathfinder.GetMoveRange(GetUnitPos(unit), unit.MovePoints);
+        public IEnumerable<MovePoint> GetMoveRange(Unit unit) => _Pathfinder.GetMoveRange(GetUnitPos(unit), unit.MovePoints)
+                                                                            .Select(p => new MovePoint(this[p.Pos], p.Distance));
+
         public IEnumerable<Tile> GetTilesInRange(Unit unit, int range)
         {
             var unitTile = GetUnitTile(unit);

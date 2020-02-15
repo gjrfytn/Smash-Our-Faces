@@ -2,12 +2,12 @@
 {
     public class MovePoint
     {
-        public Position Pos { get; }
+        public Tile Tile { get; }
         public int Distance { get; }
 
-        public MovePoint(Position pos, int distance)
+        public MovePoint(Tile tile, int distance)
         {
-            Pos = pos;
+            Tile = tile;
             Distance = distance;
         }
     }
