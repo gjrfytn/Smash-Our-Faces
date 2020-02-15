@@ -23,7 +23,10 @@ namespace Sof.Object
         private DamageText _DamageText;
 
         [SerializeField]
-        private Unit _UnitTemp;
+        private Unit[] _UnitPrefabs;
+
+        [SerializeField]
+        private UnitPurchasePanel _UnitPurchasePanel;
 #pragma warning restore 0649
 
         public bool DisableUIInteraction { private get; set; } //TODO Make dedicated UIManager
@@ -120,11 +123,18 @@ namespace Sof.Object
 
             if (castle.ModelCastle.Faction == _CurrentPlayerFaction)
             {
-                var unit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle.ModelCastle)), Quaternion.identity, transform);
-                unit.Initialize(this, _Map, _CurrentPlayerFaction);
-                _Units.Add(unit);
-                castle.ModelCastle.PurchaseUnit(unit.ModelUnit, _Map.ModelMap);
+                _UnitPurchasePanel.gameObject.SetActive(true);
+                _UnitPurchasePanel.Setup(_UnitPrefabs, (Unit unit)=> PurchaseUnitInCastle(unit, castle.ModelCastle));
             }
+        }
+
+        private void PurchaseUnitInCastle(Unit unit, Model.MapObject.Castle castle)
+        {
+            _UnitPurchasePanel.gameObject.SetActive(false);
+            var unitInstance = Instantiate(unit, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle)), Quaternion.identity, transform);
+            unitInstance.Initialize(this, _Map, _CurrentPlayerFaction);
+            _Units.Add(unitInstance);
+            castle.PurchaseUnit(unitInstance.ModelUnit, _Map.ModelMap);
         }
 
         public void DebugCreateUnit(Faction faction)
@@ -132,7 +142,7 @@ namespace Sof.Object
             if (DisableUIInteraction)
                 return;
 
-            _SpawnedUnit = Instantiate(_UnitTemp, Map.ConvertToWorldPos(new Position(_Map.ModelMap.Width / 2, _Map.ModelMap.Height / 2)), Quaternion.identity, transform);
+            _SpawnedUnit = Instantiate(_UnitPrefabs[0], Map.ConvertToWorldPos(new Position(_Map.ModelMap.Width / 2, _Map.ModelMap.Height / 2)), Quaternion.identity, transform);
             _SpawnedUnit.Initialize(this, _Map, faction);
             _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
             _Units.Add(_SpawnedUnit);
