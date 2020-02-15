@@ -9,6 +9,7 @@ namespace Sof.Object
     [RequireComponent(typeof(LineRenderer))]
     public class Map : MonoBehaviour
     {
+#pragma warning disable 0649
         [System.Serializable]
         internal class RoadTiles
         {
@@ -55,6 +56,7 @@ namespace Sof.Object
 
         [SerializeField]
         private Tile _InteractionTile;
+#pragma warning restore 0649
 
         public Model.Map ModelMap { get; private set; }
 

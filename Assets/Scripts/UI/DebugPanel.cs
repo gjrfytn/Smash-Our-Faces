@@ -7,12 +7,14 @@ namespace Sof.UI
 {
     public class DebugPanel : MonoBehaviour
     {
+#pragma warning disable 0649
         [SerializeField]
         private GameManager _GameManager;
         [SerializeField]
         private Button _SpawnUnitButton;
         [SerializeField]
         private Dropdown _UnitFactionDropdown; // TODO Update list
+#pragma warning restore 0649
 
         private Model.Faction _SelectedFaction;
 

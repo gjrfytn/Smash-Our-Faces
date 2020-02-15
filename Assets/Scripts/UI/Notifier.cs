@@ -8,8 +8,10 @@ namespace Sof.UI
 {
     public class Notifier : MonoBehaviour
     {
+#pragma warning disable 0649
         [SerializeField]
         private Text _NotificationText;
+#pragma warning restore 0649
 
         private Queue<string> _NotificationQueue = new Queue<string>();
 

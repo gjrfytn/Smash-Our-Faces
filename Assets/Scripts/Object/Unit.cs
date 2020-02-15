@@ -8,6 +8,7 @@ namespace Sof.Object
 {
     public class Unit : MonoBehaviour
     {
+#pragma warning disable 0649
         [SerializeField]
         private SpriteRenderer _MoveTile;
 
@@ -19,6 +20,7 @@ namespace Sof.Object
         private int _Damage;
         [SerializeField]
         private int _AttackRange;
+#pragma warning restore 0649
 
         public Model.Unit ModelUnit { get; private set; }
 

@@ -3,11 +3,13 @@
 [RequireComponent(typeof(UnityEngine.UI.Text))]
 public class DamageText : MonoBehaviour
 {
+#pragma warning disable 0649
     [SerializeField]
     private float _Lifetime;
 
     [SerializeField]
     private float _AscensionSpeed;
+#pragma warning restore 0649
 
     public int Damage
     {

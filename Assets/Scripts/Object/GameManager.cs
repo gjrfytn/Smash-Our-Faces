@@ -8,6 +8,7 @@ namespace Sof.Object
 {
     public class GameManager : MonoBehaviour, ITime, IScenario //TODO temp
     {
+#pragma warning disable 0649
         [SerializeField]
         private Canvas _Canvas;
         [SerializeField]
@@ -23,6 +24,7 @@ namespace Sof.Object
 
         [SerializeField]
         private Unit _UnitTemp;
+#pragma warning restore 0649
 
         public bool DisableUIInteraction { private get; set; } //TODO Make dedicated UIManager
 
