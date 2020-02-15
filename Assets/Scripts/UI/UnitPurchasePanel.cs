@@ -25,7 +25,7 @@ namespace Sof.UI
             _UnitSelectAction = unitSelectAction;
 
             _UnitListDropdown.ClearOptions();
-            _UnitListDropdown.AddOptions(_AvailableUnits.Select(u => u.GetComponent<SpriteRenderer>().sprite).ToList());
+            _UnitListDropdown.AddOptions(_AvailableUnits.Select(u => u.name).ToList());
         }
 
         private void Start()
