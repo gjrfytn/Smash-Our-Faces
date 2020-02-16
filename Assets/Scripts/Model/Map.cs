@@ -41,13 +41,6 @@ namespace Sof.Model
             Spawn(unit, tile);
         }
 
-        [System.Obsolete("Use MoveUnit.")]
-        public void MoveUnitOld(Unit unit, Position pos)
-        {
-            Remove(unit);
-            Spawn(unit, this[pos]);
-        }
-
         public IEnumerable<MovePoint> GetMoveRange(Unit unit) => _Pathfinder.GetMoveRange(GetUnitPos(unit), unit.MovePoints)
                                                                             .Select(p => new MovePoint(this[p.Pos], p.Distance));
 
