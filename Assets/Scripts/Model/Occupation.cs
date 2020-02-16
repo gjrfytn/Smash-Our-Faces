@@ -14,12 +14,12 @@ namespace Sof.Model
             _Faction = faction;
         }
 
-        public void Apply(Castle castle)
+        public void Apply(Property property)
         {
-            if (castle is null)
-                throw new System.ArgumentNullException(nameof(castle));
+            if (property is null)
+                throw new System.ArgumentNullException(nameof(property));
 
-            castle.Owner = _Faction;
+            property.Owner = _Faction;
         }
     }
 }

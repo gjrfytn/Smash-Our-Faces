@@ -42,10 +42,12 @@ namespace Sof.Object
         private Model.Unit _SelectedUnit;
         private Unit _SpawnedUnit;
         private readonly List<Unit> _Units = new List<Unit>(); //TODO unit removement
+        private Dictionary<Faction, Color> _FactionColors;
 
         private void Awake()
         {
             _Factions = new List<Faction> { new Faction("Faction 1", 100), new Faction("Faction 2", 100) };
+            _FactionColors = _Factions.ToDictionary(f1 => f1, f2 => Random.ColorHSV());
         }
 
         private void Start()
@@ -124,8 +126,16 @@ namespace Sof.Object
             if (castle.ModelCastle.Owner == _CurrentPlayerFaction)
             {
                 _UnitPurchasePanel.gameObject.SetActive(true);
-                _UnitPurchasePanel.Setup(_UnitPrefabs, (Unit unit)=> PurchaseUnitInCastle(unit, castle.ModelCastle));
+                _UnitPurchasePanel.Setup(_UnitPrefabs, (Unit unit) => PurchaseUnitInCastle(unit, castle.ModelCastle));
             }
+        }
+
+        public Color GetFactionColor(Faction faction)
+        {
+            if (faction == null)
+                return Color.gray;
+
+            return _FactionColors[faction];
         }
 
         private void PurchaseUnitInCastle(Unit unit, Model.MapObject.Castle castle)
