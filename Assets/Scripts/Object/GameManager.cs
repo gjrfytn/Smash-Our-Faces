@@ -133,7 +133,7 @@ namespace Sof.Object
         public Color GetFactionColor(Faction faction)
         {
             if (faction == null)
-                return Color.gray;
+                return Color.white;
 
             return _FactionColors[faction];
         }

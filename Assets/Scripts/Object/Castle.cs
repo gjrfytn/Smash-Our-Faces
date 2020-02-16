@@ -12,7 +12,7 @@ namespace Sof.Object
 
         private void Awake()
         {
-            _OwnerFactionSprite = transform.GetComponentsInChildren<SpriteRenderer>().Single(r => r.name == "medievalStructure_02");
+            _OwnerFactionSprite = transform.GetComponentsInChildren<SpriteRenderer>().Single(r => r.name == "castle_roof_bw");
         }
 
         public void Initialize(Model.MapObject.Castle castle, GameManager gameManager)
