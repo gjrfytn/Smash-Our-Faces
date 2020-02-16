@@ -14,10 +14,10 @@
 
         public void PurchaseUnit(Unit unit)
         {
-            if (Faction == null)
+            if (Owner == null)
                 throw new System.InvalidOperationException("Cannot purchase unit in neutral castle.");
 
-            Faction.PurchaseUnit(unit);
+            Owner.PurchaseUnit(unit);
 
             _Map.Spawn(unit, this);
         }

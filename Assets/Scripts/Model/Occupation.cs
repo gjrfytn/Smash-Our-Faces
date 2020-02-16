@@ -19,7 +19,7 @@ namespace Sof.Model
             if (castle is null)
                 throw new System.ArgumentNullException(nameof(castle));
 
-            castle.Faction = _Faction;
+            castle.Owner = _Faction;
         }
     }
 }

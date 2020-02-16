@@ -121,7 +121,7 @@ namespace Sof.Object
             if (_SelectedUnit != null)
                 DeselectUnit();
 
-            if (castle.ModelCastle.Faction == _CurrentPlayerFaction)
+            if (castle.ModelCastle.Owner == _CurrentPlayerFaction)
             {
                 _UnitPurchasePanel.gameObject.SetActive(true);
                 _UnitPurchasePanel.Setup(_UnitPrefabs, (Unit unit)=> PurchaseUnitInCastle(unit, castle.ModelCastle));
