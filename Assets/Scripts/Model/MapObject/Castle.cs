@@ -1,21 +1,15 @@
 ﻿namespace Sof.Model.MapObject
 {
-    public class Castle : MapObject
+    public class Castle : Property
     {
         private readonly Map _Map;
-        private readonly int _Income;
 
         public override int MoveCostModificator => -2;
         public override float DefenceModificator => 0.75f;
 
-        public Faction Faction { get; set; }
-
-        public Castle(Map map, ITime time, int income)
+        public Castle(Map map, ITime time, int income) : base(time, income)
         {
             _Map = map;
-            _Income = income;
-
-            time.TurnEnded += EndTurn;
         }
 
         public void PurchaseUnit(Unit unit)
@@ -27,7 +21,5 @@
 
             _Map.Spawn(unit, this);
         }
-
-        private void EndTurn() => Faction?.RecieveIncome(_Income);
     }
 }

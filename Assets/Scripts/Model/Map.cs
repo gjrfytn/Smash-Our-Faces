@@ -163,7 +163,7 @@ namespace Sof.Model
                 case MapObjectType.Castle:
                     return new Castle(this, _Time, 10); //TODO
                 case MapObjectType.House:
-                    return new House();
+                    return new House(_Time, 5); //TODO
                 case MapObjectType.Bridge:
                     return new Bridge();
                 case MapObjectType.Road:
