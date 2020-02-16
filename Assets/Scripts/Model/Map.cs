@@ -161,7 +161,7 @@ namespace Sof.Model
                 case MapObjectType.None:
                     return null;
                 case MapObjectType.Castle:
-                    return new Castle(_Time, 10); //TODO
+                    return new Castle(this, _Time, 10); //TODO
                 case MapObjectType.House:
                     return new House();
                 case MapObjectType.Bridge:

@@ -2,6 +2,7 @@
 {
     public class Castle : MapObject
     {
+        private readonly Map _Map;
         private readonly int _Income;
 
         public override int MoveCostModificator => -2;
@@ -9,20 +10,22 @@
 
         public Faction Faction { get; set; }
 
-        public Castle(ITime time/*Map map*/, int income)
+        public Castle(Map map, ITime time, int income)
         {
-            time.TurnEnded += EndTurn;
+            _Map = map;
             _Income = income;
+
+            time.TurnEnded += EndTurn;
         }
 
-        public void PurchaseUnit(Unit unit, Map map) //TODO map
+        public void PurchaseUnit(Unit unit)
         {
             if (Faction == null)
                 throw new System.InvalidOperationException("Cannot purchase unit in neutral castle.");
 
             Faction.PurchaseUnit(unit);
 
-            map.Spawn(unit, this);
+            _Map.Spawn(unit, this);
         }
 
         private void EndTurn() => Faction?.RecieveIncome(_Income);

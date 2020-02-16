@@ -134,7 +134,7 @@ namespace Sof.Object
             var unitInstance = Instantiate(unit, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle)), Quaternion.identity, transform);
             unitInstance.Initialize(this, _Map, _CurrentPlayerFaction);
             _Units.Add(unitInstance);
-            castle.PurchaseUnit(unitInstance.ModelUnit, _Map.ModelMap);
+            castle.PurchaseUnit(unitInstance.ModelUnit);
         }
 
         public void DebugCreateUnit(Faction faction)
