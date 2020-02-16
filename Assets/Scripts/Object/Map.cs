@@ -46,7 +46,7 @@ namespace Sof.Object
         [SerializeField]
         private Castle _Castle;
         [SerializeField]
-        private MapObject _House;
+        private House _House;
         [SerializeField]
         private MapObject _Bridge;
         [SerializeField]
@@ -105,8 +105,9 @@ namespace Sof.Object
                             var castle = tile.InstantiateMapObject(_Castle);
                             castle.Initialize(modelCastle, _GameManager);
                             break;
-                        case Model.MapObject.House _:
-                            tile.InstantiateMapObject(_House);
+                        case Model.MapObject.House modelHouse:
+                            var house = tile.InstantiateMapObject(_House);
+                            house.Initialize(modelHouse, _GameManager);
                             break;
                         case Model.MapObject.Bridge _:
                             tile.InstantiateMapObject(_Bridge);
