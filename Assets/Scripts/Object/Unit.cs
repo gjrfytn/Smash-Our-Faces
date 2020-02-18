@@ -42,6 +42,7 @@ namespace Sof.Object
             ModelUnit.UnitMovedAlongPath += ModelUnit_UnitMovedAlongPath;
             ModelUnit.Attacked += ModelUnit_Attacked;
             ModelUnit.TookHit += ModelUnit_TookHit;
+            ModelUnit.Healed += ModelUnit_Healed;
             ModelUnit.Died += ModelUnit_Died;
         }
 
@@ -79,6 +80,11 @@ namespace Sof.Object
         private void ModelUnit_TookHit(int damage)
         {
             _GameManager.OnUnitHit(this, damage);
+        }
+
+        private void ModelUnit_Healed(int heal)
+        {
+            _GameManager.OnUnitHeal(this, heal);
         }
 
         private void ModelUnit_Died()

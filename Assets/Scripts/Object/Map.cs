@@ -101,11 +101,11 @@ namespace Sof.Object
                     {
                         case null:
                             break;
-                        case Model.MapObject.Castle modelCastle:
+                        case Model.MapObject.Property.Castle modelCastle:
                             var castle = tile.InstantiateMapObject(_Castle);
                             castle.Initialize(modelCastle, _GameManager);
                             break;
-                        case Model.MapObject.House modelHouse:
+                        case Model.MapObject.Property.House modelHouse:
                             var house = tile.InstantiateMapObject(_House);
                             house.Initialize(modelHouse, _GameManager);
                             break;

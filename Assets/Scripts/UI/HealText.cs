@@ -1,8 +1,8 @@
 ﻿namespace Sof.UI
 {
-    public class DamageText : FlyingText
+    public class HealText : FlyingText
     {
-        public int Damage
+        public int Heal
         {
             set => Text = value.ToString();
         }

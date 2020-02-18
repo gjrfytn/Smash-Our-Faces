@@ -21,6 +21,8 @@ namespace Sof.Object
 
         [SerializeField]
         private DamageText _DamageText;
+        [SerializeField]
+        private HealText _HealText;
 
         [SerializeField]
         private Unit[] _UnitPrefabs;
@@ -138,7 +140,7 @@ namespace Sof.Object
             return _FactionColors[faction];
         }
 
-        private void PurchaseUnitInCastle(Unit unit, Model.MapObject.Castle castle)
+        private void PurchaseUnitInCastle(Unit unit, Model.MapObject.Property.Castle castle)
         {
             _UnitPurchasePanel.gameObject.SetActive(false);
             var unitInstance = Instantiate(unit, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle)), Quaternion.identity, transform);
@@ -160,9 +162,14 @@ namespace Sof.Object
 
         internal void OnUnitHit(Unit unit, int damage)
         {
-            const float offset = 0.3f;
-            var damageText = Instantiate(_DamageText, Camera.main.WorldToScreenPoint(unit.transform.position + offset * Vector3.up), Quaternion.identity, _Canvas.transform);
+            var damageText = InstantiateTextAboveUnit(unit, _DamageText);
             damageText.Damage = damage;
+        }
+
+        internal void OnUnitHeal(Unit unit, int heal)
+        {
+            var healText = InstantiateTextAboveUnit(unit, _HealText);
+            healText.Heal = heal;
         }
 
         internal void OnCriticalUnitDeath(Faction faction)
@@ -205,5 +212,12 @@ namespace Sof.Object
         }
 
         private Unit GetUnitObject(Model.Unit unit) => _Units.Single(u => u.ModelUnit == unit);
+
+        private T InstantiateTextAboveUnit<T>(Unit unit, T text) where T:FlyingText
+        {
+            const float offset = 0.3f;
+
+            return Instantiate(text, Camera.main.WorldToScreenPoint(unit.transform.position + offset * Vector3.up), Quaternion.identity, _Canvas.transform);
+        }
     }
 }

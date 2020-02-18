@@ -25,6 +25,7 @@ namespace Sof.Model
         public event System.Action<IEnumerable<Tile>> UnitMovedAlongPath;
         public event System.Action Attacked;
         public event System.Action<int> TookHit;
+        public event System.Action<int> Healed;
         public event System.Action Died;
 
         public Unit(ITime time, Map map, int movePoints, int health, int damage, int attackRange, Faction faction, bool critical)
@@ -93,6 +94,8 @@ namespace Sof.Model
 
         public void TakeHit(int damage)
         {
+            CheckIsAlive();
+
             _HealthLeft = UnityEngine.Mathf.Max(0, _HealthLeft - damage);
 
             TookHit?.Invoke(damage);
@@ -105,6 +108,15 @@ namespace Sof.Model
 
                 Died?.Invoke();
             }
+        }
+
+        public void Heal(int value)
+        {
+            CheckIsAlive();
+
+            _HealthLeft = UnityEngine.Mathf.Min(_Health, _HealthLeft + value);
+
+            Healed?.Invoke(value);
         }
 
         public IEnumerable<MovePoint> GetMoveRange() => _Map.GetMoveRange(this);

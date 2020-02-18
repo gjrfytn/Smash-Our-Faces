@@ -24,7 +24,7 @@ namespace Sof.Model
 
             Unit = unit;
 
-            if (Object is MapObject.Property property) //TODO
+            if (Object is MapObject.Property.Property property) //TODO
                 property.Owner = unit.Faction;
         }
 

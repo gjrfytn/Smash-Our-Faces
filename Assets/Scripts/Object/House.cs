@@ -4,12 +4,12 @@
     {
         private GameManager _GameManager;
 
-        public Model.MapObject.House ModelHouse { get; private set; }
+        public Model.MapObject.Property.House ModelHouse { get; private set; }
 
         protected override GameManager GameManager => _GameManager;
-        protected override Model.MapObject.Property ModelProperty => ModelHouse;
+        protected override Model.MapObject.Property.Property ModelProperty => ModelHouse;
 
-        public void Initialize(Model.MapObject.House house, GameManager gameManager)
+        public void Initialize(Model.MapObject.Property.House house, GameManager gameManager)
         {
             ModelHouse = house ?? throw new System.ArgumentNullException(nameof(house));
             _GameManager = gameManager != null ? gameManager : throw new System.ArgumentNullException(nameof(gameManager));

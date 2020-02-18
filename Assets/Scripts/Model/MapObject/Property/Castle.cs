@@ -1,4 +1,4 @@
-﻿namespace Sof.Model.MapObject
+﻿namespace Sof.Model.MapObject.Property
 {
     public class Castle : Property
     {
@@ -7,7 +7,7 @@
         public override int MoveCostModificator => -2;
         public override float DefenceModificator => 0.75f;
 
-        public Castle(Map map, ITime time, int income) : base(time, income)
+        public Castle(Map map, ITime time, int income, int heal) : base(time, map, income, heal)
         {
             _Map = map;
         }

@@ -1,11 +1,12 @@
 ﻿using Sof.Model.Ground;
 using Sof.Model.MapObject;
+using Sof.Model.MapObject.Property;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Sof.Model
 {
-    public class Map : Pathfinding.IMap
+    public class Map : Pathfinding.IMap, IMap
     {
         private readonly Pathfinding.Pathfinder _Pathfinder;
         private readonly ITime _Time;
@@ -83,6 +84,8 @@ namespace Sof.Model
         public bool IsBlocked(Position pos) => this[pos].Blocked;
         public int GetMoveCost(Position pos) => this[pos].MoveCost;
 
+        public Unit GetUnitIn(Property property) => GetMapObjectTile(property).Unit;
+
         private Position GetUnitPos(Unit unit) => TryGetUnitPos(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
 
         private Position TryGetUnitPos(Unit unit)
@@ -154,9 +157,9 @@ namespace Sof.Model
                 case MapObjectType.None:
                     return null;
                 case MapObjectType.Castle:
-                    return new Castle(this, _Time, 10); //TODO
+                    return new Castle(this, _Time, 10, 10); //TODO
                 case MapObjectType.House:
-                    return new House(_Time, 5); //TODO
+                    return new House(_Time, this, 5, 10); //TODO
                 case MapObjectType.Bridge:
                     return new Bridge();
                 case MapObjectType.Road:

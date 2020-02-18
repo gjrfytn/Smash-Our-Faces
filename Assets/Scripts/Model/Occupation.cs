@@ -1,6 +1,4 @@
-﻿using Sof.Model.MapObject;
-
-namespace Sof.Model
+﻿namespace Sof.Model
 {
     public class Occupation
     {
@@ -14,7 +12,7 @@ namespace Sof.Model
             _Faction = faction;
         }
 
-        public void Apply(Property property)
+        public void Apply(MapObject.Property.Property property)
         {
             if (property is null)
                 throw new System.ArgumentNullException(nameof(property));

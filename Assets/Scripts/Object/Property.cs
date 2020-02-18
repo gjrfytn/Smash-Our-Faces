@@ -10,7 +10,7 @@ namespace Sof.Object
 #pragma warning restore 0649
 
         protected abstract GameManager GameManager { get; }
-        protected abstract Model.MapObject.Property ModelProperty { get; }
+        protected abstract Model.MapObject.Property.Property ModelProperty { get; }
 
         private void Start()
         {
