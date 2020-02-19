@@ -18,6 +18,7 @@ namespace Sof.Model
         public Faction Faction { get; private set; }
         public bool Critical { get; private set; }
         public int GoldCost { get; private set; }
+        public int Health => _HealthLeft;
         public int MovePoints => _MovePointsLeft;
 
         private bool Dead => _HealthLeft == 0;

@@ -28,6 +28,8 @@ namespace Sof.Object
         private Unit[] _UnitPrefabs;
 
         [SerializeField]
+        private UnitInfoPanel _UnitInfoPanel;
+        [SerializeField]
         private UnitPurchasePanel _UnitPurchasePanel;
 #pragma warning restore 0649
 
@@ -94,7 +96,10 @@ namespace Sof.Object
                 if (tile.ModelTile.Unit != null && tile.ModelTile.Unit.Faction == _CurrentPlayerFaction)
                 {
                     _SelectedUnit = tile.ModelTile.Unit;
-                    GetUnitObject(_SelectedUnit).ShowUI();
+                    var unitObject = GetUnitObject(_SelectedUnit);
+                    unitObject.ShowUI();
+                    _UnitInfoPanel.gameObject.SetActive(true);
+                    _UnitInfoPanel.Setup(unitObject);
                 }
             }
             else if (_SelectedUnit == tile.ModelTile.Unit)
@@ -209,11 +214,12 @@ namespace Sof.Object
             _Map.ClearPath();
             GetUnitObject(_SelectedUnit).HideUI();
             _SelectedUnit = null;
+            _UnitPurchasePanel.gameObject.SetActive(false);
         }
 
         private Unit GetUnitObject(Model.Unit unit) => _Units.Single(u => u.ModelUnit == unit);
 
-        private T InstantiateTextAboveUnit<T>(Unit unit, T text) where T:FlyingText
+        private T InstantiateTextAboveUnit<T>(Unit unit, T text) where T : FlyingText
         {
             const float offset = 0.3f;
 
