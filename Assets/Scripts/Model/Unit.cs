@@ -96,9 +96,11 @@ namespace Sof.Model
         {
             CheckIsAlive();
 
-            _HealthLeft = UnityEngine.Mathf.Max(0, _HealthLeft - damage);
+            var actualDamage = UnityEngine.Mathf.CeilToInt(damage * (1 - _Map.GetUnitTile(this).Defence));
 
-            TookHit?.Invoke(damage);
+            _HealthLeft = UnityEngine.Mathf.Max(0, _HealthLeft - actualDamage);
+
+            TookHit?.Invoke(actualDamage);
 
             if (Dead)
             {

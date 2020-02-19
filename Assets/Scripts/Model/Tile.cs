@@ -8,6 +8,7 @@ namespace Sof.Model
         public Unit Unit { get; private set; }
 
         public int MoveCost => Ground.MoveCost + (Object?.MoveCostModificator ?? 0);
+        public float Defence => UnityEngine.Mathf.Min(1, Ground.Defence + (Object?.DefenceModificator ?? 0));
 
         public bool Blocked => Unit != null;
 
