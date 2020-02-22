@@ -6,22 +6,26 @@ namespace Sof.Model
     {
         private class Treasury
         {
-            private int _Gold;
+            public int Gold { get;private set; }
+
+            public event System.Action<int> GoldChanged;
 
             public Treasury(int gold)
             {
                 if (gold < 0)
                     throw new System.ArgumentOutOfRangeException(nameof(gold), gold, "Treasury gold cannot be negative.");
 
-                _Gold = gold;
+                Gold = gold;
             }
 
             public void PurchaseUnit(Unit unit)
             {
-                if (_Gold < unit.GoldCost)
+                if (Gold < unit.GoldCost)
                     throw new System.Exception("No gold to buy unit.");
 
-                _Gold -= unit.GoldCost;
+                Gold -= unit.GoldCost;
+
+                GoldChanged?.Invoke(-unit.GoldCost);
             }
 
             public void AddGold(int gold)
@@ -29,7 +33,9 @@ namespace Sof.Model
                 if (gold < 0)
                     throw new System.ArgumentOutOfRangeException(nameof(gold), gold, "Added gold cannot be negative.");
 
-                _Gold += gold;
+                Gold += gold;
+
+                GoldChanged?.Invoke(gold);
             }
         }
 
@@ -38,6 +44,9 @@ namespace Sof.Model
         private readonly Treasury _Treasury;
 
         public string Name { get; }
+        public int Gold => _Treasury.Gold;
+
+        public event System.Action<int> GoldChanged;
 
         public Faction(string name, int gold)
         {
@@ -51,10 +60,12 @@ namespace Sof.Model
 
             Name = name;
             _Treasury = new Treasury(gold);
+            _Treasury.GoldChanged += Treasury_GoldChanged;
         }
 
         public void PurchaseUnit(Unit unit) => _Treasury.PurchaseUnit(unit);
-
         public void RecieveIncome(int income) => _Treasury.AddGold(income);
+
+        private void Treasury_GoldChanged(int change) => GoldChanged?.Invoke(change);
     }
 }

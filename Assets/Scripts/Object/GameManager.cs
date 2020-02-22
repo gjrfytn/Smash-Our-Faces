@@ -28,6 +28,8 @@ namespace Sof.Object
         private Unit[] _UnitPrefabs;
 
         [SerializeField]
+        private FactionInfoPanel _FactionInfoPanel;
+        [SerializeField]
         private UnitInfoPanel _UnitInfoPanel;
         [SerializeField]
         private UnitPurchasePanel _UnitPurchasePanel;
@@ -58,6 +60,7 @@ namespace Sof.Object
         {
             _CurrentPlayerFaction = _Factions[0];
             _TurnIndicator.SetCurrentPlayer(_CurrentPlayerFaction);
+            _FactionInfoPanel.Setup(_CurrentPlayerFaction);
         }
 
         public void OnTileHover(Tile tile)
@@ -204,6 +207,7 @@ namespace Sof.Object
             }
 
             _TurnIndicator.SetCurrentPlayer(_CurrentPlayerFaction);
+            _FactionInfoPanel.Setup(_CurrentPlayerFaction);
             _Notifier.ShowNotification($"{_CurrentPlayerFaction.Name} turn");
 
             TurnEnded?.Invoke();
