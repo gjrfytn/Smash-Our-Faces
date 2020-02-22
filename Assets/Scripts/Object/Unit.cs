@@ -24,7 +24,11 @@ namespace Sof.Object
         private int _AttackRange;
         [SerializeField]
         private int _GoldCost;
+        [SerializeField]
+        private SpriteRenderer _OwnerFactionSprite;
 #pragma warning restore 0649
+
+        private List<SpriteRenderer> _UI_Sprites = new List<SpriteRenderer>();
 
         public Model.Unit ModelUnit { get; private set; }
 
@@ -46,6 +50,8 @@ namespace Sof.Object
             ModelUnit.TookHit += ModelUnit_TookHit;
             ModelUnit.Healed += ModelUnit_Healed;
             ModelUnit.Died += ModelUnit_Died;
+
+            SetOwnerColor();
         }
 
         public void ShowUI()
@@ -54,19 +60,21 @@ namespace Sof.Object
 
             if (moveArea.Length > 1)
                 foreach (var movePoint in moveArea)
-                    Instantiate(_MoveTile, _Map.GetWorldPos(movePoint.Tile), Quaternion.identity, transform);
+                    _UI_Sprites.Add(Instantiate(_MoveTile, _Map.GetWorldPos(movePoint.Tile), Quaternion.identity, transform));
 
             var attackArea = ModelUnit.GetAttackArea().ToArray();
 
             if (attackArea.Length > 1)
                 foreach (var attackTile in attackArea)
-                    Instantiate(_AttackTile, _Map.GetWorldPos(attackTile), Quaternion.identity, transform);
+                    _UI_Sprites.Add(Instantiate(_AttackTile, _Map.GetWorldPos(attackTile), Quaternion.identity, transform));
         }
 
         public void HideUI()
         {
-            for (var i = 0; i < transform.childCount; ++i)
-                Destroy(transform.GetChild(i).gameObject);
+            foreach (var @object in _UI_Sprites)
+                Destroy(@object.gameObject);
+
+            _UI_Sprites.Clear();
         }
 
         private void ModelUnit_MovedAlongPath(IEnumerable<Model.Tile> path)
@@ -130,6 +138,11 @@ namespace Sof.Object
 
             ShowUI();
             _GameManager.DisableUIInteraction = false;
+        }
+
+        private void SetOwnerColor()
+        {
+            _OwnerFactionSprite.color = _GameManager.GetFactionColor(ModelUnit.Faction);
         }
     }
 }
