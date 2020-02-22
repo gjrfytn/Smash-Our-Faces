@@ -46,7 +46,7 @@ namespace Sof.Model
 
         private bool Dead => Health == 0;
 
-        public event System.Action<IEnumerable<Tile>> UnitMovedAlongPath;
+        public event System.Action<IEnumerable<Tile>> MovedAlongPath;
         public event System.Action Attacked;
         public event System.Action<int> TookHit;
         public event System.Action<int> Healed;
@@ -91,7 +91,7 @@ namespace Sof.Model
             {
                 _Map.MoveUnit(this, traversedPath.Last());
 
-                UnitMovedAlongPath?.Invoke(traversedPath);
+                MovedAlongPath?.Invoke(traversedPath);
             }
         }
 

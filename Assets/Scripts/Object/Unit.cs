@@ -41,7 +41,7 @@ namespace Sof.Object
             _Map = map != null ? map : throw new System.ArgumentNullException(nameof(map));
 
             ModelUnit = new Model.Unit(gameManager, map.ModelMap, _Speed, _Health, _Damage, _AttackRange, faction, true, _GoldCost);
-            ModelUnit.UnitMovedAlongPath += ModelUnit_UnitMovedAlongPath;
+            ModelUnit.MovedAlongPath += ModelUnit_MovedAlongPath;
             ModelUnit.Attacked += ModelUnit_Attacked;
             ModelUnit.TookHit += ModelUnit_TookHit;
             ModelUnit.Healed += ModelUnit_Healed;
@@ -69,7 +69,7 @@ namespace Sof.Object
                 Destroy(transform.GetChild(i).gameObject);
         }
 
-        private void ModelUnit_UnitMovedAlongPath(IEnumerable<Model.Tile> path)
+        private void ModelUnit_MovedAlongPath(IEnumerable<Model.Tile> path)
         {
             StartCoroutine(FollowPath(path));
         }
