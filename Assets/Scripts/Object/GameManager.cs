@@ -52,8 +52,9 @@ namespace Sof.Object
 
         private void Awake()
         {
+            var palette = new Auxiliary.Palette();
             _Factions = new List<Faction> { new Faction("Faction 1", 100), new Faction("Faction 2", 100) };
-            _FactionColors = _Factions.ToDictionary(f1 => f1, f2 => Random.ColorHSV());
+            _FactionColors = _Factions.ToDictionary(f1 => f1, f2 => palette.GetNewRandomColor());
         }
 
         private void Start()
@@ -143,7 +144,7 @@ namespace Sof.Object
         public Color GetFactionColor(Faction faction)
         {
             if (faction == null)
-                return Color.white;
+                return Color.gray;
 
             return _FactionColors[faction];
         }

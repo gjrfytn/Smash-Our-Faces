@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9147214406376253107}
   - component: {fileID: 4541110854258213652}
   m_Layer: 0
-  m_Name: house_roof_bw
+  m_Name: Roof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -70,8 +70,8 @@ SpriteRenderer:
   m_SortingLayerID: 848892575
   m_SortingLayer: -2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f57ef14c86f1236449d5653b275b65cf, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: cd45276a6f9b0f84d93d0c8174967e53, type: 3}
+  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 3823792155663516048}
   - component: {fileID: 8871508721140794630}
   m_Layer: 0
-  m_Name: house_base
+  m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

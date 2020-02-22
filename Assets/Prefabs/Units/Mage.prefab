@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9163239018993641645}
   - component: {fileID: 3176482177656293443}
   m_Layer: 0
-  m_Name: mage_base
+  m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 741830764100978136}
   - component: {fileID: 9050354084209620932}
   m_Layer: 0
-  m_Name: mage_clothing_bw
+  m_Name: Clothing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -206,8 +206,8 @@ SpriteRenderer:
   m_SortingLayerID: 429712239
   m_SortingLayer: -1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 3d10bc8368e7c994b8bfe7ed8d3e850e, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: e998a8deb45e3544390d35b4c4fc0d7b, type: 3}
+  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
