@@ -29,7 +29,7 @@ namespace Sof.Model
         public event System.Action<int> Healed;
         public event System.Action Died;
 
-        public Unit(ITime time, Map map, int movePoints, int health, int damage, int attackRange, Faction faction, bool critical)
+        public Unit(ITime time, Map map, int movePoints, int health, int damage, int attackRange, Faction faction, bool critical, int goldCost)
         {
             _Time = time;
             _Map = map;
@@ -39,7 +39,7 @@ namespace Sof.Model
             _AttackRange = attackRange;
             Faction = faction;
             Critical = critical;
-
+            GoldCost = goldCost;
             _MovePointsLeft = _MovePoints;
             _HealthLeft = _Health;
 

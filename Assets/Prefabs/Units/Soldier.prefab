@@ -102,3 +102,4 @@ MonoBehaviour:
   _Health: 10
   _Damage: 2
   _AttackRange: 1
+  _GoldCost: 25

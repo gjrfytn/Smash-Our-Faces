@@ -22,6 +22,8 @@ namespace Sof.Object
         private int _Damage;
         [SerializeField]
         private int _AttackRange;
+        [SerializeField]
+        private int _GoldCost;
 #pragma warning restore 0649
 
         public Model.Unit ModelUnit { get; private set; }
@@ -38,7 +40,7 @@ namespace Sof.Object
             _GameManager = gameManager != null ? gameManager : throw new System.ArgumentNullException(nameof(gameManager));
             _Map = map != null ? map : throw new System.ArgumentNullException(nameof(map));
 
-            ModelUnit = new Model.Unit(gameManager, map.ModelMap, _Speed, _Health, _Damage, _AttackRange, faction, true);
+            ModelUnit = new Model.Unit(gameManager, map.ModelMap, _Speed, _Health, _Damage, _AttackRange, faction, true, _GoldCost);
             ModelUnit.UnitMovedAlongPath += ModelUnit_UnitMovedAlongPath;
             ModelUnit.Attacked += ModelUnit_Attacked;
             ModelUnit.TookHit += ModelUnit_TookHit;
