@@ -7,21 +7,44 @@ namespace Sof.Model
     {
         private readonly ITime _Time;
         private readonly Map _Map;
-        private readonly int _MovePoints;
-        private readonly int _Health;
+        private readonly int _MaxMovePoints;
+        private readonly int _MaxHealth;
         private readonly int _Damage;
         private readonly int _AttackRange;
-
-        private int _MovePointsLeft;
-        private int _HealthLeft;
 
         public Faction Faction { get; private set; }
         public bool Critical { get; private set; }
         public int GoldCost { get; private set; }
-        public int Health => _HealthLeft;
-        public int MovePoints => _MovePointsLeft;
 
-        private bool Dead => _HealthLeft == 0;
+        private int _Health;
+        public int Health
+        {
+            get => _Health;
+            set
+            {
+                _Health = value;
+
+                HealthChanged?.Invoke();
+            }
+        }
+
+        public event System.Action HealthChanged;
+
+        private int _MovePoints;
+        public int MovePoints
+        {
+            get => _MovePoints;
+            set
+            {
+                _MovePoints = value;
+
+                MovePointsChanged?.Invoke();
+            }
+        }
+
+        public event System.Action MovePointsChanged;
+
+        private bool Dead => Health == 0;
 
         public event System.Action<IEnumerable<Tile>> UnitMovedAlongPath;
         public event System.Action Attacked;
@@ -33,15 +56,15 @@ namespace Sof.Model
         {
             _Time = time;
             _Map = map;
-            _MovePoints = movePoints;
-            _Health = health;
+            _MaxMovePoints = movePoints;
+            _MaxHealth = health;
             _Damage = damage;
             _AttackRange = attackRange;
             Faction = faction;
             Critical = critical;
             GoldCost = goldCost;
-            _MovePointsLeft = _MovePoints;
-            _HealthLeft = _Health;
+            _MovePoints = _MaxMovePoints;
+            _Health = _MaxHealth;
 
             _Time.TurnEnded += EndTurn;
         }
@@ -50,18 +73,18 @@ namespace Sof.Model
         {
             CheckIsAlive();
 
-            //if (_MovePointsLeft == 0) //TODO ??
+            //if (MovePoints == 0) //TODO ??
 
             var path = _Map.GetClosestPath(this, tile);
 
             var traversedPath = new List<Tile>();
             foreach (var pathTile in path)
             {
-                var movePointsAfterMove = _MovePointsLeft - pathTile.MoveCost;
+                var movePointsAfterMove = MovePoints - pathTile.MoveCost;
                 if (movePointsAfterMove >= 0)
                     traversedPath.Add(pathTile);
 
-                _MovePointsLeft = UnityEngine.Mathf.Max(0, movePointsAfterMove);
+                MovePoints = UnityEngine.Mathf.Max(0, movePointsAfterMove);
             }
 
             if (traversedPath.Any())
@@ -78,7 +101,7 @@ namespace Sof.Model
         {
             CheckIsAlive();
 
-            if (_MovePointsLeft == 0) //TODO ??
+            if (MovePoints == 0) //TODO ??
                 throw new System.InvalidOperationException("Unit has no move points.");
 
             if (!IsInAttackRange(unit))
@@ -88,7 +111,7 @@ namespace Sof.Model
                 throw new System.ArgumentException("Cannot attack friendly unit.", nameof(unit));
 
             unit.TakeHit(_Damage);
-            _MovePointsLeft = 0;
+            MovePoints = 0;
 
             Attacked?.Invoke();
         }
@@ -99,7 +122,7 @@ namespace Sof.Model
 
             var actualDamage = UnityEngine.Mathf.CeilToInt(damage * (1 - _Map.GetUnitTile(this).Defence));
 
-            _HealthLeft = UnityEngine.Mathf.Max(0, _HealthLeft - actualDamage);
+            Health = UnityEngine.Mathf.Max(0, _Health - actualDamage);
 
             TookHit?.Invoke(actualDamage);
 
@@ -117,7 +140,7 @@ namespace Sof.Model
         {
             CheckIsAlive();
 
-            _HealthLeft = UnityEngine.Mathf.Min(_Health, _HealthLeft + value);
+            Health = UnityEngine.Mathf.Min(_MaxHealth, _Health + value);
 
             Healed?.Invoke(value);
         }
@@ -125,7 +148,7 @@ namespace Sof.Model
         public IEnumerable<MovePoint> GetMoveRange() => _Map.GetMoveRange(this);
         public IEnumerable<Tile> GetAttackArea() => _Map.GetTilesInRange(this, _AttackRange); //TODO temp
 
-        private void EndTurn() => _MovePointsLeft = _MovePoints;
+        private void EndTurn() => MovePoints = _MaxMovePoints;
 
         private bool IsInAttackRange(Unit unit) => _Map.Distance(this, unit) <= _AttackRange;
 
