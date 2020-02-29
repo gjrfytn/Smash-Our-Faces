@@ -9,11 +9,14 @@
 
         public Castle(Map map, ITime time, int income, int heal) : base(time, map, income, heal)
         {
-            _Map = map;
+            _Map = map ?? throw new System.ArgumentNullException(nameof(map));
         }
 
         public void PurchaseUnit(Unit unit)
         {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+
             if (Owner == null)
                 throw new System.InvalidOperationException("Cannot purchase unit in neutral castle.");
 

@@ -21,8 +21,11 @@ namespace Sof.UI
 
         public void Setup(IEnumerable<Unit> availableUnits, System.Action<Unit> unitSelectAction)
         {
+            if (availableUnits == null)
+                throw new System.ArgumentNullException(nameof(availableUnits));
+
             _AvailableUnits = availableUnits.ToArray();
-            _UnitSelectAction = unitSelectAction;
+            _UnitSelectAction = unitSelectAction ?? throw new System.ArgumentNullException(nameof(unitSelectAction));
 
             _UnitListDropdown.ClearOptions();
             _UnitListDropdown.AddOptions(_AvailableUnits.Select(u => u.name).ToList());

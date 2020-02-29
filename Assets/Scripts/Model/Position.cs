@@ -25,7 +25,13 @@ namespace Sof.Model
             Y = y;
         }
 
-        public int Distance(Position pos) => UnityEngine.Mathf.Abs(X - pos.X) + UnityEngine.Mathf.Abs(Y - pos.Y);
+        public int Distance(Position pos)
+        {
+            if (pos == null)
+                throw new ArgumentNullException(nameof(pos));
+
+            return UnityEngine.Mathf.Abs(X - pos.X) + UnityEngine.Mathf.Abs(Y - pos.Y);
+        }
 
         public override bool Equals(object obj) => Equals(obj as Position);
         public bool Equals(Position other) => other != null && X == other.X && Y == other.Y;

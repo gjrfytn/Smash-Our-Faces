@@ -20,8 +20,13 @@ namespace Sof.Model
 
         public Map(IMapFile mapFile, IScenario scenario, ITime time)
         {
+            if (mapFile == null)
+                throw new System.ArgumentNullException(nameof(mapFile));
+            if (scenario == null)
+                throw new System.ArgumentNullException(nameof(scenario));
+
             _Pathfinder = new Pathfinding.Pathfinder(this);
-            _Time = time;
+            _Time = time ?? throw new System.ArgumentNullException(nameof(time));
 
             _Tiles = ConstructTiles(mapFile.Load());
 
@@ -29,24 +34,80 @@ namespace Sof.Model
                 occupation.Apply((Castle)this[occupation.Position].Object);
         }
 
-        public void Spawn(Unit unit, Tile tile) => tile.PlaceUnit(unit); //TODO
-        public void Spawn(Unit unit, Castle castle) => Spawn(unit, GetMapObjectTile(castle));
-        public void Remove(Unit unit) => this[GetUnitPos(unit)].RemoveUnit();
-        public int Distance(Unit unit1, Unit unit2) => Distance(GetUnitTile(unit1), GetUnitTile(unit2));
+        public void Spawn(Unit unit, Tile tile)
+        {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+            if (tile == null)
+                throw new System.ArgumentNullException(nameof(tile));
 
-        public IEnumerable<Tile> GetClosestPath(Unit unit, Tile tile) => _Pathfinder.GetClosestPath(GetUnitPos(unit), GetTilePos(tile)).Select(p => this[p]);
+            tile.PlaceUnit(unit); //TODO
+        }
+
+        public void Spawn(Unit unit, Castle castle)
+        {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+            if (castle == null)
+                throw new System.ArgumentNullException(nameof(castle));
+
+            Spawn(unit, GetMapObjectTile(castle));
+        }
+
+        public void Remove(Unit unit)
+        {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+
+            this[GetUnitPos(unit)].RemoveUnit();
+        }
+
+        public int Distance(Unit unit1, Unit unit2)
+        {
+            if (unit1 == null)
+                throw new System.ArgumentNullException(nameof(unit1));
+            if (unit2 == null)
+                throw new System.ArgumentNullException(nameof(unit2));
+
+            return Distance(GetUnitTile(unit1), GetUnitTile(unit2));
+        }
+
+        public IEnumerable<Tile> GetClosestPath(Unit unit, Tile tile)
+        {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+            if (tile == null)
+                throw new System.ArgumentNullException(nameof(tile));
+
+            return _Pathfinder.GetClosestPath(GetUnitPos(unit), GetTilePos(tile)).Select(p => this[p]);
+        }
 
         public void MoveUnit(Unit unit, Tile tile)
         {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+            if (tile == null)
+                throw new System.ArgumentNullException(nameof(tile));
+
             Remove(unit);
             Spawn(unit, tile);
         }
 
-        public IEnumerable<MovePoint> GetMoveRange(Unit unit) => _Pathfinder.GetMoveRange(GetUnitPos(unit), unit.MovePoints)
-                                                                            .Select(p => new MovePoint(this[p.Pos], p.Distance));
+        public IEnumerable<MovePoint> GetMoveRange(Unit unit)
+        {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+
+            return _Pathfinder.GetMoveRange(GetUnitPos(unit), unit.MovePoints).Select(p => new MovePoint(this[p.Pos], p.Distance));
+        }
 
         public IEnumerable<Tile> GetTilesInRange(Unit unit, int range)
         {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+            if (range < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(range), "Range cannot be negative.");
+
             var unitTile = GetUnitTile(unit);
 
             var tiles = new List<Tile>();
@@ -57,10 +118,19 @@ namespace Sof.Model
             return tiles.Where(t => Distance(unitTile, t) <= range);
         }
 
-        public Tile GetUnitTile(Unit unit) => TryGetUnitTile(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
+        public Tile GetUnitTile(Unit unit)
+        {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+
+            return TryGetUnitTile(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
+        }
 
         public Tile TryGetUnitTile(Unit unit)
         {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+
             for (var y = 0; y < Height; ++y)
                 for (var x = 0; x < Width; ++x)
                     if (_Tiles[x, y].Unit == unit)
@@ -69,10 +139,19 @@ namespace Sof.Model
             return null;
         }
 
-        public Position GetMapObjectPos(MapObject.MapObject mapObject) => TryGetMapObjectPos(mapObject) ?? throw new System.ArgumentException("Map does not contain specified object.", nameof(mapObject));
+        public Position GetMapObjectPos(MapObject.MapObject mapObject)
+        {
+            if (mapObject == null)
+                throw new System.ArgumentNullException(nameof(mapObject));
+
+            return TryGetMapObjectPos(mapObject) ?? throw new System.ArgumentException("Map does not contain specified object.", nameof(mapObject));
+        }
 
         public Position TryGetMapObjectPos(MapObject.MapObject mapObject)
         {
+            if (mapObject == null)
+                throw new System.ArgumentNullException(nameof(mapObject));
+
             for (var y = 0; y < Height; ++y)
                 for (var x = 0; x < Width; ++x)
                     if (_Tiles[x, y].Object == mapObject)
@@ -81,10 +160,29 @@ namespace Sof.Model
             return null;
         }
 
-        public bool IsBlocked(Position pos) => this[pos].Blocked;
-        public int GetMoveCost(Position pos) => this[pos].MoveCost;
+        public bool IsBlocked(Position pos)
+        {
+            if (pos == null)
+                throw new System.ArgumentNullException(nameof(pos));
 
-        public Unit GetUnitIn(Property property) => GetMapObjectTile(property).Unit;
+            return this[pos].Blocked;
+        }
+
+        public int GetMoveCost(Position pos)
+        {
+            if (pos == null)
+                throw new System.ArgumentNullException(nameof(pos));
+
+            return this[pos].MoveCost;
+        }
+
+        public Unit GetUnitIn(Property property)
+        {
+            if (property == null)
+                throw new System.ArgumentNullException(nameof(property));
+
+            return GetMapObjectTile(property).Unit;
+        }
 
         private Position GetUnitPos(Unit unit) => TryGetUnitPos(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
 

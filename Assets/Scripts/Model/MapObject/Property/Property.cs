@@ -22,7 +22,14 @@
 
         public Property(ITime time, IMap map, int income, int heal)
         {
-            _Map = map;
+            if (time == null)
+                throw new System.ArgumentNullException(nameof(time));
+            if (income < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(income), "Income cannot be negative.");
+            if (heal < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(heal), "Heal cannot be negative.");
+
+            _Map = map ?? throw new System.ArgumentNullException(nameof(map));
             _Income = income;
             _Heal = heal;
 

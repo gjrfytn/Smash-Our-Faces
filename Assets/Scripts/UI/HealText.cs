@@ -4,7 +4,13 @@
     {
         public int Heal
         {
-            set => Text = value.ToString();
+            set
+            {
+                if (value < 0)
+                    throw new System.ArgumentOutOfRangeException(nameof(value), "Heal cannot be negative.");
+
+                Text = value.ToString();
+            }
         }
     }
 }

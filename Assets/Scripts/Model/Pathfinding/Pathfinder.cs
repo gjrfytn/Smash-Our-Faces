@@ -9,11 +9,16 @@ namespace Sof.Model.Pathfinding
 
         public Pathfinder(IMap map)
         {
-            _Map = map;
+            _Map = map ?? throw new System.ArgumentNullException(nameof(map));
         }
 
         public IEnumerable<Position> GetClosestPath(Position from, Position to)
         {
+            if (from == null)
+                throw new System.ArgumentNullException(nameof(from));
+            if (to == null)
+                throw new System.ArgumentNullException(nameof(to));
+
             var processedCells = new Dictionary<Position, Position>();
             var costs = new Dictionary<Position, int>();
             var queue = new List<(Position pos, int cost)>();
@@ -35,6 +40,11 @@ namespace Sof.Model.Pathfinding
 
         public IEnumerable<MovePoint> GetMoveRange(Position pos, int movePoints)
         {
+            if (pos == null)
+                throw new System.ArgumentNullException(nameof(pos));
+            if (movePoints < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(movePoints), "Move points cannot be negative.");
+
             var processedCells = new Dictionary<Position, Position>();
             var costs = new Dictionary<Position, int>();
             var queue = new List<(Position pos, int cost)>();

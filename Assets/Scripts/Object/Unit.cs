@@ -44,6 +44,9 @@ namespace Sof.Object
             _GameManager = gameManager != null ? gameManager : throw new System.ArgumentNullException(nameof(gameManager));
             _Map = map != null ? map : throw new System.ArgumentNullException(nameof(map));
 
+            if (faction == null)
+                throw new System.ArgumentNullException(nameof(faction));
+
             ModelUnit = new Model.Unit(gameManager, map.ModelMap, _Speed, _Health, _Damage, _AttackRange, faction, true, _GoldCost);
             ModelUnit.MovedAlongPath += ModelUnit_MovedAlongPath;
             ModelUnit.Attacked += ModelUnit_Attacked;

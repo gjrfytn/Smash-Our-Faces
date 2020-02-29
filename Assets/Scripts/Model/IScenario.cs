@@ -4,7 +4,6 @@ namespace Sof.Model
 {
     public interface IScenario
     {
-
         IEnumerable<Faction> Factions { get; }
         IEnumerable<Occupation> Occupations { get; }
     }

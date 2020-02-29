@@ -14,7 +14,7 @@ namespace Sof.UI
 
         public void Setup(Model.Faction faction)
         {
-            _Faction = faction;
+            _Faction = faction ?? throw new System.ArgumentNullException(nameof(faction));
 
             _Faction.GoldChanged += Faction_GoldChanged;
 

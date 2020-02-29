@@ -128,7 +128,7 @@ namespace Sof.Object
 
         public void DrawPath(IEnumerable<Model.Tile> pathTiles)
         {
-            if (pathTiles is null)
+            if (pathTiles == null)
                 throw new System.ArgumentNullException(nameof(pathTiles));
 
             const float zOffset = -0.1f;
@@ -140,9 +140,21 @@ namespace Sof.Object
 
         public void ClearPath() => _LineRenderer.positionCount = 0;
 
-        public Vector2 GetWorldPos(Model.Tile tile) => _Tiles.Single(t => t.ModelTile == tile).transform.position;
+        public Vector2 GetWorldPos(Model.Tile tile)
+        {
+            if (tile == null)
+                throw new System.ArgumentNullException(nameof(tile));
 
-        public static Vector2 ConvertToWorldPos(Position position) => new Vector2(position.X, position.Y);
+            return _Tiles.Single(t => t.ModelTile == tile).transform.position;
+        }
+
+        public static Vector2 ConvertToWorldPos(Position position)
+        {
+            if (position == null)
+                throw new System.ArgumentNullException(nameof(position));
+
+            return new Vector2(position.X, position.Y);
+        }
 
         private MapObject ChooseRoadPiece(Position pos)
         {

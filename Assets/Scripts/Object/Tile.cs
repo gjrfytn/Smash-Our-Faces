@@ -17,6 +17,9 @@ namespace Sof.Object
 
         public T InstantiateMapObject<T>(T @object) where T : MapObject
         {
+            if (@object == null)
+                throw new System.ArgumentNullException(nameof(@object));
+
             if (_Object != null)
                 throw new System.InvalidOperationException("Tile already has object.");
 

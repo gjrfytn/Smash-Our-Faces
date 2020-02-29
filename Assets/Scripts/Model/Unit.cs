@@ -54,13 +54,24 @@ namespace Sof.Model
 
         public Unit(ITime time, Map map, int movePoints, int health, int damage, int attackRange, Faction faction, bool critical, int goldCost)
         {
-            _Time = time;
-            _Map = map;
+            if (movePoints < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(movePoints), "Move points cannot be negative.");
+            if (health < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(health), "Health cannot be negative.");
+            if (damage < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(damage), "Damage cannot be negative.");
+            if (attackRange < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(attackRange), "Attack range cannot be negative.");
+            if (goldCost < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(goldCost), "Gold cost cannot be negative.");
+
+            _Time = time ?? throw new System.ArgumentNullException(nameof(time));
+            _Map = map ?? throw new System.ArgumentNullException(nameof(map));
             _MaxMovePoints = movePoints;
             _MaxHealth = health;
             _Damage = damage;
             _AttackRange = attackRange;
-            Faction = faction;
+            Faction = faction ?? throw new System.ArgumentNullException(nameof(faction));
             Critical = critical;
             GoldCost = goldCost;
             _MovePoints = _MaxMovePoints;
@@ -71,6 +82,9 @@ namespace Sof.Model
 
         public void Move(Tile tile)
         {
+            if (tile == null)
+                throw new System.ArgumentNullException(nameof(tile));
+
             CheckIsAlive();
 
             //if (MovePoints == 0) //TODO ??
@@ -95,10 +109,19 @@ namespace Sof.Model
             }
         }
 
-        public bool CanAttack(Unit unit) => Faction != unit.Faction && IsInAttackRange(unit) && MovePoints != 0;
+        public bool CanAttack(Unit unit)
+        {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+
+            return Faction != unit.Faction && IsInAttackRange(unit) && MovePoints != 0;
+        }
 
         public void Attack(Unit unit)
         {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+
             CheckIsAlive();
 
             if (MovePoints == 0) //TODO ??

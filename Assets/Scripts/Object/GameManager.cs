@@ -66,6 +66,9 @@ namespace Sof.Object
 
         public void OnTileHover(Tile tile)
         {
+            if (tile == null)
+                throw new System.ArgumentNullException(nameof(tile));
+
             if (DisableUIInteraction)
                 return;
 
@@ -82,6 +85,9 @@ namespace Sof.Object
 
         public void OnTileLeftClick(Tile tile)
         {
+            if (tile == null)
+                throw new System.ArgumentNullException(nameof(tile));
+
             if (DisableUIInteraction)
                 return;
 
@@ -122,6 +128,9 @@ namespace Sof.Object
 
         public void OnTileRightClick(Tile tile)
         {
+            if (tile == null)
+                throw new System.ArgumentNullException(nameof(tile));
+
             if (DisableUIInteraction)
                 return;
 
@@ -131,6 +140,9 @@ namespace Sof.Object
 
         public void OnCastleRightClick(Castle castle)
         {
+            if (castle == null)
+                throw new System.ArgumentNullException(nameof(castle));
+
             if (_SelectedUnit != null)
                 DeselectUnit();
 
@@ -160,6 +172,9 @@ namespace Sof.Object
 
         public void DebugCreateUnit(Faction faction)
         {
+            if (faction == null)
+                throw new System.ArgumentNullException(nameof(faction));
+
             if (DisableUIInteraction)
                 return;
 
@@ -169,20 +184,33 @@ namespace Sof.Object
             _Units.Add(_SpawnedUnit);
         }
 
-        internal void OnUnitHit(Unit unit, int damage)
+        public void OnUnitHit(Unit unit, int damage)
         {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+            if (damage < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(damage), "Damage cannot be negative.");
+
             var damageText = InstantiateTextAboveUnit(unit, _DamageText);
             damageText.Damage = damage;
         }
 
-        internal void OnUnitHeal(Unit unit, int heal)
+        public void OnUnitHeal(Unit unit, int heal)
         {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+            if (heal < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(heal), "Heal cannot be negative.");
+
             var healText = InstantiateTextAboveUnit(unit, _HealText);
             healText.Heal = heal;
         }
 
-        internal void OnCriticalUnitDeath(Faction faction)
+        public void OnCriticalUnitDeath(Faction faction)
         {
+            if (faction == null)
+                throw new System.ArgumentNullException(nameof(faction));
+
             _Notifier.ShowNotification($"{faction.Name} have lost!");
 
             if (_CurrentPlayerFaction == faction)

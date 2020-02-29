@@ -7,7 +7,10 @@
 
         public MovePoint(Tile tile, int distance)
         {
-            Tile = tile;
+            if (distance < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(distance), "Distance cannot be negative.");
+
+            Tile = tile ?? throw new System.ArgumentNullException(nameof(tile));
             Distance = distance;
         }
     }

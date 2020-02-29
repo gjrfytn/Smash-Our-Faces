@@ -11,7 +11,7 @@ namespace Sof.Auxiliary
 
         public XmlMap(string xml)
         {
-            _Xml = xml;
+            _Xml = xml ?? throw new System.ArgumentNullException(nameof(xml));
         }
 
         public TileDefinition[,] Load()

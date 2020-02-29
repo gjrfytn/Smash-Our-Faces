@@ -4,7 +4,13 @@
     {
         public int Damage
         {
-            set => Text = value.ToString();
+            set
+            {
+                if (value < 0)
+                    throw new System.ArgumentOutOfRangeException(nameof(value), "Damage cannot be negative.");
+
+                Text = value.ToString();
+            }
         }
     }
 }

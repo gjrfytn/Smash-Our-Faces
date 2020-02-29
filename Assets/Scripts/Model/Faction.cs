@@ -20,6 +20,9 @@ namespace Sof.Model
 
             public void PurchaseUnit(Unit unit)
             {
+                if (unit == null)
+                    throw new System.ArgumentNullException(nameof(unit));
+
                 if (Gold < unit.GoldCost)
                     throw new System.Exception("No gold to buy unit.");
 
@@ -53,6 +56,9 @@ namespace Sof.Model
             if (string.IsNullOrWhiteSpace(name))
                 throw new System.ArgumentException("Name cannot be empty or whitespace.", nameof(name));
 
+            if (gold < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(gold), "Faction gold cannot be negative.");
+
             if (_FactionNames.Contains(name))
                 throw new System.ArgumentException($"Faction with name \"{name}\" already exists.", nameof(name));
 
@@ -63,8 +69,21 @@ namespace Sof.Model
             _Treasury.GoldChanged += Treasury_GoldChanged;
         }
 
-        public void PurchaseUnit(Unit unit) => _Treasury.PurchaseUnit(unit);
-        public void RecieveIncome(int income) => _Treasury.AddGold(income);
+        public void PurchaseUnit(Unit unit)
+        {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+
+            _Treasury.PurchaseUnit(unit);
+        }
+
+        public void RecieveIncome(int income)
+        {
+            if (income < 0)
+                throw new System.ArgumentOutOfRangeException(nameof(income), "Income cannot be negative.");
+
+            _Treasury.AddGold(income);
+        }
 
         private void Treasury_GoldChanged(int change) => GoldChanged?.Invoke(change);
     }

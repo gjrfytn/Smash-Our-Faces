@@ -19,7 +19,7 @@ namespace Sof.UI
 
         public void Setup(Unit unit)
         {
-            _Unit = unit;
+            _Unit = unit != null ? unit : throw new System.ArgumentNullException(nameof(unit));
 
             _Unit.ModelUnit.HealthChanged += ModelUnit_HealthChanged;
             _Unit.ModelUnit.MovePointsChanged += ModelUnit_MovePointsChanged;
