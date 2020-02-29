@@ -1,4 +1,5 @@
-﻿using Sof.Model;
+﻿using Sof.Auxiliary;
+using Sof.Model;
 using Sof.UI;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +54,7 @@ namespace Sof.Object
         private void Awake()
         {
             var palette = new Auxiliary.Palette();
-            _Factions = new List<Faction> { new Faction("Faction 1", 100), new Faction("Faction 2", 100) };
+            _Factions = new List<Faction> { new Faction("Faction 1", new PositiveInt(100)), new Faction("Faction 2", new PositiveInt(100)) };
             _FactionColors = _Factions.ToDictionary(f1 => f1, f2 => palette.GetNewRandomColor());
         }
 
@@ -178,29 +179,25 @@ namespace Sof.Object
             if (DisableUIInteraction)
                 return;
 
-            _SpawnedUnit = Instantiate(_UnitPrefabs[0], Map.ConvertToWorldPos(new Position(_Map.ModelMap.Width / 2, _Map.ModelMap.Height / 2)), Quaternion.identity, transform);
+            _SpawnedUnit = Instantiate(_UnitPrefabs[0], Map.ConvertToWorldPos(new Position(_Map.ModelMap.Width.Value / 2, _Map.ModelMap.Height.Value / 2)), Quaternion.identity, transform);
             _SpawnedUnit.Initialize(this, _Map, faction);
             _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
             _Units.Add(_SpawnedUnit);
         }
 
-        public void OnUnitHit(Unit unit, int damage)
+        public void OnUnitHit(Unit unit, PositiveInt damage)
         {
             if (unit == null)
                 throw new System.ArgumentNullException(nameof(unit));
-            if (damage < 0)
-                throw new System.ArgumentOutOfRangeException(nameof(damage), "Damage cannot be negative.");
 
             var damageText = InstantiateTextAboveUnit(unit, _DamageText);
             damageText.Damage = damage;
         }
 
-        public void OnUnitHeal(Unit unit, int heal)
+        public void OnUnitHeal(Unit unit, PositiveInt heal)
         {
             if (unit == null)
                 throw new System.ArgumentNullException(nameof(unit));
-            if (heal < 0)
-                throw new System.ArgumentOutOfRangeException(nameof(heal), "Heal cannot be negative.");
 
             var healText = InstantiateTextAboveUnit(unit, _HealText);
             healText.Heal = heal;

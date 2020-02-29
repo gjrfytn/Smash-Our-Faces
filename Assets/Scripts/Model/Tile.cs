@@ -1,4 +1,6 @@
 ﻿
+using Sof.Auxiliary;
+
 namespace Sof.Model
 {
     public class Tile
@@ -7,7 +9,7 @@ namespace Sof.Model
         public MapObject.MapObject Object { get; }
         public Unit Unit { get; private set; }
 
-        public int MoveCost => Ground.MoveCost + (Object?.MoveCostModificator ?? 0);
+        public PositiveInt MoveCost => new PositiveInt(Ground.MoveCost.Value + (Object?.MoveCostModificator ?? 0));
         public float Defence => UnityEngine.Mathf.Min(1, Ground.Defence + (Object?.DefenceModificator ?? 0));
 
         public bool Blocked => Unit != null;

@@ -1,4 +1,5 @@
-﻿using Sof.Model.Ground;
+﻿using Sof.Auxiliary;
+using Sof.Model.Ground;
 using Sof.Model.MapObject;
 using Sof.Model.MapObject.Property;
 using System.Collections.Generic;
@@ -13,8 +14,8 @@ namespace Sof.Model
 
         private readonly Tile[,] _Tiles;
 
-        public int Width => _Tiles.GetLength(0);
-        public int Height => _Tiles.GetLength(1);
+        public PositiveInt Width => new PositiveInt(_Tiles.GetLength(0));
+        public PositiveInt Height => new PositiveInt(_Tiles.GetLength(1));
 
         public Tile this[Position pos] => _Tiles[pos.X, pos.Y];
 
@@ -62,7 +63,7 @@ namespace Sof.Model
             this[GetUnitPos(unit)].RemoveUnit();
         }
 
-        public int Distance(Unit unit1, Unit unit2)
+        public PositiveInt Distance(Unit unit1, Unit unit2)
         {
             if (unit1 == null)
                 throw new System.ArgumentNullException(nameof(unit1));
@@ -101,21 +102,19 @@ namespace Sof.Model
             return _Pathfinder.GetMoveRange(GetUnitPos(unit), unit.MovePoints).Select(p => new MovePoint(this[p.Pos], p.Distance));
         }
 
-        public IEnumerable<Tile> GetTilesInRange(Unit unit, int range)
+        public IEnumerable<Tile> GetTilesInRange(Unit unit, PositiveInt range)
         {
             if (unit == null)
                 throw new System.ArgumentNullException(nameof(unit));
-            if (range < 0)
-                throw new System.ArgumentOutOfRangeException(nameof(range), "Range cannot be negative.");
 
             var unitTile = GetUnitTile(unit);
 
             var tiles = new List<Tile>();
-            for (var y = 0; y < Height; ++y)
-                for (var x = 0; x < Width; ++x)
+            for (var y = 0; y < Height.Value; ++y)
+                for (var x = 0; x < Width.Value; ++x)
                     tiles.Add(_Tiles[x, y]);
 
-            return tiles.Where(t => Distance(unitTile, t) <= range);
+            return tiles.Where(t => Distance(unitTile, t).Value <= range.Value);
         }
 
         public Tile GetUnitTile(Unit unit)
@@ -131,8 +130,8 @@ namespace Sof.Model
             if (unit == null)
                 throw new System.ArgumentNullException(nameof(unit));
 
-            for (var y = 0; y < Height; ++y)
-                for (var x = 0; x < Width; ++x)
+            for (var y = 0; y < Height.Value; ++y)
+                for (var x = 0; x < Width.Value; ++x)
                     if (_Tiles[x, y].Unit == unit)
                         return _Tiles[x, y];
 
@@ -152,8 +151,8 @@ namespace Sof.Model
             if (mapObject == null)
                 throw new System.ArgumentNullException(nameof(mapObject));
 
-            for (var y = 0; y < Height; ++y)
-                for (var x = 0; x < Width; ++x)
+            for (var y = 0; y < Height.Value; ++y)
+                for (var x = 0; x < Width.Value; ++x)
                     if (_Tiles[x, y].Object == mapObject)
                         return new Position(x, y);
 
@@ -168,7 +167,7 @@ namespace Sof.Model
             return this[pos].Blocked;
         }
 
-        public int GetMoveCost(Position pos)
+        public PositiveInt GetMoveCost(Position pos)
         {
             if (pos == null)
                 throw new System.ArgumentNullException(nameof(pos));
@@ -188,8 +187,8 @@ namespace Sof.Model
 
         private Position TryGetUnitPos(Unit unit)
         {
-            for (var y = 0; y < Height; ++y)
-                for (var x = 0; x < Width; ++x)
+            for (var y = 0; y < Height.Value; ++y)
+                for (var x = 0; x < Width.Value; ++x)
                     if (_Tiles[x, y].Unit == unit)
                         return new Position(x, y);
 
@@ -200,8 +199,8 @@ namespace Sof.Model
 
         private Position TryGetTilePos(Tile tile)
         {
-            for (var y = 0; y < Height; ++y)
-                for (var x = 0; x < Width; ++x)
+            for (var y = 0; y < Height.Value; ++y)
+                for (var x = 0; x < Width.Value; ++x)
                     if (_Tiles[x, y] == tile)
                         return new Position(x, y);
 
@@ -212,8 +211,8 @@ namespace Sof.Model
 
         private Tile TryGetMapObjectTile(MapObject.MapObject mapObject)
         {
-            for (var y = 0; y < Height; ++y)
-                for (var x = 0; x < Width; ++x)
+            for (var y = 0; y < Height.Value; ++y)
+                for (var x = 0; x < Width.Value; ++x)
                     if (_Tiles[x, y].Object == mapObject)
                         return _Tiles[x, y];
 
@@ -231,7 +230,7 @@ namespace Sof.Model
             return tiles;
         }
 
-        private int Distance(Tile tile1, Tile tile2) => GetTilePos(tile1).Distance(GetTilePos(tile2));
+        private PositiveInt Distance(Tile tile1, Tile tile2) => new PositiveInt(GetTilePos(tile1).Distance(GetTilePos(tile2)));
 
         private Ground.Ground CreateGround(GroundType type)
         {
@@ -255,9 +254,9 @@ namespace Sof.Model
                 case MapObjectType.None:
                     return null;
                 case MapObjectType.Castle:
-                    return new Castle(this, _Time, 10, 10); //TODO
+                    return new Castle(this, _Time, new PositiveInt(10), new PositiveInt(10)); //TODO
                 case MapObjectType.House:
-                    return new House(_Time, this, 5, 10); //TODO
+                    return new House(_Time, this, new PositiveInt(5), new PositiveInt(10)); //TODO
                 case MapObjectType.Bridge:
                     return new Bridge();
                 case MapObjectType.Road:

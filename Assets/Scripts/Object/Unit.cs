@@ -1,4 +1,5 @@
-﻿using Sof.Model;
+﻿using Sof.Auxiliary;
+using Sof.Model;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,7 @@ namespace Sof.Object
             if (faction == null)
                 throw new System.ArgumentNullException(nameof(faction));
 
-            ModelUnit = new Model.Unit(gameManager, map.ModelMap, _Speed, _Health, _Damage, _AttackRange, faction, true, _GoldCost);
+            ModelUnit = new Model.Unit(gameManager, map.ModelMap, new PositiveInt(_Speed), new PositiveInt(_Health), new PositiveInt(_Damage), new PositiveInt(_AttackRange), faction, true, new PositiveInt(_GoldCost));
             ModelUnit.MovedAlongPath += ModelUnit_MovedAlongPath;
             ModelUnit.Attacked += ModelUnit_Attacked;
             ModelUnit.TookHit += ModelUnit_TookHit;
@@ -90,12 +91,12 @@ namespace Sof.Object
             StartCoroutine(PlayAttack());
         }
 
-        private void ModelUnit_TookHit(int damage)
+        private void ModelUnit_TookHit(PositiveInt damage)
         {
             _GameManager.OnUnitHit(this, damage);
         }
 
-        private void ModelUnit_Healed(int heal)
+        private void ModelUnit_Healed(PositiveInt heal)
         {
             _GameManager.OnUnitHeal(this, heal);
         }

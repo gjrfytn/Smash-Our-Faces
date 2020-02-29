@@ -71,8 +71,8 @@ namespace Sof.Object
             ModelMap = new Model.Map(new XmlMap(_MapFile.text), _GameManager, _GameManager);
 
             _Tiles = new List<Tile>();
-            for (var y = 0; y < ModelMap.Height; ++y)
-                for (var x = 0; x < ModelMap.Width; ++x)
+            for (var y = 0; y < ModelMap.Height.Value; ++y)
+                for (var x = 0; x < ModelMap.Width.Value; ++x)
                 {
                     var pos = new Position(x, y);
                     var tile = Instantiate(_InteractionTile, new Vector3(x, y, 0), Quaternion.identity, transform);
@@ -159,8 +159,8 @@ namespace Sof.Object
         private MapObject ChooseRoadPiece(Position pos)
         {
             var hasRoadLeft = pos.X != 0 && CheckIfTileHasRoad(pos.Left);
-            var hasRoadUp = pos.Y != ModelMap.Height - 1 && CheckIfTileHasRoad(pos.Above);
-            var hasRoadRight = pos.X != ModelMap.Width - 1 && CheckIfTileHasRoad(pos.Right);
+            var hasRoadUp = pos.Y != ModelMap.Height.Value - 1 && CheckIfTileHasRoad(pos.Above);
+            var hasRoadRight = pos.X != ModelMap.Width.Value - 1 && CheckIfTileHasRoad(pos.Right);
             var hasRoadDown = pos.Y != 0 && CheckIfTileHasRoad(pos.Below);
 
             if (hasRoadLeft && hasRoadUp && hasRoadRight && hasRoadDown)

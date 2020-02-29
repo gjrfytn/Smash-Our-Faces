@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Sof.Auxiliary;
+using System.Collections.Generic;
 
 namespace Sof.Model
 {
@@ -6,15 +7,12 @@ namespace Sof.Model
     {
         private class Treasury
         {
-            public int Gold { get;private set; }
+            public PositiveInt Gold { get; private set; }
 
             public event System.Action<int> GoldChanged;
 
-            public Treasury(int gold)
+            public Treasury(PositiveInt gold)
             {
-                if (gold < 0)
-                    throw new System.ArgumentOutOfRangeException(nameof(gold), gold, "Treasury gold cannot be negative.");
-
                 Gold = gold;
             }
 
@@ -23,22 +21,19 @@ namespace Sof.Model
                 if (unit == null)
                     throw new System.ArgumentNullException(nameof(unit));
 
-                if (Gold < unit.GoldCost)
+                if (Gold.Value < unit.GoldCost.Value)
                     throw new System.Exception("No gold to buy unit.");
 
-                Gold -= unit.GoldCost;
+                Gold = new PositiveInt(Gold.Value - unit.GoldCost.Value);
 
-                GoldChanged?.Invoke(-unit.GoldCost);
+                GoldChanged?.Invoke(-unit.GoldCost.Value);
             }
 
-            public void AddGold(int gold)
+            public void AddGold(PositiveInt gold)
             {
-                if (gold < 0)
-                    throw new System.ArgumentOutOfRangeException(nameof(gold), gold, "Added gold cannot be negative.");
+                Gold = new PositiveInt(Gold.Value + gold.Value);
 
-                Gold += gold;
-
-                GoldChanged?.Invoke(gold);
+                GoldChanged?.Invoke(gold.Value);
             }
         }
 
@@ -47,17 +42,14 @@ namespace Sof.Model
         private readonly Treasury _Treasury;
 
         public string Name { get; }
-        public int Gold => _Treasury.Gold;
+        public PositiveInt Gold => _Treasury.Gold;
 
         public event System.Action<int> GoldChanged;
 
-        public Faction(string name, int gold)
+        public Faction(string name, PositiveInt gold)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new System.ArgumentException("Name cannot be empty or whitespace.", nameof(name));
-
-            if (gold < 0)
-                throw new System.ArgumentOutOfRangeException(nameof(gold), "Faction gold cannot be negative.");
 
             if (_FactionNames.Contains(name))
                 throw new System.ArgumentException($"Faction with name \"{name}\" already exists.", nameof(name));
@@ -77,13 +69,7 @@ namespace Sof.Model
             _Treasury.PurchaseUnit(unit);
         }
 
-        public void RecieveIncome(int income)
-        {
-            if (income < 0)
-                throw new System.ArgumentOutOfRangeException(nameof(income), "Income cannot be negative.");
-
-            _Treasury.AddGold(income);
-        }
+        public void RecieveIncome(PositiveInt income) => _Treasury.AddGold(income);
 
         private void Treasury_GoldChanged(int change) => GoldChanged?.Invoke(change);
     }

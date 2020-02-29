@@ -1,15 +1,14 @@
-﻿namespace Sof.Model
+﻿using Sof.Auxiliary;
+
+namespace Sof.Model
 {
     public class MovePoint
     {
         public Tile Tile { get; }
-        public int Distance { get; }
+        public PositiveInt Distance { get; }
 
-        public MovePoint(Tile tile, int distance)
+        public MovePoint(Tile tile, PositiveInt distance)
         {
-            if (distance < 0)
-                throw new System.ArgumentOutOfRangeException(nameof(distance), "Distance cannot be negative.");
-
             Tile = tile ?? throw new System.ArgumentNullException(nameof(tile));
             Distance = distance;
         }

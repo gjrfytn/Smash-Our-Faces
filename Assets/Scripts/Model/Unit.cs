@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Sof.Auxiliary;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Sof.Model
@@ -7,17 +8,17 @@ namespace Sof.Model
     {
         private readonly ITime _Time;
         private readonly Map _Map;
-        private readonly int _MaxMovePoints;
-        private readonly int _MaxHealth;
-        private readonly int _Damage;
-        private readonly int _AttackRange;
+        private readonly PositiveInt _MaxMovePoints;
+        private readonly PositiveInt _MaxHealth;
+        private readonly PositiveInt _Damage;
+        private readonly PositiveInt _AttackRange;
 
         public Faction Faction { get; private set; }
         public bool Critical { get; private set; }
-        public int GoldCost { get; private set; }
+        public PositiveInt GoldCost { get; private set; }
 
-        private int _Health;
-        public int Health
+        private PositiveInt _Health;
+        public PositiveInt Health
         {
             get => _Health;
             set
@@ -30,8 +31,8 @@ namespace Sof.Model
 
         public event System.Action HealthChanged;
 
-        private int _MovePoints;
-        public int MovePoints
+        private PositiveInt _MovePoints;
+        public PositiveInt MovePoints
         {
             get => _MovePoints;
             set
@@ -44,27 +45,16 @@ namespace Sof.Model
 
         public event System.Action MovePointsChanged;
 
-        private bool Dead => Health == 0;
+        private bool Dead => Health.Value == 0;
 
         public event System.Action<IEnumerable<Tile>> MovedAlongPath;
         public event System.Action Attacked;
-        public event System.Action<int> TookHit;
-        public event System.Action<int> Healed;
+        public event System.Action<PositiveInt> TookHit;
+        public event System.Action<PositiveInt> Healed;
         public event System.Action Died;
 
-        public Unit(ITime time, Map map, int movePoints, int health, int damage, int attackRange, Faction faction, bool critical, int goldCost)
+        public Unit(ITime time, Map map, PositiveInt movePoints, PositiveInt health, PositiveInt damage, PositiveInt attackRange, Faction faction, bool critical, PositiveInt goldCost)
         {
-            if (movePoints < 0)
-                throw new System.ArgumentOutOfRangeException(nameof(movePoints), "Move points cannot be negative.");
-            if (health < 0)
-                throw new System.ArgumentOutOfRangeException(nameof(health), "Health cannot be negative.");
-            if (damage < 0)
-                throw new System.ArgumentOutOfRangeException(nameof(damage), "Damage cannot be negative.");
-            if (attackRange < 0)
-                throw new System.ArgumentOutOfRangeException(nameof(attackRange), "Attack range cannot be negative.");
-            if (goldCost < 0)
-                throw new System.ArgumentOutOfRangeException(nameof(goldCost), "Gold cost cannot be negative.");
-
             _Time = time ?? throw new System.ArgumentNullException(nameof(time));
             _Map = map ?? throw new System.ArgumentNullException(nameof(map));
             _MaxMovePoints = movePoints;
@@ -94,11 +84,11 @@ namespace Sof.Model
             var traversedPath = new List<Tile>();
             foreach (var pathTile in path)
             {
-                var movePointsAfterMove = MovePoints - pathTile.MoveCost;
+                var movePointsAfterMove = MovePoints.Value - pathTile.MoveCost.Value;
                 if (movePointsAfterMove >= 0)
                     traversedPath.Add(pathTile);
 
-                MovePoints = UnityEngine.Mathf.Max(0, movePointsAfterMove);
+                MovePoints = new PositiveInt(UnityEngine.Mathf.Max(0, movePointsAfterMove));
             }
 
             if (traversedPath.Any())
@@ -114,7 +104,7 @@ namespace Sof.Model
             if (unit == null)
                 throw new System.ArgumentNullException(nameof(unit));
 
-            return Faction != unit.Faction && IsInAttackRange(unit) && MovePoints != 0;
+            return Faction != unit.Faction && IsInAttackRange(unit) && MovePoints.Value != 0;
         }
 
         public void Attack(Unit unit)
@@ -124,7 +114,7 @@ namespace Sof.Model
 
             CheckIsAlive();
 
-            if (MovePoints == 0) //TODO ??
+            if (MovePoints.Value == 0) //TODO ??
                 throw new System.InvalidOperationException("Unit has no move points.");
 
             if (!IsInAttackRange(unit))
@@ -134,18 +124,18 @@ namespace Sof.Model
                 throw new System.ArgumentException("Cannot attack friendly unit.", nameof(unit));
 
             unit.TakeHit(_Damage);
-            MovePoints = 0;
+            MovePoints = new PositiveInt(0);
 
             Attacked?.Invoke();
         }
 
-        public void TakeHit(int damage)
+        public void TakeHit(PositiveInt damage)
         {
             CheckIsAlive();
 
-            var actualDamage = UnityEngine.Mathf.CeilToInt(damage * (1 - _Map.GetUnitTile(this).Defence));
+            var actualDamage = new PositiveInt(UnityEngine.Mathf.CeilToInt(damage.Value * (1 - _Map.GetUnitTile(this).Defence)));
 
-            Health = UnityEngine.Mathf.Max(0, _Health - actualDamage);
+            Health = new PositiveInt(UnityEngine.Mathf.Max(0, _Health.Value - actualDamage.Value));
 
             TookHit?.Invoke(actualDamage);
 
@@ -159,11 +149,11 @@ namespace Sof.Model
             }
         }
 
-        public void Heal(int value)
+        public void Heal(PositiveInt value)
         {
             CheckIsAlive();
 
-            Health = UnityEngine.Mathf.Min(_MaxHealth, _Health + value);
+            Health = new PositiveInt(UnityEngine.Mathf.Min(_MaxHealth.Value, _Health.Value + value.Value));
 
             Healed?.Invoke(value);
         }
@@ -173,7 +163,7 @@ namespace Sof.Model
 
         private void EndTurn() => MovePoints = _MaxMovePoints;
 
-        private bool IsInAttackRange(Unit unit) => _Map.Distance(this, unit) <= _AttackRange;
+        private bool IsInAttackRange(Unit unit) => _Map.Distance(this, unit).Value <= _AttackRange.Value;
 
         private void CheckIsAlive()
         {

@@ -1,15 +1,14 @@
-﻿namespace Sof.Model.Pathfinding
+﻿using Sof.Auxiliary;
+
+namespace Sof.Model.Pathfinding
 {
     public class MovePoint
     {
         public Position Pos { get; }
-        public int Distance { get; }
+        public PositiveInt Distance { get; }
 
-        public MovePoint(Position pos, int distance)
+        public MovePoint(Position pos, PositiveInt distance)
         {
-            if (distance < 0)
-                throw new System.ArgumentOutOfRangeException(nameof(distance), "Distance cannot be negative.");
-
             Pos = pos ?? throw new System.ArgumentNullException(nameof(pos));
             Distance = distance;
         }

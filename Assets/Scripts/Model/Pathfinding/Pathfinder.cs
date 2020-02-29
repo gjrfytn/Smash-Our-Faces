@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Sof.Auxiliary;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Sof.Model.Pathfinding
@@ -38,12 +39,10 @@ namespace Sof.Model.Pathfinding
             return MakePath(from, GetClosestPositions(to, processedCells.Keys).OrderBy(p => costs[p]).First(), processedCells);
         }
 
-        public IEnumerable<MovePoint> GetMoveRange(Position pos, int movePoints)
+        public IEnumerable<MovePoint> GetMoveRange(Position pos, PositiveInt movePoints)
         {
             if (pos == null)
                 throw new System.ArgumentNullException(nameof(pos));
-            if (movePoints < 0)
-                throw new System.ArgumentOutOfRangeException(nameof(movePoints), "Move points cannot be negative.");
 
             var processedCells = new Dictionary<Position, Position>();
             var costs = new Dictionary<Position, int>();
@@ -57,10 +56,10 @@ namespace Sof.Model.Pathfinding
                 queue.Sort((a, b) => a.cost < b.cost ? -1 : (a.cost == b.cost ? 0 : 1));
                 var node = queue.First();
                 queue.Remove(node);
-                Spread(queue, processedCells, costs, node, movePoints);
+                Spread(queue, processedCells, costs, node, movePoints.Value);
             }
 
-            return processedCells.Keys.Select(c => new MovePoint(c, costs[c]));
+            return processedCells.Keys.Select(c => new MovePoint(c, new PositiveInt(costs[c])));
         }
 
         private bool Spread(List<(Position pos, int cost)> queue, Dictionary<Position, Position> processedCells, Dictionary<Position, int> costs, (Position pos, int cost) node, Position target)
@@ -71,7 +70,7 @@ namespace Sof.Model.Pathfinding
             foreach (var neighbour in GetNeighbours(node.pos))
                 if (!_Map.IsBlocked(neighbour))
                 {
-                    var neighbourCost = node.cost + _Map.GetMoveCost(neighbour);
+                    var neighbourCost = node.cost + _Map.GetMoveCost(neighbour).Value;
                     if (!processedCells.ContainsKey(neighbour) || neighbourCost < costs[neighbour])
                     {
                         processedCells[neighbour] = node.pos;
@@ -88,7 +87,7 @@ namespace Sof.Model.Pathfinding
             foreach (var neighbour in GetNeighbours(node.pos))
                 if (!_Map.IsBlocked(neighbour))
                 {
-                    var neighbourCost = node.cost + _Map.GetMoveCost(neighbour);
+                    var neighbourCost = node.cost + _Map.GetMoveCost(neighbour).Value;
                     if (movePoints - neighbourCost >= 0 && (!processedCells.ContainsKey(neighbour) || neighbourCost < costs[neighbour]))
                     {
                         processedCells[neighbour] = node.pos;
@@ -120,10 +119,10 @@ namespace Sof.Model.Pathfinding
             if (pos.X - 1 >= 0)
                 neighbours.Add(pos.Left);
 
-            if (pos.Y + 1 < _Map.Height)
+            if (pos.Y + 1 < _Map.Height.Value)
                 neighbours.Add(pos.Above);
 
-            if (pos.X + 1 < _Map.Width)
+            if (pos.X + 1 < _Map.Width.Value)
                 neighbours.Add(pos.Right);
 
             if (pos.Y - 1 >= 0)
