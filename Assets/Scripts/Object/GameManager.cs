@@ -53,7 +53,7 @@ namespace Sof.Object
 
         private void Awake()
         {
-            var palette = new Auxiliary.Palette();
+            var palette = new Palette();
             _Factions = new List<Faction> { new Faction("Faction 1", new PositiveInt(100)), new Faction("Faction 2", new PositiveInt(100)) };
             _FactionColors = _Factions.ToDictionary(f1 => f1, f2 => palette.GetNewRandomColor());
         }
