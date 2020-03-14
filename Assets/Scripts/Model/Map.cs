@@ -42,30 +42,33 @@ namespace Sof.Model
 
             foreach (var occupation in scenario.Occupations)
                 occupation.Apply((Castle)this[occupation.Position].Object);
+
+            foreach (var unit in scenario.Units)
+                Spawn(unit.unit, this[unit.pos], unit.faction, unit.critical);
         }
 
-        public Unit Spawn(IUnitTemplate unitTemplate, Tile tile, ITime time, Faction faction, bool critical)
+        public Unit Spawn(IUnitTemplate unitTemplate, Tile tile, Faction faction, bool critical)
         {
             if (unitTemplate == null)
                 throw new System.ArgumentNullException(nameof(unitTemplate));
             if (tile == null)
                 throw new System.ArgumentNullException(nameof(tile));
 
-            var unit = new Unit(time, this, unitTemplate.MovePoints, unitTemplate.Health, unitTemplate.Damage, unitTemplate.AttackRange, faction, critical, unitTemplate.GoldCost);
+            var unit = new Unit(_Time, this, unitTemplate.MovePoints, unitTemplate.Health, unitTemplate.Damage, unitTemplate.AttackRange, faction, critical, unitTemplate.GoldCost);
 
             Spawn(unit, tile);
 
             return unit;
         }
 
-        public Unit Spawn(IUnitTemplate unitTemplate, Castle castle, ITime time, Faction faction, bool critical)
+        public Unit Spawn(IUnitTemplate unitTemplate, Castle castle, Faction faction, bool critical)
         {
             if (unitTemplate == null)
                 throw new System.ArgumentNullException(nameof(unitTemplate));
             if (castle == null)
                 throw new System.ArgumentNullException(nameof(castle));
 
-            return Spawn(unitTemplate, GetMapObjectTile(castle), time, faction, critical);
+            return Spawn(unitTemplate, GetMapObjectTile(castle), faction, critical);
         }
 
         public PositiveInt Distance(Unit unit1, Unit unit2)

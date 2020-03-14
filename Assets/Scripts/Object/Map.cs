@@ -64,7 +64,7 @@ namespace Sof.Object
 
         private List<Tile> _Tiles;
 
-        private void Start()
+        public void Initialize()
         {
             _LineRenderer = GetComponent<LineRenderer>();
 

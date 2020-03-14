@@ -27,6 +27,8 @@ namespace Sof.Object
 
         [SerializeField]
         private Unit[] _UnitPrefabs;
+        [SerializeField]
+        private Unit _CommanderUnit;
 
         [SerializeField]
         private FactionInfoPanel _FactionInfoPanel;
@@ -40,7 +42,7 @@ namespace Sof.Object
 
         public IEnumerable<Faction> Factions => _Factions;
         public IEnumerable<Occupation> Occupations => new[] { new Occupation(new Position(2, 2), _Factions[0]), new Occupation(new Position(7, 7), _Factions[1]) };
-
+        public IEnumerable<(Position pos, Model.Map.IUnitTemplate unit, Faction faction, bool critical)> Units { get; private set; }
 
         public event System.Action TurnEnded;
 
@@ -51,18 +53,35 @@ namespace Sof.Object
         private readonly List<Unit> _Units = new List<Unit>(); //TODO unit removement
         private Dictionary<Faction, Color> _FactionColors;
 
+        // TODO temp
+        private Unit commanderInstance1;
+        private Unit commanderInstance2;
+
         private void Awake()
         {
             var palette = new Palette();
             _Factions = new List<Faction> { new Faction("Faction 1", new PositiveInt(100)), new Faction("Faction 2", new PositiveInt(100)) };
+
+            commanderInstance1 = Instantiate(_CommanderUnit, Map.ConvertToWorldPos(new Position(2, 2)), Quaternion.identity, transform);
+            commanderInstance2 = Instantiate(_CommanderUnit, Map.ConvertToWorldPos(new Position(7, 7)), Quaternion.identity, transform);
+            Units = new[] { (new Position(2, 2), (Model.Map.IUnitTemplate)commanderInstance1, _Factions[0], true), (new Position(7, 7), commanderInstance2, _Factions[1], true) };
+
             _FactionColors = _Factions.ToDictionary(f1 => f1, f2 => palette.GetNewRandomColor());
         }
 
         private void Start()
         {
+            _Map.Initialize();
+
             _CurrentPlayerFaction = _Factions[0];
             _TurnIndicator.SetCurrentPlayer(_CurrentPlayerFaction);
             _FactionInfoPanel.Setup(_CurrentPlayerFaction);
+
+            commanderInstance1.Initialize(_Map.ModelMap[new Position(2, 2)].Unit, this, _Map);
+            commanderInstance2.Initialize(_Map.ModelMap[new Position(7, 7)].Unit, this, _Map);
+
+            _Units.Add(commanderInstance1);
+            _Units.Add(commanderInstance2);
         }
 
         public void OnTileHover(Tile tile)
@@ -94,7 +113,7 @@ namespace Sof.Object
 
             if (_SpawnedUnit != null)
             {
-                var unit = _Map.ModelMap.Spawn(_SpawnedUnit, tile.ModelTile, this, _CurrentPlayerFaction, false);
+                var unit = _Map.ModelMap.Spawn(_SpawnedUnit, tile.ModelTile, _CurrentPlayerFaction, false);
                 _SpawnedUnit.Initialize(unit, this, _Map);
                 _Units.Add(_SpawnedUnit);
 

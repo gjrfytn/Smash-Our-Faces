@@ -6,5 +6,6 @@ namespace Sof.Model
     {
         IEnumerable<Faction> Factions { get; }
         IEnumerable<Occupation> Occupations { get; }
+        IEnumerable<(Position pos, Map.IUnitTemplate unit, Faction faction, bool critical)> Units { get; }
     }
 }

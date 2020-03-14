@@ -9,7 +9,6 @@ namespace Sof.Model.MapObject.Property
         }
 
         private readonly Map _Map;
-        private readonly ITime _Time;
 
         public override int MoveCostModificator => -2;
         public override float DefenceModificator => 0.75f;
@@ -17,7 +16,6 @@ namespace Sof.Model.MapObject.Property
         public Castle(Map map, ITime time, PositiveInt income, PositiveInt heal) : base(time, map, income, heal)
         {
             _Map = map ?? throw new System.ArgumentNullException(nameof(map));
-            _Time = time ?? throw new System.ArgumentNullException(nameof(time));
         }
 
         public Unit PurchaseUnit(IUnitTemplate unitTemplate)
@@ -30,7 +28,7 @@ namespace Sof.Model.MapObject.Property
 
             Owner.PurchaseUnit(unitTemplate);
 
-            return _Map.Spawn(unitTemplate, this, _Time, Owner, false);
+            return _Map.Spawn(unitTemplate, this, Owner, false);
         }
     }
 }

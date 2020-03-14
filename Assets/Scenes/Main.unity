@@ -1732,6 +1732,8 @@ MonoBehaviour:
   _UnitPrefabs:
   - {fileID: 1557350346382895989, guid: 3f011cab9a916d741864bdd6f85ff5e2, type: 3}
   - {fileID: 1532055146544811719, guid: e6865229a0aab234a8cfc4784553dccf, type: 3}
+  _CommanderUnit: {fileID: 731668667654187537, guid: 9af9230abcbb48742807174658b7d230,
+    type: 3}
   _FactionInfoPanel: {fileID: 212499036}
   _UnitInfoPanel: {fileID: 1091137329}
   _UnitPurchasePanel: {fileID: 699895282}
