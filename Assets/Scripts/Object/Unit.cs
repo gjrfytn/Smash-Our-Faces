@@ -29,13 +29,9 @@ namespace Sof.Object
         private SpriteRenderer _OwnerFactionSprite;
 #pragma warning restore 0649
 
-        private List<SpriteRenderer> _UI_Sprites = new List<SpriteRenderer>();
+        private readonly List<SpriteRenderer> _UI_Sprites = new List<SpriteRenderer>();
 
         public Model.Unit ModelUnit { get; private set; }
-
-        public int Speed => _Speed;
-        public int Health => _Health;
-        public int Damage => _Damage;
 
         private GameManager _GameManager;
         private Map _Map;

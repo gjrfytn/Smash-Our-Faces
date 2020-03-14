@@ -32,7 +32,7 @@ namespace Sof.UI
         private void ModelUnit_HealthChanged() => UpdateHealthText();
         private void ModelUnit_MovePointsChanged() => UpdateMovePoints();
 
-        private void UpdateHealthText() => _HealthText.text = $"{_Unit.ModelUnit.Health}/{_Unit.Health}";
-        private void UpdateMovePoints() => _MovePointsText.text = $"{_Unit.ModelUnit.MovePoints}/{_Unit.Speed}";
+        private void UpdateHealthText() => _HealthText.text = $"{_Unit.ModelUnit.Health}/{_Unit.ModelUnit.MaxHealth}";
+        private void UpdateMovePoints() => _MovePointsText.text = $"{_Unit.ModelUnit.MovePoints}/{_Unit.ModelUnit.MaxMovePoints}";
     }
 }

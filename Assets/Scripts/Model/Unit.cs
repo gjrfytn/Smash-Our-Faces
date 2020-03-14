@@ -8,14 +8,14 @@ namespace Sof.Model
     {
         private readonly ITime _Time;
         private readonly Map _Map;
-        private readonly PositiveInt _MaxMovePoints;
-        private readonly PositiveInt _MaxHealth;
         private readonly PositiveInt _Damage;
         private readonly PositiveInt _AttackRange;
 
         public Faction Faction { get; private set; }
         public bool Critical { get; private set; }
         public PositiveInt GoldCost { get; private set; }
+
+        public PositiveInt MaxHealth { get; }
 
         private PositiveInt _Health;
         public PositiveInt Health
@@ -30,6 +30,8 @@ namespace Sof.Model
         }
 
         public event System.Action HealthChanged;
+
+        public PositiveInt MaxMovePoints { get; }
 
         private PositiveInt _MovePoints;
         public PositiveInt MovePoints
@@ -57,15 +59,15 @@ namespace Sof.Model
         {
             _Time = time ?? throw new System.ArgumentNullException(nameof(time));
             _Map = map ?? throw new System.ArgumentNullException(nameof(map));
-            _MaxMovePoints = movePoints;
-            _MaxHealth = health;
+            MaxMovePoints = movePoints;
+            MaxHealth = health;
             _Damage = damage;
             _AttackRange = attackRange;
             Faction = faction ?? throw new System.ArgumentNullException(nameof(faction));
             Critical = critical;
             GoldCost = goldCost;
-            _MovePoints = _MaxMovePoints;
-            _Health = _MaxHealth;
+            _MovePoints = MaxMovePoints;
+            _Health = MaxHealth;
 
             _Time.TurnEnded += EndTurn;
         }
@@ -153,7 +155,7 @@ namespace Sof.Model
         {
             CheckIsAlive();
 
-            Health = new PositiveInt(UnityEngine.Mathf.Min(_MaxHealth.Value, _Health.Value + value.Value));
+            Health = new PositiveInt(UnityEngine.Mathf.Min(MaxHealth.Value, _Health.Value + value.Value));
 
             Healed?.Invoke(value);
         }
@@ -161,7 +163,7 @@ namespace Sof.Model
         public IEnumerable<MovePoint> GetMoveRange() => _Map.GetMoveRange(this);
         public IEnumerable<Tile> GetAttackArea() => _Map.GetTilesInRange(this, _AttackRange); //TODO temp
 
-        private void EndTurn() => MovePoints = _MaxMovePoints;
+        private void EndTurn() => MovePoints = MaxMovePoints;
 
         private bool IsInAttackRange(Unit unit) => _Map.Distance(this, unit).Value <= _AttackRange.Value;
 
