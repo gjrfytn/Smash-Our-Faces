@@ -49,6 +49,7 @@ namespace Sof.Object
         private List<Faction> _Factions;
         private Faction _CurrentPlayerFaction;
         private Model.Unit _SelectedUnit;
+        private Faction _SpawnedUnitFaction;
         private Unit _SpawnedUnit;
         private readonly List<Unit> _Units = new List<Unit>(); //TODO unit removement
         private Dictionary<Faction, Color> _FactionColors;
@@ -113,14 +114,12 @@ namespace Sof.Object
 
             if (_SpawnedUnit != null)
             {
-                var unit = _Map.ModelMap.Spawn(_SpawnedUnit, tile.ModelTile, _CurrentPlayerFaction, false);
+                var unit = _Map.ModelMap.Spawn(_SpawnedUnit, tile.ModelTile, _SpawnedUnitFaction, false);
                 _SpawnedUnit.Initialize(unit, this, _Map);
                 _Units.Add(_SpawnedUnit);
 
-                if (!_Factions.Contains(_SpawnedUnit.ModelUnit.Faction))
-                    _Factions.Add(_SpawnedUnit.ModelUnit.Faction);
-
                 _SpawnedUnit = null;
+                _SpawnedUnitFaction = null;
             }
             else if (_SelectedUnit == null)
             {
@@ -200,6 +199,7 @@ namespace Sof.Object
                 return;
 
             _SpawnedUnit = Instantiate(_UnitPrefabs[0], Map.ConvertToWorldPos(new Position(_Map.ModelMap.Width.Value / 2, _Map.ModelMap.Height.Value / 2)), Quaternion.identity, transform);
+            _SpawnedUnitFaction = faction;
         }
 
         public void OnUnitHit(Unit unit, PositiveInt damage)
