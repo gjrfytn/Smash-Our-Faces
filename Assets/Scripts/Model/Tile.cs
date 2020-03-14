@@ -26,6 +26,7 @@ namespace Sof.Model
                 throw new System.InvalidOperationException("Tile cannot contain more than one unit.");
 
             Unit = unit;
+            Unit.Died += RemoveUnit;
 
             if (Object is MapObject.Property.Property property) //TODO
                 property.Owner = unit.Faction;
@@ -36,6 +37,7 @@ namespace Sof.Model
             if (Unit == null)
                 throw new System.InvalidOperationException("Tile has no unit.");
 
+            Unit.Died -= RemoveUnit;
             Unit = null;
         }
     }

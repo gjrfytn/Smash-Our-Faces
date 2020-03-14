@@ -145,8 +145,6 @@ namespace Sof.Model
             {
                 _Time.TurnEnded -= EndTurn;
 
-                _Map.Remove(this);
-
                 Died?.Invoke();
             }
         }

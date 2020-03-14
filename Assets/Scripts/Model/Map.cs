@@ -55,14 +55,6 @@ namespace Sof.Model
             Spawn(unit, GetMapObjectTile(castle));
         }
 
-        public void Remove(Unit unit)
-        {
-            if (unit == null)
-                throw new System.ArgumentNullException(nameof(unit));
-
-            this[GetUnitPos(unit)].RemoveUnit();
-        }
-
         public PositiveInt Distance(Unit unit1, Unit unit2)
         {
             if (unit1 == null)
@@ -181,6 +173,14 @@ namespace Sof.Model
                 throw new System.ArgumentNullException(nameof(property));
 
             return GetMapObjectTile(property).Unit;
+        }
+
+        private void Remove(Unit unit)
+        {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+
+            this[GetUnitPos(unit)].RemoveUnit();
         }
 
         private Position GetUnitPos(Unit unit) => TryGetUnitPos(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
