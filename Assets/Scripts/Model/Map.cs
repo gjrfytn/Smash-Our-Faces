@@ -9,6 +9,15 @@ namespace Sof.Model
 {
     public class Map : Pathfinding.IMap, IMap
     {
+        public interface IUnitTemplate
+        {
+            PositiveInt MovePoints { get; }
+            PositiveInt Health { get; }
+            PositiveInt Damage { get; }
+            PositiveInt AttackRange { get; }
+            PositiveInt GoldCost { get; }
+        }
+
         private readonly Pathfinding.Pathfinder _Pathfinder;
         private readonly ITime _Time;
 
@@ -35,24 +44,28 @@ namespace Sof.Model
                 occupation.Apply((Castle)this[occupation.Position].Object);
         }
 
-        public void Spawn(Unit unit, Tile tile)
+        public Unit Spawn(IUnitTemplate unitTemplate, Tile tile, ITime time, Faction faction, bool critical)
         {
-            if (unit == null)
-                throw new System.ArgumentNullException(nameof(unit));
+            if (unitTemplate == null)
+                throw new System.ArgumentNullException(nameof(unitTemplate));
             if (tile == null)
                 throw new System.ArgumentNullException(nameof(tile));
 
-            tile.PlaceUnit(unit); //TODO
+            var unit = new Unit(time, this, unitTemplate.MovePoints, unitTemplate.Health, unitTemplate.Damage, unitTemplate.AttackRange, faction, critical, unitTemplate.GoldCost);
+
+            Spawn(unit, tile);
+
+            return unit;
         }
 
-        public void Spawn(Unit unit, Castle castle)
+        public Unit Spawn(IUnitTemplate unitTemplate, Castle castle, ITime time, Faction faction, bool critical)
         {
-            if (unit == null)
-                throw new System.ArgumentNullException(nameof(unit));
+            if (unitTemplate == null)
+                throw new System.ArgumentNullException(nameof(unitTemplate));
             if (castle == null)
                 throw new System.ArgumentNullException(nameof(castle));
 
-            Spawn(unit, GetMapObjectTile(castle));
+            return Spawn(unitTemplate, GetMapObjectTile(castle), time, faction, critical);
         }
 
         public PositiveInt Distance(Unit unit1, Unit unit2)
@@ -175,13 +188,8 @@ namespace Sof.Model
             return GetMapObjectTile(property).Unit;
         }
 
-        private void Remove(Unit unit)
-        {
-            if (unit == null)
-                throw new System.ArgumentNullException(nameof(unit));
-
-            this[GetUnitPos(unit)].RemoveUnit();
-        }
+        private void Spawn(Unit unit, Tile tile) => tile.PlaceUnit(unit);
+        private void Remove(Unit unit) => this[GetUnitPos(unit)].RemoveUnit();
 
         private Position GetUnitPos(Unit unit) => TryGetUnitPos(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
 

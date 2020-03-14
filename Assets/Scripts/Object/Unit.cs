@@ -1,5 +1,4 @@
 ﻿using Sof.Auxiliary;
-using Sof.Model;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +6,7 @@ using UnityEngine;
 
 namespace Sof.Object
 {
-    public class Unit : MonoBehaviour
+    public class Unit : MonoBehaviour, Model.MapObject.Property.Castle.IUnitTemplate
     {
 #pragma warning disable 0649
         [SerializeField]
@@ -33,18 +32,21 @@ namespace Sof.Object
 
         public Model.Unit ModelUnit { get; private set; }
 
+        public PositiveInt MovePoints => new PositiveInt(_Speed);
+        public PositiveInt Health => new PositiveInt(_Health);
+        public PositiveInt Damage => new PositiveInt(_Damage);
+        public PositiveInt AttackRange => new PositiveInt(_AttackRange);
+        public PositiveInt GoldCost => new PositiveInt(_GoldCost);
+
         private GameManager _GameManager;
         private Map _Map;
 
-        public void Initialize(GameManager gameManager, Map map, Faction faction)
+        public void Initialize(Model.Unit unit, GameManager gameManager, Map map)
         {
             _GameManager = gameManager != null ? gameManager : throw new System.ArgumentNullException(nameof(gameManager));
             _Map = map != null ? map : throw new System.ArgumentNullException(nameof(map));
 
-            if (faction == null)
-                throw new System.ArgumentNullException(nameof(faction));
-
-            ModelUnit = new Model.Unit(gameManager, map.ModelMap, new PositiveInt(_Speed), new PositiveInt(_Health), new PositiveInt(_Damage), new PositiveInt(_AttackRange), faction, true, new PositiveInt(_GoldCost));
+            ModelUnit = unit;
             ModelUnit.MovedAlongPath += ModelUnit_MovedAlongPath;
             ModelUnit.Attacked += ModelUnit_Attacked;
             ModelUnit.TookHit += ModelUnit_TookHit;

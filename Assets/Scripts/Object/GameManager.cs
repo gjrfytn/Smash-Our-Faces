@@ -94,8 +94,9 @@ namespace Sof.Object
 
             if (_SpawnedUnit != null)
             {
-                _Map.ModelMap.Spawn(_SpawnedUnit.ModelUnit, tile.ModelTile);
-                _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                var unit = _Map.ModelMap.Spawn(_SpawnedUnit, tile.ModelTile, this, _CurrentPlayerFaction, false);
+                _SpawnedUnit.Initialize(unit, this, _Map);
+                _Units.Add(_SpawnedUnit);
 
                 if (!_Factions.Contains(_SpawnedUnit.ModelUnit.Faction))
                     _Factions.Add(_SpawnedUnit.ModelUnit.Faction);
@@ -166,9 +167,9 @@ namespace Sof.Object
         {
             _UnitPurchasePanel.gameObject.SetActive(false);
             var unitInstance = Instantiate(unit, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle)), Quaternion.identity, transform);
-            unitInstance.Initialize(this, _Map, _CurrentPlayerFaction);
+            var purchasedUnit = castle.PurchaseUnit(unitInstance);
+            unitInstance.Initialize(purchasedUnit, this, _Map);
             _Units.Add(unitInstance);
-            castle.PurchaseUnit(unitInstance.ModelUnit);
         }
 
         public void DebugCreateUnit(Faction faction)
@@ -180,9 +181,6 @@ namespace Sof.Object
                 return;
 
             _SpawnedUnit = Instantiate(_UnitPrefabs[0], Map.ConvertToWorldPos(new Position(_Map.ModelMap.Width.Value / 2, _Map.ModelMap.Height.Value / 2)), Quaternion.identity, transform);
-            _SpawnedUnit.Initialize(this, _Map, faction);
-            _SpawnedUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
-            _Units.Add(_SpawnedUnit);
         }
 
         public void OnUnitHit(Unit unit, PositiveInt damage)

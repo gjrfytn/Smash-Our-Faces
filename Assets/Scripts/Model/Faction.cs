@@ -5,6 +5,11 @@ namespace Sof.Model
 {
     public class Faction
     {
+        public interface IUnit
+        {
+            PositiveInt GoldCost { get; }
+        }
+
         private class Treasury
         {
             public PositiveInt Gold { get; private set; }
@@ -16,7 +21,7 @@ namespace Sof.Model
                 Gold = gold;
             }
 
-            public void PurchaseUnit(Unit unit)
+            public void PurchaseUnit(IUnit unit)
             {
                 if (unit == null)
                     throw new System.ArgumentNullException(nameof(unit));
@@ -61,7 +66,7 @@ namespace Sof.Model
             _Treasury.GoldChanged += Treasury_GoldChanged;
         }
 
-        public void PurchaseUnit(Unit unit)
+        public void PurchaseUnit(IUnit unit)
         {
             if (unit == null)
                 throw new System.ArgumentNullException(nameof(unit));
