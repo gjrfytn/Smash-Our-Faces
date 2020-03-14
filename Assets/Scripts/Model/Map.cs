@@ -28,7 +28,7 @@ namespace Sof.Model
 
         public Tile this[Position pos] => _Tiles[pos.X, pos.Y];
 
-        public Map(IMapFile mapFile, IScenario scenario, ITime time)
+        public Map(IMapFile mapFile, Scenario.IScenario scenario, ITime time)
         {
             if (mapFile == null)
                 throw new System.ArgumentNullException(nameof(mapFile));
@@ -44,7 +44,7 @@ namespace Sof.Model
                 occupation.Apply((Castle)this[occupation.Position].Object);
 
             foreach (var unit in scenario.Units)
-                Spawn(unit.unit, this[unit.pos], unit.faction, unit.critical);
+                unit.Spawn(this, this[unit.Position]);
         }
 
         public Unit Spawn(IUnitTemplate unitTemplate, Tile tile, Faction faction, bool critical)

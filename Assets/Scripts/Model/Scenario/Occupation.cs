@@ -1,4 +1,4 @@
-﻿namespace Sof.Model
+﻿namespace Sof.Model.Scenario
 {
     public class Occupation
     {

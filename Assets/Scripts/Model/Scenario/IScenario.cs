@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace Sof.Model
+namespace Sof.Model.Scenario
 {
     public interface IScenario
     {
         IEnumerable<Faction> Factions { get; }
         IEnumerable<Occupation> Occupations { get; }
-        IEnumerable<(Position pos, Map.IUnitTemplate unit, Faction faction, bool critical)> Units { get; }
+        IEnumerable<Unit> Units { get; }
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Sof.Object
 {
-    public class GameManager : MonoBehaviour, ITime, IScenario //TODO temp
+    public class GameManager : MonoBehaviour, ITime, Model.Scenario.IScenario //TODO temp
     {
 #pragma warning disable 0649
         [SerializeField]
@@ -41,8 +41,8 @@ namespace Sof.Object
         public bool DisableUIInteraction { private get; set; } //TODO Make dedicated UIManager
 
         public IEnumerable<Faction> Factions => _Factions;
-        public IEnumerable<Occupation> Occupations => new[] { new Occupation(new Position(2, 2), _Factions[0]), new Occupation(new Position(7, 7), _Factions[1]) };
-        public IEnumerable<(Position pos, Model.Map.IUnitTemplate unit, Faction faction, bool critical)> Units { get; private set; }
+        public IEnumerable<Model.Scenario.Occupation> Occupations => new[] { new Model.Scenario.Occupation(new Position(2, 2), _Factions[0]), new Model.Scenario.Occupation(new Position(7, 7), _Factions[1]) };
+        public IEnumerable<Model.Scenario.Unit> Units { get; private set; }
 
         public event System.Action TurnEnded;
 
@@ -65,7 +65,7 @@ namespace Sof.Object
 
             commanderInstance1 = Instantiate(_CommanderUnit, Map.ConvertToWorldPos(new Position(2, 2)), Quaternion.identity, transform);
             commanderInstance2 = Instantiate(_CommanderUnit, Map.ConvertToWorldPos(new Position(7, 7)), Quaternion.identity, transform);
-            Units = new[] { (new Position(2, 2), (Model.Map.IUnitTemplate)commanderInstance1, _Factions[0], true), (new Position(7, 7), commanderInstance2, _Factions[1], true) };
+            Units = new[] { new Model.Scenario.Unit(new Position(2, 2), commanderInstance1, _Factions[0], true), new Model.Scenario.Unit(new Position(7, 7), commanderInstance2, _Factions[1], true) };
 
             _FactionColors = _Factions.ToDictionary(f1 => f1, f2 => palette.GetNewRandomColor());
         }
