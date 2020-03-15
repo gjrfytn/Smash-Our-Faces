@@ -143,7 +143,7 @@ namespace Sof.Object
         public void DebugCreateUnit(Faction faction)
         {
             if (faction == null)
-                throw new System.ArgumentNullException(nameof(faction));
+                throw new System.ArgumentNullException(nameof(faction)); //TODO "Null check can be simplified" changes program flow: bug or feature?
 
             if (DisableUIInteraction)
                 return;

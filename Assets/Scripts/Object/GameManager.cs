@@ -55,18 +55,14 @@ namespace Sof.Object
             _UIManager.Initialize();
             _Map.Initialize();
 
-            commanderInstance1.Initialize(_Map.ModelMap[new Position(2, 2)].Unit, this, _UIManager, _Map);
-            commanderInstance2.Initialize(_Map.ModelMap[new Position(7, 7)].Unit, this, _UIManager, _Map);
-
-            _Units.Add(commanderInstance1);
-            _Units.Add(commanderInstance2);
+            InitializeUnit(commanderInstance1, _Map.ModelMap[new Position(2, 2)].Unit);
+            InitializeUnit(commanderInstance2, _Map.ModelMap[new Position(7, 7)].Unit);
         }
 
         public void DebugSpawnUnit(Unit unitInstance, Model.Tile tile, Faction faction)
         {
             var unit = _Map.ModelMap.Spawn(unitInstance, tile, faction, false);
-            unitInstance.Initialize(unit, this, _UIManager, _Map);
-            _Units.Add(unitInstance);
+            InitializeUnit(unitInstance, unit);
         }
 
         public Color GetFactionColor(Faction faction)
@@ -81,8 +77,7 @@ namespace Sof.Object
         {
             var unitInstance = Instantiate(unit, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle)), Quaternion.identity, transform);
             var purchasedUnit = castle.PurchaseUnit(unitInstance);
-            unitInstance.Initialize(purchasedUnit, this, _UIManager, _Map);
-            _Units.Add(unitInstance);
+            InitializeUnit(unitInstance, purchasedUnit);
         }
 
         public void OnCriticalUnitDeath(Faction faction)
@@ -110,5 +105,11 @@ namespace Sof.Object
         }
 
         public Unit GetUnitObject(Model.Unit unit) => _Units.Single(u => u.ModelUnit == unit);
+
+        private void InitializeUnit(Unit unitInstance, Model.Unit modelUnit)
+        {
+            unitInstance.Initialize(modelUnit, this, _UIManager, _Map);
+            _Units.Add(unitInstance);
+        }
     }
 }
