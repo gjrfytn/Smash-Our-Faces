@@ -4,15 +4,15 @@ namespace Sof.Object
 {
     public class Tile : MonoBehaviour
     {
-        private GameManager _GameManager;
+        private UIManager _UIManager;
         private MapObject _Object;
 
         public Model.Tile ModelTile { get; private set; }
 
-        public void Initialize(Model.Tile tile, GameManager gameManager)
+        public void Initialize(Model.Tile tile, UIManager uiManager)
         {
             ModelTile = tile ?? throw new System.ArgumentNullException(nameof(tile));
-            _GameManager = gameManager != null ? gameManager : throw new System.ArgumentNullException(nameof(gameManager));
+            _UIManager = uiManager != null ? uiManager : throw new System.ArgumentNullException(nameof(uiManager));
         }
 
         public T InstantiateMapObject<T>(T @object) where T : MapObject
@@ -33,7 +33,7 @@ namespace Sof.Object
         private void OnMouseEnter()
         {
             if (_Object == null || !_Object.OnHover())
-                _GameManager.OnTileHover(this);
+                _UIManager.OnTileHover(this);
         }
 
         private void OnMouseOver()
@@ -41,12 +41,12 @@ namespace Sof.Object
             if (Input.GetMouseButtonUp(0))
             {
                 if (_Object == null || !_Object.OnLeftClick())
-                    _GameManager.OnTileLeftClick(this);
+                    _UIManager.OnTileLeftClick(this);
             }
             else if (Input.GetMouseButtonUp(1))
             {
                 if (_Object == null || !_Object.OnRightClick())
-                    _GameManager.OnTileRightClick(this);
+                    _UIManager.OnTileRightClick(this);
             }
         }
     }

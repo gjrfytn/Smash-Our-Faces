@@ -11,6 +11,8 @@ namespace Sof.UI
         [SerializeField]
         private GameManager _GameManager;
         [SerializeField]
+        private UIManager _UIManager;
+        [SerializeField]
         private Button _SpawnUnitButton;
         [SerializeField]
         private Dropdown _UnitFactionDropdown; // TODO Update list
@@ -21,7 +23,7 @@ namespace Sof.UI
         private void Start()
         {
             _UnitFactionDropdown.onValueChanged.AddListener((index) => _SelectedFaction = _GameManager.Factions.Single(f => f.Name == _UnitFactionDropdown.options[index].text));
-            _SpawnUnitButton.onClick.AddListener(() => _GameManager.DebugCreateUnit(_SelectedFaction));
+            _SpawnUnitButton.onClick.AddListener(() => _UIManager.DebugCreateUnit(_SelectedFaction));
 
             _UnitFactionDropdown.AddOptions(_GameManager.Factions.Select(f => f.Name).ToList());
             _SelectedFaction = _GameManager.Factions.First();

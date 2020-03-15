@@ -32,6 +32,8 @@ namespace Sof.Object
 
         [SerializeField]
         private GameManager _GameManager;
+        [SerializeField]
+        private UIManager _UIManager;
 
         [SerializeField]
         private TextAsset _MapFile;
@@ -77,7 +79,7 @@ namespace Sof.Object
                     var pos = new Position(x, y);
                     var tile = Instantiate(_InteractionTile, new Vector3(x, y, 0), Quaternion.identity, transform);
 
-                    tile.Initialize(ModelMap[pos], _GameManager);
+                    tile.Initialize(ModelMap[pos], _UIManager);
 
                     Ground ground;
                     switch (ModelMap[pos].Ground)
@@ -103,7 +105,7 @@ namespace Sof.Object
                             break;
                         case Model.MapObject.Property.Castle modelCastle:
                             var castle = tile.InstantiateMapObject(_Castle);
-                            castle.Initialize(modelCastle, _GameManager);
+                            castle.Initialize(modelCastle, _GameManager, _UIManager);
                             break;
                         case Model.MapObject.Property.House modelHouse:
                             var house = tile.InstantiateMapObject(_House);

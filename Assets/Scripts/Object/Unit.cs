@@ -39,11 +39,13 @@ namespace Sof.Object
         public PositiveInt GoldCost => new PositiveInt(_GoldCost);
 
         private GameManager _GameManager;
+        private UIManager _UIManager;
         private Map _Map;
 
-        public void Initialize(Model.Unit unit, GameManager gameManager, Map map)
+        public void Initialize(Model.Unit unit, GameManager gameManager, UIManager uiManager, Map map)
         {
             _GameManager = gameManager != null ? gameManager : throw new System.ArgumentNullException(nameof(gameManager));
+            _UIManager = uiManager != null ? uiManager : throw new System.ArgumentNullException(nameof(uiManager));
             _Map = map != null ? map : throw new System.ArgumentNullException(nameof(map));
 
             ModelUnit = unit;
@@ -91,25 +93,28 @@ namespace Sof.Object
 
         private void ModelUnit_TookHit(PositiveInt damage)
         {
-            _GameManager.OnUnitHit(this, damage);
+            _UIManager.OnUnitHit(this, damage);
         }
 
         private void ModelUnit_Healed(PositiveInt heal)
         {
-            _GameManager.OnUnitHeal(this, heal);
+            _UIManager.OnUnitHeal(this, heal);
         }
 
         private void ModelUnit_Died()
         {
             if (ModelUnit.Critical)
+            {
                 _GameManager.OnCriticalUnitDeath(ModelUnit.Faction);
+                _UIManager.OnCriticalUnitDeath(ModelUnit.Faction);
+            }
 
             Destroy(gameObject);
         }
 
         private IEnumerator FollowPath(IEnumerable<Model.Tile> path)
         {
-            _GameManager.DisableUIInteraction = true;
+            _UIManager.DisableUIInteraction = true;
             HideUI();
 
             foreach (var tile in path)
@@ -124,12 +129,12 @@ namespace Sof.Object
             }
 
             ShowUI();
-            _GameManager.DisableUIInteraction = false;
+            _UIManager.DisableUIInteraction = false;
         }
 
         private IEnumerator PlayAttack()
         {
-            _GameManager.DisableUIInteraction = true;
+            _UIManager.DisableUIInteraction = true;
             HideUI();
 
             transform.localRotation = Quaternion.Euler(0, 0, -30);
@@ -139,7 +144,7 @@ namespace Sof.Object
             transform.localRotation = Quaternion.Euler(0, 0, 0);
 
             ShowUI();
-            _GameManager.DisableUIInteraction = false;
+            _UIManager.DisableUIInteraction = false;
         }
 
         private void SetOwnerColor()
