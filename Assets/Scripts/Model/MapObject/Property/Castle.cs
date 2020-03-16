@@ -13,8 +13,6 @@ namespace Sof.Model.MapObject.Property
         public override int MoveCostModificator => -2;
         public override float DefenceModificator => 0.75f;
 
-        public Unit Unit => _Map.GetUnitIn(this);
-
         public Castle(Map map, ITime time, PositiveInt income, PositiveInt heal) : base(time, map, income, heal)
         {
             _Map = map ?? throw new System.ArgumentNullException(nameof(map));

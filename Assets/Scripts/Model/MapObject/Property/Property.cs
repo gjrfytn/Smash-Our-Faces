@@ -22,6 +22,8 @@ namespace Sof.Model.MapObject.Property
 
         public event System.Action OwnerChanged;
 
+        public Unit Unit => _Map.GetUnitIn(this);
+
         public Property(ITime time, IMap map, PositiveInt income, PositiveInt heal)
         {
             if (time == null)
@@ -37,7 +39,7 @@ namespace Sof.Model.MapObject.Property
         private void EndTurn()
         {
             Owner?.RecieveIncome(_Income);
-            _Map.GetUnitIn(this)?.Heal(_Heal);
+            Unit?.Heal(_Heal);
         }
     }
 }
