@@ -124,10 +124,13 @@ namespace Sof.Object
             if (castle == null)
                 throw new System.ArgumentNullException(nameof(castle));
 
+            if (DisableUIInteraction)
+                return;
+
             if (_SelectedUnit != null)
                 DeselectUnit();
 
-            if (castle.ModelCastle.Owner == _GameManager.CurrentPlayerFaction)
+            if (castle.ModelCastle.Owner == _GameManager.CurrentPlayerFaction && castle.ModelCastle.Unit == null)
             {
                 _UnitPurchasePanel.gameObject.SetActive(true);
                 _UnitPurchasePanel.Setup(_GameManager.UnitPrefabs, (Unit unit) => PurchaseUnitInCastle(unit, castle.ModelCastle));
@@ -136,6 +139,9 @@ namespace Sof.Object
 
         private void PurchaseUnitInCastle(Unit unit, Model.MapObject.Property.Castle castle)
         {
+            if (DisableUIInteraction)
+                return;
+
             _UnitPurchasePanel.gameObject.SetActive(false);
             _GameManager.PurchaseUnitInCastle(unit, castle);
         }
