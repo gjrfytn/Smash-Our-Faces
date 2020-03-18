@@ -23,6 +23,16 @@ namespace Sof.Model
 
         private readonly Tile[,] _Tiles;
 
+        private IEnumerable<(Tile tile, Position pos)> Tiles
+        {
+            get
+            {
+                for (var y = 0; y < Height.Value; ++y)
+                    for (var x = 0; x < Width.Value; ++x)
+                        yield return (_Tiles[x, y], new Position(x, y));
+            }
+        }
+
         public PositiveInt Width => new PositiveInt(_Tiles.GetLength(0));
         public PositiveInt Height => new PositiveInt(_Tiles.GetLength(1));
 
@@ -117,12 +127,7 @@ namespace Sof.Model
 
             var unitTile = GetUnitTile(unit);
 
-            var tiles = new List<Tile>();
-            for (var y = 0; y < Height.Value; ++y)
-                for (var x = 0; x < Width.Value; ++x)
-                    tiles.Add(_Tiles[x, y]);
-
-            return tiles.Where(t => Distance(unitTile, t).Value <= range.Value);
+            return Tiles.Select(t => t.tile).Where(t => Distance(unitTile, t).Value <= range.Value);
         }
 
         public Tile GetUnitTile(Unit unit)
@@ -138,12 +143,7 @@ namespace Sof.Model
             if (unit == null)
                 throw new System.ArgumentNullException(nameof(unit));
 
-            for (var y = 0; y < Height.Value; ++y)
-                for (var x = 0; x < Width.Value; ++x)
-                    if (_Tiles[x, y].Unit == unit)
-                        return _Tiles[x, y];
-
-            return null;
+            return Tiles.SingleOrDefault(t => t.tile.Unit == unit).tile;
         }
 
         public Position GetMapObjectPos(MapObject.MapObject mapObject)
@@ -159,12 +159,7 @@ namespace Sof.Model
             if (mapObject == null)
                 throw new System.ArgumentNullException(nameof(mapObject));
 
-            for (var y = 0; y < Height.Value; ++y)
-                for (var x = 0; x < Width.Value; ++x)
-                    if (_Tiles[x, y].Object == mapObject)
-                        return new Position(x, y);
-
-            return null;
+            return Tiles.SingleOrDefault(t => t.tile.Object == mapObject).pos;
         }
 
         public bool IsBlocked(Position pos)
@@ -195,40 +190,12 @@ namespace Sof.Model
         private void Remove(Unit unit) => this[GetUnitPos(unit)].RemoveUnit();
 
         private Position GetUnitPos(Unit unit) => TryGetUnitPos(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
-
-        private Position TryGetUnitPos(Unit unit)
-        {
-            for (var y = 0; y < Height.Value; ++y)
-                for (var x = 0; x < Width.Value; ++x)
-                    if (_Tiles[x, y].Unit == unit)
-                        return new Position(x, y);
-
-            return null;
-        }
-
+        private Position TryGetUnitPos(Unit unit) => Tiles.SingleOrDefault(t => t.tile.Unit == unit).pos;
         private Position GetTilePos(Tile tile) => TryGetTilePos(tile) ?? throw new System.ArgumentException("Map does not contain specified tile.", nameof(tile));
-
-        private Position TryGetTilePos(Tile tile)
-        {
-            for (var y = 0; y < Height.Value; ++y)
-                for (var x = 0; x < Width.Value; ++x)
-                    if (_Tiles[x, y] == tile)
-                        return new Position(x, y);
-
-            return null;
-        }
+        private Position TryGetTilePos(Tile tile) => Tiles.SingleOrDefault(t => t.tile == tile).pos;
 
         private Tile GetMapObjectTile(MapObject.MapObject mapObject) => TryGetMapObjectTile(mapObject) ?? throw new System.ArgumentException("Map does not contain specified object.", nameof(mapObject));
-
-        private Tile TryGetMapObjectTile(MapObject.MapObject mapObject)
-        {
-            for (var y = 0; y < Height.Value; ++y)
-                for (var x = 0; x < Width.Value; ++x)
-                    if (_Tiles[x, y].Object == mapObject)
-                        return _Tiles[x, y];
-
-            return null;
-        }
+        private Tile TryGetMapObjectTile(MapObject.MapObject mapObject) => Tiles.SingleOrDefault(t => t.tile.Object == mapObject).tile;
 
         private Tile[,] ConstructTiles(TileDefinition[,] definitions)
         {
