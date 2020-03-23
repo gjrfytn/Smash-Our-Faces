@@ -1,6 +1,7 @@
 ﻿using Sof.Model;
 using Sof.Model.Scenario;
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace Sof.Auxiliary
 {
@@ -11,16 +12,41 @@ namespace Sof.Auxiliary
             Map.IUnitTemplate this[string name] { get; }
         }
 
-        private List<Faction> _Factions;
+        private List<Faction> _Factions = new List<Faction>();
+        private List<Occupation> _Occupations = new List<Occupation>();
+        private List<Model.Scenario.Unit> _Units = new List<Model.Scenario.Unit>();
 
         public IEnumerable<Faction> Factions => _Factions;
-        public IEnumerable<Occupation> Occupations => new[] { new Occupation(new Position(2, 2), _Factions[0]), new Occupation(new Position(7, 7), _Factions[1]) };
-        public IEnumerable<Model.Scenario.Unit> Units { get; private set; }
+        public IEnumerable<Occupation> Occupations => _Occupations;
+        public IEnumerable<Model.Scenario.Unit> Units => _Units;
 
-        public XmlScenario(IUnitRegistry unitRegistry)
+        public XmlScenario(string xml, IUnitRegistry unitRegistry)
         {
-            _Factions = new List<Faction> { new Faction("Faction 1", new PositiveInt(100)), new Faction("Faction 2", new PositiveInt(100)) };
-            Units = new[] { new Model.Scenario.Unit(new Position(2, 2), unitRegistry["commander1"], _Factions[0], true), new Model.Scenario.Unit(new Position(7, 7), unitRegistry["commander1"], _Factions[1], true) };
+            if (xml == null)
+                throw new System.ArgumentNullException(nameof(xml));
+            if (unitRegistry == null)
+                throw new System.ArgumentNullException(nameof(unitRegistry));
+
+            var doc = XDocument.Parse(xml);
+
+            foreach (var factionElement in doc.Root.Element("Factions").Elements())
+            {
+                var faction = new Faction(factionElement.Element("Name").Value, new PositiveInt(int.Parse(factionElement.Element("Gold").Value)));
+                _Factions.Add(faction);
+
+                var occupations = factionElement.Element("Occupations");
+                if (occupations != null)
+                    foreach (var occupation in occupations.Elements())
+                        _Occupations.Add(new Occupation(new Position(int.Parse(occupation.Attribute("x").Value), int.Parse(occupation.Attribute("y").Value)), faction));
+
+                var units = factionElement.Element("Units");
+                if (units != null)
+                    foreach (var unit in units.Elements())
+                        _Units.Add(new Model.Scenario.Unit(new Position(int.Parse(unit.Attribute("x").Value), int.Parse(unit.Attribute("y").Value)),
+                                                                        unitRegistry[unit.Element("Name").Value],
+                                                                        faction,
+                                                                        unit.Element("Critical") != null));
+            }
         }
     }
 }

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="SofScenario.xsd">
+  <Factions>
+    <Faction>
+      <Name>Faction 1</Name>
+      <Gold>100</Gold>
+      <Occupations>
+        <Occupation x="2" y="2"/>
+      </Occupations>
+      <Units>
+        <Unit x="2" y="2">
+          <Name>commander1</Name>
+          <Critical/>
+        </Unit>
+      </Units>
+    </Faction>
+    <Faction>
+      <Name>Faction 2</Name>
+      <Gold>100</Gold>
+      <Occupations>
+        <Occupation x="7" y="7"/>
+      </Occupations>
+	  <Units>
+        <Unit x="7" y="7">
+          <Name>commander2</Name>
+          <Critical/>
+        </Unit>
+      </Units>
+    </Faction>
+  </Factions>
+</Scenario>

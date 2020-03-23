@@ -13,6 +13,8 @@ namespace Sof.Object
         private UIManager _UIManager;
         [SerializeField]
         private Map _Map;
+        [SerializeField]
+        private TextAsset _ScenarioFile;
 
         [SerializeField]
         private Unit[] _UnitPrefabs;
@@ -56,7 +58,7 @@ namespace Sof.Object
             commanderInstance1 = Instantiate(_CommanderUnit, Map.ConvertToWorldPos(new Position(2, 2)), Quaternion.identity, transform);
             commanderInstance2 = Instantiate(_CommanderUnit, Map.ConvertToWorldPos(new Position(7, 7)), Quaternion.identity, transform);
 
-            _Scenario = new XmlScenario(this);
+            _Scenario = new XmlScenario(_ScenarioFile.text, this);
 
             _Factions = _Scenario.Factions.ToList();
             _FactionColors = _Factions.ToDictionary(f1 => f1, f2 => palette.GetNewRandomColor());

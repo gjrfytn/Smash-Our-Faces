@@ -1724,6 +1724,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _UIManager: {fileID: 1420254273}
   _Map: {fileID: 1403569718}
+  _ScenarioFile: {fileID: 4900000, guid: c481c4b0744ad164fbdd7b1c27a3ac09, type: 3}
   _UnitPrefabs:
   - {fileID: 1557350346382895989, guid: 3f011cab9a916d741864bdd6f85ff5e2, type: 3}
   - {fileID: 1532055146544811719, guid: e6865229a0aab234a8cfc4784553dccf, type: 3}

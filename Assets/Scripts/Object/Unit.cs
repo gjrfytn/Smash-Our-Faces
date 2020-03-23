@@ -48,7 +48,7 @@ namespace Sof.Object
             _UIManager = uiManager != null ? uiManager : throw new System.ArgumentNullException(nameof(uiManager));
             _Map = map != null ? map : throw new System.ArgumentNullException(nameof(map));
 
-            ModelUnit = unit;
+            ModelUnit = unit ?? throw new System.ArgumentNullException(nameof(unit));
             ModelUnit.MovedAlongPath += ModelUnit_MovedAlongPath;
             ModelUnit.Attacked += ModelUnit_Attacked;
             ModelUnit.TookHit += ModelUnit_TookHit;
