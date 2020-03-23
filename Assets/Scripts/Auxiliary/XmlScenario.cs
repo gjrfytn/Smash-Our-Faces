@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace Sof.Auxiliary
 {
-    public class XmlScenario : IScenario
+    public class XmlScenario : XmlParser, IScenario
     {
         public interface IUnitRegistry
         {
@@ -37,15 +37,15 @@ namespace Sof.Auxiliary
                 var occupations = factionElement.Element("Occupations");
                 if (occupations != null)
                     foreach (var occupation in occupations.Elements())
-                        _Occupations.Add(new Occupation(new Position(int.Parse(occupation.Attribute("x").Value), int.Parse(occupation.Attribute("y").Value)), faction));
+                        _Occupations.Add(new Occupation(ExtractPosition(occupation), faction));
 
                 var units = factionElement.Element("Units");
                 if (units != null)
                     foreach (var unit in units.Elements())
-                        _Units.Add(new Model.Scenario.Unit(new Position(int.Parse(unit.Attribute("x").Value), int.Parse(unit.Attribute("y").Value)),
-                                                                        unitRegistry[unit.Element("Name").Value],
-                                                                        faction,
-                                                                        unit.Element("Critical") != null));
+                        _Units.Add(new Model.Scenario.Unit(ExtractPosition(unit),
+                                                           unitRegistry[unit.Element("Name").Value],
+                                                           faction,
+                                                           unit.Element("Critical") != null));
             }
         }
     }
