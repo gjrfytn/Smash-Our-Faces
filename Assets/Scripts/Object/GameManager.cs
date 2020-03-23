@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Sof.Object
 {
-    public class GameManager : MonoBehaviour, ITime, Model.Scenario.IScenario //TODO temp
+    public class GameManager : MonoBehaviour, ITime, XmlScenario.IUnitRegistry
     {
 #pragma warning disable 0649
         [SerializeField]
@@ -19,12 +19,12 @@ namespace Sof.Object
         [SerializeField]
         private Unit _CommanderUnit;
 #pragma warning restore 0649
+
         public IEnumerable<Faction> Factions => _Factions;
-        public IEnumerable<Model.Scenario.Occupation> Occupations => new[] { new Model.Scenario.Occupation(new Position(2, 2), _Factions[0]), new Model.Scenario.Occupation(new Position(7, 7), _Factions[1]) };
-        public IEnumerable<Model.Scenario.Unit> Units { get; private set; }
 
         public event System.Action TurnEnded;
 
+        private XmlScenario _Scenario;
         private List<Faction> _Factions;
         private readonly List<Unit> _Units = new List<Unit>(); //TODO unit removement
         private Dictionary<Faction, Color> _FactionColors;
@@ -36,24 +36,38 @@ namespace Sof.Object
         public Faction CurrentPlayerFaction { get; private set; }
         public IEnumerable<Unit> UnitPrefabs => _UnitPrefabs;
 
+        public Model.Map.IUnitTemplate this[string name]
+        {
+            get
+            {
+                switch (name)
+                {
+                    case "commander1": return commanderInstance1;
+                    case "commander2": return commanderInstance2;
+                    default: throw new System.ArgumentOutOfRangeException(nameof(name), name);
+                }
+            }
+        }
+
         private void Awake()
         {
             var palette = new Palette();
-            _Factions = new List<Faction> { new Faction("Faction 1", new PositiveInt(100)), new Faction("Faction 2", new PositiveInt(100)) };
 
             commanderInstance1 = Instantiate(_CommanderUnit, Map.ConvertToWorldPos(new Position(2, 2)), Quaternion.identity, transform);
             commanderInstance2 = Instantiate(_CommanderUnit, Map.ConvertToWorldPos(new Position(7, 7)), Quaternion.identity, transform);
-            Units = new[] { new Model.Scenario.Unit(new Position(2, 2), commanderInstance1, _Factions[0], true), new Model.Scenario.Unit(new Position(7, 7), commanderInstance2, _Factions[1], true) };
 
+            _Scenario = new XmlScenario(this);
+
+            _Factions = _Scenario.Factions.ToList();
             _FactionColors = _Factions.ToDictionary(f1 => f1, f2 => palette.GetNewRandomColor());
         }
 
         private void Start()
         {
-            CurrentPlayerFaction = _Factions[0];
+            CurrentPlayerFaction = _Scenario.Factions.First();
 
             _UIManager.Initialize();
-            _Map.Initialize();
+            _Map.Initialize(_Scenario);
 
             InitializeUnit(commanderInstance1, _Map.ModelMap[new Position(2, 2)].Unit);
             InitializeUnit(commanderInstance2, _Map.ModelMap[new Position(7, 7)].Unit);

@@ -66,11 +66,11 @@ namespace Sof.Object
 
         private List<Tile> _Tiles;
 
-        public void Initialize()
+        public void Initialize(Model.Scenario.IScenario scenario)
         {
             _LineRenderer = GetComponent<LineRenderer>();
 
-            ModelMap = new Model.Map(new XmlMap(_MapFile.text), _GameManager, _GameManager);
+            ModelMap = new Model.Map(new XmlMap(_MapFile.text), scenario, _GameManager);
 
             _Tiles = new List<Tile>();
             for (var y = 0; y < ModelMap.Height.Value; ++y)
