@@ -31,10 +31,6 @@ namespace Sof.Object
         private readonly List<Unit> _Units = new List<Unit>(); //TODO unit removement
         private Dictionary<Faction, Color> _FactionColors;
 
-        // TODO temp
-        private Unit commanderInstance1;
-        private Unit commanderInstance2;
-
         public Faction CurrentPlayerFaction { get; private set; }
         public IEnumerable<Unit> UnitPrefabs => _UnitPrefabs;
         public IScenario CurrentScenario { get; private set; }
@@ -45,8 +41,8 @@ namespace Sof.Object
             {
                 switch (name)
                 {
-                    case "commander1": return commanderInstance1;
-                    case "commander2": return commanderInstance2;
+                    case "commander1": return _CommanderUnit;
+                    case "commander2": return _CommanderUnit;
                     default: throw new System.ArgumentOutOfRangeException(nameof(name), name);
                 }
             }
@@ -55,9 +51,6 @@ namespace Sof.Object
         private void Awake()
         {
             var palette = new Palette();
-
-            commanderInstance1 = Instantiate(_CommanderUnit, Map.ConvertToWorldPos(new Position(2, 2)), Quaternion.identity, transform);
-            commanderInstance2 = Instantiate(_CommanderUnit, Map.ConvertToWorldPos(new Position(7, 7)), Quaternion.identity, transform);
 
             CurrentScenario = new XmlScenario(_ScenarioFile.text, this);
 
@@ -79,7 +72,7 @@ namespace Sof.Object
 
         private void ModelMap_UnitSpawned(Model.Unit unit, Model.Map.IUnitTemplate template)
         {
-            InitializeUnit((Unit)template, unit);
+            InstantiateUnit((Unit)template, unit);
         }
 
         public void DebugSpawnUnit(Unit unitInstance, Model.Tile tile, Faction faction)
@@ -127,8 +120,9 @@ namespace Sof.Object
 
         public Unit GetUnitObject(Model.Unit unit) => _Units.Single(u => u.ModelUnit == unit);
 
-        private void InitializeUnit(Unit unitInstance, Model.Unit modelUnit)
+        private void InstantiateUnit(Unit prefab, Model.Unit modelUnit)
         {
+            var unitInstance = Instantiate(prefab, Map.ConvertToWorldPos(_Map.ModelMap.GetUnitPos(modelUnit)), Quaternion.identity, transform);
             unitInstance.Initialize(modelUnit, this, _UIManager, _Map);
             _Units.Add(unitInstance);
         }

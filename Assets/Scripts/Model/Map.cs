@@ -189,6 +189,22 @@ namespace Sof.Model
             return Tiles.SingleOrDefault(t => t.tile.Object == mapObject).pos;
         }
 
+        public Position GetUnitPos(Unit unit)
+        {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+
+            return TryGetUnitPos(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
+        }
+
+        public Position TryGetUnitPos(Unit unit)
+        {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+
+            return Tiles.SingleOrDefault(t => t.tile.Unit == unit).pos;
+        }
+
         public bool IsBlocked(Position pos)
         {
             if (pos == null)
@@ -216,8 +232,6 @@ namespace Sof.Model
         private void Spawn(Unit unit, Tile tile) => tile.PlaceUnit(unit);
         private void Remove(Unit unit) => this[GetUnitPos(unit)].RemoveUnit();
 
-        private Position GetUnitPos(Unit unit) => TryGetUnitPos(unit) ?? throw new System.ArgumentException("Map does not contain specified unit.", nameof(unit));
-        private Position TryGetUnitPos(Unit unit) => Tiles.SingleOrDefault(t => t.tile.Unit == unit).pos;
         private Position GetTilePos(Tile tile) => TryGetTilePos(tile) ?? throw new System.ArgumentException("Map does not contain specified tile.", nameof(tile));
         private Position TryGetTilePos(Tile tile) => Tiles.SingleOrDefault(t => t.tile == tile).pos;
 
