@@ -38,6 +38,8 @@ namespace Sof.Model
 
         public Tile this[Position pos] => _Tiles[pos.X, pos.Y];
 
+        public event System.Action<Unit> UnitRemoved;
+
         public Map(IMapFile mapFile, Scenario.IScenario scenario, ITime time)
         {
             if (mapFile == null)
@@ -55,6 +57,18 @@ namespace Sof.Model
 
             foreach (var unit in scenario.Units)
                 unit.Spawn(this, this[unit.Position]);
+        }
+
+        public void Reset()
+        {
+            foreach (var tile in Tiles)
+            {
+                if (tile.tile.Unit != null)
+                    tile.tile.RemoveUnit();
+
+                if (tile.tile.Object is Property property)
+                    property.Owner = null;
+            }
         }
 
         public Unit Spawn(IUnitTemplate unitTemplate, Tile tile, Faction faction, bool critical)
@@ -203,10 +217,16 @@ namespace Sof.Model
 
             for (var y = 0; y < definitions.GetLength(1); ++y)
                 for (var x = 0; x < definitions.GetLength(0); ++x)
+                {
                     tiles[x, y] = new Tile(CreateGround(definitions[x, y].Ground), CreateObject(definitions[x, y].MapObject));
+
+                    tiles[x, y].UnitRemoved += Tile_UnitRemoved;
+                }
 
             return tiles;
         }
+
+        private void Tile_UnitRemoved(Unit unit) => UnitRemoved?.Invoke(unit);
 
         private PositiveInt Distance(Tile tile1, Tile tile2) => new PositiveInt(GetTilePos(tile1).Distance(GetTilePos(tile2)));
 

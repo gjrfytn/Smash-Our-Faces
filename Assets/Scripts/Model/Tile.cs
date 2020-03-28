@@ -14,6 +14,8 @@ namespace Sof.Model
 
         public bool Blocked => Unit != null;
 
+        public event System.Action<Unit> UnitRemoved;
+
         public Tile(Ground.Ground ground, MapObject.MapObject @object)
         {
             Ground = ground ?? throw new System.ArgumentNullException(nameof(ground));
@@ -38,7 +40,10 @@ namespace Sof.Model
                 throw new System.InvalidOperationException("Tile has no unit.");
 
             Unit.Died -= RemoveUnit;
+            var unit = Unit;
             Unit = null;
+
+            UnitRemoved?.Invoke(unit);
         }
     }
 }

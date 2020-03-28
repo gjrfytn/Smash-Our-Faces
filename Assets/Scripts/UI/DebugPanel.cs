@@ -13,9 +13,13 @@ namespace Sof.UI
         [SerializeField]
         private UIManager _UIManager;
         [SerializeField]
+        private Map _Map;
+        [SerializeField]
         private Button _SpawnUnitButton;
         [SerializeField]
         private Dropdown _UnitFactionDropdown; // TODO Update list
+        [SerializeField]
+        private Button _ResetMapButton;
 #pragma warning restore 0649
 
         private Model.Faction _SelectedFaction;
@@ -27,6 +31,8 @@ namespace Sof.UI
 
             _UnitFactionDropdown.AddOptions(_GameManager.Factions.Select(f => f.Name).ToList());
             _SelectedFaction = _GameManager.Factions.First();
+
+            _ResetMapButton.onClick.AddListener(() => _Map.ModelMap.Reset());
         }
     }
 }
