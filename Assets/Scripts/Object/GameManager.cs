@@ -1,5 +1,6 @@
 ﻿using Sof.Auxiliary;
 using Sof.Model;
+using Sof.Model.Scenario;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -26,7 +27,6 @@ namespace Sof.Object
 
         public event System.Action TurnEnded;
 
-        private XmlScenario _Scenario;
         private List<Faction> _Factions;
         private readonly List<Unit> _Units = new List<Unit>(); //TODO unit removement
         private Dictionary<Faction, Color> _FactionColors;
@@ -37,6 +37,7 @@ namespace Sof.Object
 
         public Faction CurrentPlayerFaction { get; private set; }
         public IEnumerable<Unit> UnitPrefabs => _UnitPrefabs;
+        public IScenario CurrentScenario { get; private set; }
 
         public Model.Map.IUnitTemplate this[string name]
         {
@@ -58,27 +59,32 @@ namespace Sof.Object
             commanderInstance1 = Instantiate(_CommanderUnit, Map.ConvertToWorldPos(new Position(2, 2)), Quaternion.identity, transform);
             commanderInstance2 = Instantiate(_CommanderUnit, Map.ConvertToWorldPos(new Position(7, 7)), Quaternion.identity, transform);
 
-            _Scenario = new XmlScenario(_ScenarioFile.text, this);
+            CurrentScenario = new XmlScenario(_ScenarioFile.text, this);
 
-            _Factions = _Scenario.Factions.ToList();
+            _Factions = CurrentScenario.Factions.ToList();
             _FactionColors = _Factions.ToDictionary(f1 => f1, f2 => palette.GetNewRandomColor());
         }
 
         private void Start()
         {
-            CurrentPlayerFaction = _Scenario.Factions.First();
+            CurrentPlayerFaction = CurrentScenario.Factions.First();
 
             _UIManager.Initialize();
-            _Map.Initialize(_Scenario);
+            _Map.Initialize();
 
-            InitializeUnit(commanderInstance1, _Map.ModelMap[new Position(2, 2)].Unit);
-            InitializeUnit(commanderInstance2, _Map.ModelMap[new Position(7, 7)].Unit);
+            _Map.ModelMap.UnitSpawned += ModelMap_UnitSpawned;
+
+            _Map.ModelMap.ApplyScenario(CurrentScenario);
+        }
+
+        private void ModelMap_UnitSpawned(Model.Unit unit, Model.Map.IUnitTemplate template)
+        {
+            InitializeUnit((Unit)template, unit);
         }
 
         public void DebugSpawnUnit(Unit unitInstance, Model.Tile tile, Faction faction)
         {
-            var unit = _Map.ModelMap.Spawn(unitInstance, tile, faction, false);
-            InitializeUnit(unitInstance, unit);
+            _Map.ModelMap.Spawn(unitInstance, tile, faction, false);
         }
 
         public Color GetFactionColor(Faction faction)
@@ -92,8 +98,7 @@ namespace Sof.Object
         public void PurchaseUnitInCastle(Unit unit, Model.MapObject.Property.Castle castle)
         {
             var unitInstance = Instantiate(unit, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle)), Quaternion.identity, transform);
-            var purchasedUnit = castle.PurchaseUnit(unitInstance);
-            InitializeUnit(unitInstance, purchasedUnit);
+            castle.PurchaseUnit(unitInstance);
         }
 
         public void OnCriticalUnitDeath(Faction faction)

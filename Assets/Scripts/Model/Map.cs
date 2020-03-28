@@ -38,19 +38,26 @@ namespace Sof.Model
 
         public Tile this[Position pos] => _Tiles[pos.X, pos.Y];
 
+        public event System.Action<Unit, IUnitTemplate> UnitSpawned;
         public event System.Action<Unit> UnitBanished;
 
-        public Map(IMapFile mapFile, Scenario.IScenario scenario, ITime time)
+        public Map(IMapFile mapFile, ITime time)
         {
             if (mapFile == null)
                 throw new System.ArgumentNullException(nameof(mapFile));
-            if (scenario == null)
-                throw new System.ArgumentNullException(nameof(scenario));
 
             _Pathfinder = new Pathfinding.Pathfinder(this);
             _Time = time ?? throw new System.ArgumentNullException(nameof(time));
 
             _Tiles = ConstructTiles(mapFile.Load());
+        }
+
+        public void ApplyScenario(Scenario.IScenario scenario)
+        {
+            if (scenario == null)
+                throw new System.ArgumentNullException(nameof(scenario));
+
+            Reset();
 
             foreach (var occupation in scenario.Occupations)
                 occupation.Apply((Castle)this[occupation.Position].Object);
@@ -77,7 +84,7 @@ namespace Sof.Model
             }
         }
 
-        public Unit Spawn(IUnitTemplate unitTemplate, Tile tile, Faction faction, bool critical)
+        public void Spawn(IUnitTemplate unitTemplate, Tile tile, Faction faction, bool critical)
         {
             if (unitTemplate == null)
                 throw new System.ArgumentNullException(nameof(unitTemplate));
@@ -88,17 +95,17 @@ namespace Sof.Model
 
             Spawn(unit, tile);
 
-            return unit;
+            UnitSpawned?.Invoke(unit, unitTemplate);
         }
 
-        public Unit Spawn(IUnitTemplate unitTemplate, Castle castle, Faction faction, bool critical)
+        public void Spawn(IUnitTemplate unitTemplate, Castle castle, Faction faction, bool critical)
         {
             if (unitTemplate == null)
                 throw new System.ArgumentNullException(nameof(unitTemplate));
             if (castle == null)
                 throw new System.ArgumentNullException(nameof(castle));
 
-            return Spawn(unitTemplate, GetMapObjectTile(castle), faction, critical);
+            Spawn(unitTemplate, GetMapObjectTile(castle), faction, critical);
         }
 
         public PositiveInt Distance(Unit unit1, Unit unit2)

@@ -32,7 +32,7 @@ namespace Sof.UI
             _UnitFactionDropdown.AddOptions(_GameManager.Factions.Select(f => f.Name).ToList());
             _SelectedFaction = _GameManager.Factions.First();
 
-            _ResetMapButton.onClick.AddListener(() => _Map.ModelMap.Reset());
+            _ResetMapButton.onClick.AddListener(() => _Map.ModelMap.ApplyScenario(_GameManager.CurrentScenario));
         }
     }
 }

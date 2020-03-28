@@ -18,7 +18,7 @@ namespace Sof.Model.MapObject.Property
             _Map = map ?? throw new System.ArgumentNullException(nameof(map));
         }
 
-        public Unit PurchaseUnit(IUnitTemplate unitTemplate)
+        public void PurchaseUnit(IUnitTemplate unitTemplate)
         {
             if (unitTemplate == null)
                 throw new System.ArgumentNullException(nameof(unitTemplate));
@@ -28,7 +28,7 @@ namespace Sof.Model.MapObject.Property
 
             Owner.PurchaseUnit(unitTemplate);
 
-            return _Map.Spawn(unitTemplate, this, Owner, false);
+            _Map.Spawn(unitTemplate, this, Owner, false);
         }
     }
 }
