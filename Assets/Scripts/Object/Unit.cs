@@ -55,7 +55,7 @@ namespace Sof.Object
             ModelUnit.Healed += ModelUnit_Healed;
             ModelUnit.Died += ModelUnit_Died;
 
-            map.ModelMap.UnitRemoved += ModelMap_UnitRemoved;
+            map.ModelMap.UnitBanished += ModelMap_UnitBanished;
 
             SetOwnerColor();
         }
@@ -114,7 +114,7 @@ namespace Sof.Object
             DestroySelf();
         }
 
-        private void ModelMap_UnitRemoved(Model.Unit unit)
+        private void ModelMap_UnitBanished(Model.Unit unit)
         {
             if (ModelUnit == unit)
                 DestroySelf();
