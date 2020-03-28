@@ -33,10 +33,10 @@ namespace Sof.Model.MapObject.Property
             _Income = income;
             _Heal = heal;
 
-            time.TurnEnded += EndTurn;
+            time.TurnEnded += Time_TurnEnded;
         }
 
-        private void EndTurn()
+        private void Time_TurnEnded()
         {
             Owner?.RecieveIncome(_Income);
             Unit?.Heal(_Heal);

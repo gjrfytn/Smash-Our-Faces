@@ -42,7 +42,7 @@ namespace Sof.Object
 
         public void Initialize()
         {
-            _GameManager.TurnEnded += OnTurnEnd;
+            _GameManager.TurnEnded += GameManager_TurnEnded;
 
             _TurnIndicator.SetCurrentPlayer(_GameManager.CurrentPlayerFaction);
             _FactionInfoPanel.Setup(_GameManager.CurrentPlayerFaction);
@@ -195,7 +195,7 @@ namespace Sof.Object
             _GameManager.EndTurn();
         }
 
-        private void OnTurnEnd()
+        private void GameManager_TurnEnded()
         {
             _TurnIndicator.SetCurrentPlayer(_GameManager.CurrentPlayerFaction);
             _FactionInfoPanel.Setup(_GameManager.CurrentPlayerFaction);

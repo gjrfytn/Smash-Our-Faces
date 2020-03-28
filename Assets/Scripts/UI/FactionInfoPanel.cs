@@ -21,10 +21,7 @@ namespace Sof.UI
             UpdateGoldText();
         }
 
-        private void Faction_GoldChanged(int change)
-        {
-            UpdateGoldText();
-        }
+        private void Faction_GoldChanged(int change) => UpdateGoldText();
 
         private void UpdateGoldText() => _TreasuryGoldText.text = _Faction.Gold.ToString();
     }

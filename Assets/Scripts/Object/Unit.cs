@@ -85,6 +85,9 @@ namespace Sof.Object
 
         private void ModelUnit_MovedAlongPath(IEnumerable<Model.Tile> path)
         {
+            if (path == null)
+                throw new System.ArgumentNullException(nameof(path));
+
             StartCoroutine(FollowPath(path));
         }
 
@@ -116,6 +119,9 @@ namespace Sof.Object
 
         private void ModelMap_UnitBanished(Model.Unit unit)
         {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+
             if (ModelUnit == unit)
                 DestroySelf();
         }

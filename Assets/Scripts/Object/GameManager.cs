@@ -70,11 +70,6 @@ namespace Sof.Object
             _Map.ModelMap.ApplyScenario(CurrentScenario);
         }
 
-        private void ModelMap_UnitSpawned(Model.Unit unit, Model.Map.IUnitTemplate template)
-        {
-            InstantiateUnit((Unit)template, unit);
-        }
-
         public void DebugSpawnUnit(Unit unitInstance, Model.Tile tile, Faction faction)
         {
             _Map.ModelMap.Spawn(unitInstance, tile, faction, false);
@@ -119,6 +114,16 @@ namespace Sof.Object
         }
 
         public Unit GetUnitObject(Model.Unit unit) => _Units.Single(u => u.ModelUnit == unit);
+
+        private void ModelMap_UnitSpawned(Model.Unit unit, Model.Map.IUnitTemplate template)
+        {
+            if (unit == null)
+                throw new System.ArgumentNullException(nameof(unit));
+            if (template == null)
+                throw new System.ArgumentNullException(nameof(template));
+
+            InstantiateUnit((Unit)template, unit);
+        }
 
         private void InstantiateUnit(Unit prefab, Model.Unit modelUnit)
         {

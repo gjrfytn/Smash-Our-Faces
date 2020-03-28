@@ -69,7 +69,7 @@ namespace Sof.Model
             _MovePoints = MaxMovePoints;
             _Health = MaxHealth;
 
-            _Time.TurnEnded += EndTurn;
+            _Time.TurnEnded += Time_TurnEnded;
         }
 
         public void Move(Tile tile)
@@ -143,7 +143,7 @@ namespace Sof.Model
 
             if (Dead)
             {
-                _Time.TurnEnded -= EndTurn;
+                _Time.TurnEnded -= Time_TurnEnded;
 
                 Died?.Invoke();
             }
@@ -161,7 +161,7 @@ namespace Sof.Model
         public IEnumerable<MovePoint> GetMoveRange() => _Map.GetMoveRange(this);
         public IEnumerable<Tile> GetAttackArea() => _Map.GetTilesInRange(this, _AttackRange); //TODO temp
 
-        private void EndTurn() => MovePoints = MaxMovePoints;
+        private void Time_TurnEnded() => MovePoints = MaxMovePoints;
 
         private bool IsInAttackRange(Unit unit) => _Map.Distance(this, unit).Value <= _AttackRange.Value;
 
