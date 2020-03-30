@@ -153,9 +153,12 @@ namespace Sof.Model
         {
             CheckIsAlive();
 
+            var healthBeforeHeal = _Health.Value;
             Health = new PositiveInt(UnityEngine.Mathf.Min(MaxHealth.Value, _Health.Value + value.Value));
 
-            Healed?.Invoke(value);
+            var actualHeal = _Health.Value - healthBeforeHeal;
+            if (actualHeal != 0)
+                Healed?.Invoke(new PositiveInt(actualHeal));
         }
 
         public IEnumerable<MovePoint> GetMoveRange() => _Map.GetMoveRange(this);
