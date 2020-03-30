@@ -98,6 +98,9 @@ namespace Sof.Object
                 EndTurn();
 
             _Factions.Remove(faction);
+
+            if (_Factions.Count == 1)
+                _UIManager.OnEndGame(_Factions[0]);
         }
 
         public void EndTurn()

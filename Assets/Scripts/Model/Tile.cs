@@ -37,7 +37,7 @@ namespace Sof.Model
             if (Unit == null)
                 throw new System.InvalidOperationException("Tile has no unit.");
 
-            Unit.Died -= RemoveUnit;
+            Unit.Died -= Unit_Died;
             Unit = null;
         }
 

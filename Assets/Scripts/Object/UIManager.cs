@@ -32,6 +32,8 @@ namespace Sof.Object
         private UnitInfoPanel _UnitInfoPanel;
         [SerializeField]
         private UnitPurchasePanel _UnitPurchasePanel;
+        [SerializeField]
+        private EndGamePanel _EndGamePanel;
 #pragma warning restore 0649
 
         public bool DisableUIInteraction { private get; set; } //TODO Make dedicated UIManager
@@ -193,6 +195,12 @@ namespace Sof.Object
                 DeselectUnit();
 
             _GameManager.EndTurn();
+        }
+
+        public void OnEndGame(Faction winner)
+        {
+            _EndGamePanel.gameObject.SetActive(true);
+            _EndGamePanel.Setup(winner.Name);
         }
 
         private void GameManager_TurnEnded()
