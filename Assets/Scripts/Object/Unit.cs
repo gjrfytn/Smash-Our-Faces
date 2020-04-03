@@ -110,7 +110,6 @@ namespace Sof.Object
         {
             if (ModelUnit.Critical)
             {
-                _GameManager.OnCriticalUnitDeath(ModelUnit.Faction);
                 _UIManager.OnCriticalUnitDeath(ModelUnit.Faction);
             }
 

@@ -89,20 +89,6 @@ namespace Sof.Object
             castle.PurchaseUnit(unitInstance);
         }
 
-        public void OnCriticalUnitDeath(Faction faction)
-        {
-            if (faction == null)
-                throw new System.ArgumentNullException(nameof(faction));
-
-            if (CurrentPlayerFaction == faction)
-                EndTurn();
-
-            _Factions.Remove(faction);
-
-            if (_Factions.Count == 1)
-                _UIManager.OnEndGame(_Factions[0]);
-        }
-
         public void EndTurn()
         {
             if (CurrentPlayerFaction == _Factions.Last())
@@ -128,11 +114,26 @@ namespace Sof.Object
             InstantiateUnit((Unit)template, unit);
         }
 
+        private void Unit_Died(Model.Unit unit)
+        {
+            if (unit.Critical)
+            {
+                if (CurrentPlayerFaction == unit.Faction)
+                    EndTurn();
+
+                _Factions.Remove(unit.Faction);
+
+                if (_Factions.Count == 1)
+                    _UIManager.OnEndGame(_Factions[0]);
+            }
+        }
+
         private void InstantiateUnit(Unit prefab, Model.Unit modelUnit)
         {
             var unitInstance = Instantiate(prefab, Map.ConvertToWorldPos(_Map.ModelMap.GetUnitPos(modelUnit)), Quaternion.identity, transform);
             unitInstance.Initialize(modelUnit, this, _UIManager, _Map);
             _Units.Add(unitInstance);
+            modelUnit.Died += () => Unit_Died(modelUnit);
         }
     }
 }
