@@ -36,7 +36,7 @@ namespace Sof.Object
         private EndGamePanel _EndGamePanel;
 #pragma warning restore 0649
 
-        public bool DisableUIInteraction { private get; set; } //TODO Make dedicated UIManager
+        public bool DisableUIInteraction { private get; set; }
 
         private Model.Unit _SelectedUnit;
         private Faction _SpawnedUnitFaction;
@@ -45,6 +45,7 @@ namespace Sof.Object
         public void Initialize()
         {
             _GameManager.TurnEnded += GameManager_TurnEnded;
+            _GameManager.GameEnded += GameManager_GameEnded;
 
             _TurnIndicator.SetCurrentPlayer(_GameManager.CurrentPlayerFaction);
             _FactionInfoPanel.Setup(_GameManager.CurrentPlayerFaction);
@@ -197,17 +198,17 @@ namespace Sof.Object
             _GameManager.EndTurn();
         }
 
-        public void OnEndGame(Faction winner)
-        {
-            _EndGamePanel.gameObject.SetActive(true);
-            _EndGamePanel.Setup(winner.Name);
-        }
-
         private void GameManager_TurnEnded()
         {
             _TurnIndicator.SetCurrentPlayer(_GameManager.CurrentPlayerFaction);
             _FactionInfoPanel.Setup(_GameManager.CurrentPlayerFaction);
             _Notifier.ShowNotification($"{_GameManager.CurrentPlayerFaction.Name} turn");
+        }
+
+        private void GameManager_GameEnded(Faction winner)
+        {
+            _EndGamePanel.gameObject.SetActive(true);
+            _EndGamePanel.Setup(winner.Name);
         }
 
         private void DeselectUnit()

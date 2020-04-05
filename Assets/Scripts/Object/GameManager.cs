@@ -7,8 +7,19 @@ using UnityEngine;
 
 namespace Sof.Object
 {
-    public class GameManager : MonoBehaviour, ITime, XmlScenario.IUnitRegistry
+    public class GameManager : MonoBehaviour, XmlScenario.IUnitRegistry
     {
+        private class HumanPlayer : Game.IPlayer
+        {
+            public event System.Action Acted;
+
+            public void Act()
+            {
+            }
+
+            public void OnEndTurnClick() => Acted?.Invoke();
+        }
+
 #pragma warning disable 0649
         [SerializeField]
         private UIManager _UIManager;
@@ -23,15 +34,18 @@ namespace Sof.Object
         private Unit _CommanderUnit;
 #pragma warning restore 0649
 
-        public IEnumerable<Faction> Factions => _Factions;
+        private Game _Game;
+        private Dictionary<Faction, HumanPlayer> _Players;
 
         public event System.Action TurnEnded;
+        public event System.Action<Faction> GameEnded;
 
-        private List<Faction> _Factions;
+        public IEnumerable<Faction> Factions => _Game.Factions;
+
         private readonly List<Unit> _Units = new List<Unit>(); //TODO unit removement
         private Dictionary<Faction, Color> _FactionColors;
 
-        public Faction CurrentPlayerFaction { get; private set; }
+        public Faction CurrentPlayerFaction => _Game.CurrentTurnFaction;
         public IEnumerable<Unit> UnitPrefabs => _UnitPrefabs;
         public IScenario CurrentScenario { get; private set; }
 
@@ -54,21 +68,31 @@ namespace Sof.Object
 
             CurrentScenario = new XmlScenario(_ScenarioFile.text, this);
 
-            _Factions = CurrentScenario.Factions.ToList();
-            _FactionColors = _Factions.ToDictionary(f1 => f1, f2 => palette.GetNewRandomColor());
+            _FactionColors = CurrentScenario.Factions.ToDictionary(f1 => f1, f2 => palette.GetNewRandomColor());
         }
 
         private void Start()
         {
-            CurrentPlayerFaction = CurrentScenario.Factions.First();
+            _Players = CurrentScenario.Factions.ToDictionary(f1 => f1, f2 => new HumanPlayer());
 
-            _UIManager.Initialize();
-            _Map.Initialize();
+            _Game = new Game(_Players.ToDictionary(p1 => p1.Key, p2 => (Game.IPlayer)p2.Value));
+
+            _Game.TurnEnded += Game_TurnEnded;
+            _Game.GameEnded += Game_GameEnded;
+
+            _Map.Initialize(_Game);
 
             _Map.ModelMap.UnitSpawned += ModelMap_UnitSpawned;
 
             _Map.ModelMap.ApplyScenario(CurrentScenario);
+
+            _UIManager.Initialize();
+
+            _Game.Start();
         }
+
+        private void Game_TurnEnded() => TurnEnded?.Invoke();
+        private void Game_GameEnded(Faction winner) => GameEnded?.Invoke(winner);
 
         public void DebugSpawnUnit(Unit unitInstance, Model.Tile tile, Faction faction)
         {
@@ -91,15 +115,7 @@ namespace Sof.Object
 
         public void EndTurn()
         {
-            if (CurrentPlayerFaction == _Factions.Last())
-                CurrentPlayerFaction = _Factions.First();
-            else
-            {
-                var playerIndex = _Factions.IndexOf(CurrentPlayerFaction);
-                CurrentPlayerFaction = _Factions[playerIndex + 1];
-            }
-
-            TurnEnded?.Invoke();
+            _Players[CurrentPlayerFaction].OnEndTurnClick();
         }
 
         public Unit GetUnitObject(Model.Unit unit) => _Units.Single(u => u.ModelUnit == unit);
@@ -114,19 +130,7 @@ namespace Sof.Object
             InstantiateUnit((Unit)template, unit);
         }
 
-        private void Unit_Died(Model.Unit unit)
-        {
-            if (unit.Critical)
-            {
-                if (CurrentPlayerFaction == unit.Faction)
-                    EndTurn();
-
-                _Factions.Remove(unit.Faction);
-
-                if (_Factions.Count == 1)
-                    _UIManager.OnEndGame(_Factions[0]);
-            }
-        }
+        private void Unit_Died(Model.Unit unit) => _Game.OnUnitDeath(unit);
 
         private void InstantiateUnit(Unit prefab, Model.Unit modelUnit)
         {
