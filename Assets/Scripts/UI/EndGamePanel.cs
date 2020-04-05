@@ -6,8 +6,10 @@ namespace Sof.UI
 {
     public class EndGamePanel : MonoBehaviour
     {
+#pragma warning disable 0649
         [SerializeField]
         private Text _WinnerText;
+#pragma warning restore 0649
 
         public void Setup(string winnerName)
         {
