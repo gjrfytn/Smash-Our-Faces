@@ -34,18 +34,13 @@ namespace Sof.Object
         private Unit _CommanderUnit;
 #pragma warning restore 0649
 
-        private Game _Game;
         private Dictionary<Faction, HumanPlayer> _Players;
 
-        public event System.Action TurnEnded;
-        public event System.Action<Faction> GameEnded;
-
-        public IEnumerable<Faction> Factions => _Game.Factions;
+        public Game Game { get; private set; }
 
         private readonly List<Unit> _Units = new List<Unit>(); //TODO unit removement
         private Dictionary<Faction, Color> _FactionColors;
 
-        public Faction CurrentPlayerFaction => _Game.CurrentTurnFaction;
         public IEnumerable<Unit> UnitPrefabs => _UnitPrefabs;
         public IScenario CurrentScenario { get; private set; }
 
@@ -75,12 +70,10 @@ namespace Sof.Object
         {
             _Players = CurrentScenario.Factions.ToDictionary(f1 => f1, f2 => new HumanPlayer());
 
-            _Game = new Game(_Players.ToDictionary(p1 => p1.Key, p2 => (Game.IPlayer)p2.Value));
+            Game = new Game(_Players.ToDictionary(p1 => p1.Key, p2 => (Game.IPlayer)p2.Value));
 
-            _Game.TurnEnded += Game_TurnEnded;
-            _Game.GameEnded += Game_GameEnded;
 
-            _Map.Initialize(_Game);
+            _Map.Initialize(Game);
 
             _Map.ModelMap.UnitSpawned += ModelMap_UnitSpawned;
 
@@ -88,11 +81,8 @@ namespace Sof.Object
 
             _UIManager.Initialize();
 
-            _Game.Start();
+            Game.Start();
         }
-
-        private void Game_TurnEnded() => TurnEnded?.Invoke();
-        private void Game_GameEnded(Faction winner) => GameEnded?.Invoke(winner);
 
         public void DebugSpawnUnit(Unit unitInstance, Model.Tile tile, Faction faction)
         {
@@ -115,7 +105,7 @@ namespace Sof.Object
 
         public void EndTurn()
         {
-            _Players[CurrentPlayerFaction].OnEndTurnClick();
+            _Players[Game.CurrentTurnFaction].OnEndTurnClick();
         }
 
         public Unit GetUnitObject(Model.Unit unit) => _Units.Single(u => u.ModelUnit == unit);
@@ -130,7 +120,7 @@ namespace Sof.Object
             InstantiateUnit((Unit)template, unit);
         }
 
-        private void Unit_Died(Model.Unit unit) => _Game.OnUnitDeath(unit);
+        private void Unit_Died(Model.Unit unit) => Game.OnUnitDeath(unit);
 
         private void InstantiateUnit(Unit prefab, Model.Unit modelUnit)
         {

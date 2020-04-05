@@ -26,11 +26,11 @@ namespace Sof.UI
 
         private void Start()
         {
-            _UnitFactionDropdown.onValueChanged.AddListener((index) => _SelectedFaction = _GameManager.Factions.Single(f => f.Name == _UnitFactionDropdown.options[index].text));
+            _UnitFactionDropdown.onValueChanged.AddListener((index) => _SelectedFaction = _GameManager.Game.Factions.Single(f => f.Name == _UnitFactionDropdown.options[index].text));
             _SpawnUnitButton.onClick.AddListener(() => _UIManager.DebugCreateUnit(_SelectedFaction));
 
-            _UnitFactionDropdown.AddOptions(_GameManager.Factions.Select(f => f.Name).ToList());
-            _SelectedFaction = _GameManager.Factions.First();
+            _UnitFactionDropdown.AddOptions(_GameManager.Game.Factions.Select(f => f.Name).ToList());
+            _SelectedFaction = _GameManager.Game.Factions.First();
 
             _ResetMapButton.onClick.AddListener(() => _Map.ModelMap.ApplyScenario(_GameManager.CurrentScenario));
         }

@@ -44,11 +44,11 @@ namespace Sof.Object
 
         public void Initialize()
         {
-            _GameManager.TurnEnded += GameManager_TurnEnded;
-            _GameManager.GameEnded += GameManager_GameEnded;
+            _GameManager.Game.TurnEnded += Game_TurnEnded;
+            _GameManager.Game.GameEnded += Game_GameEnded;
 
-            _TurnIndicator.SetCurrentPlayer(_GameManager.CurrentPlayerFaction);
-            _FactionInfoPanel.Setup(_GameManager.CurrentPlayerFaction);
+            _TurnIndicator.SetCurrentPlayer(_GameManager.Game.CurrentTurnFaction);
+            _FactionInfoPanel.Setup(_GameManager.Game.CurrentTurnFaction);
         }
 
         public void OnTileHover(Tile tile)
@@ -87,7 +87,7 @@ namespace Sof.Object
             }
             else if (_SelectedUnit == null)
             {
-                if (tile.ModelTile.Unit != null && tile.ModelTile.Unit.Faction == _GameManager.CurrentPlayerFaction)
+                if (tile.ModelTile.Unit != null && tile.ModelTile.Unit.Faction == _GameManager.Game.CurrentTurnFaction)
                 {
                     _SelectedUnit = tile.ModelTile.Unit;
                     var unitObject = _GameManager.GetUnitObject(_SelectedUnit);
@@ -133,7 +133,7 @@ namespace Sof.Object
             if (_SelectedUnit != null)
                 DeselectUnit();
 
-            if (castle.ModelCastle.Owner == _GameManager.CurrentPlayerFaction && castle.ModelCastle.Unit == null)
+            if (castle.ModelCastle.Owner == _GameManager.Game.CurrentTurnFaction && castle.ModelCastle.Unit == null)
             {
                 _UnitPurchasePanel.gameObject.SetActive(true);
                 _UnitPurchasePanel.Setup(_GameManager.UnitPrefabs, (Unit unit) => PurchaseUnitInCastle(unit, castle.ModelCastle));
@@ -198,14 +198,14 @@ namespace Sof.Object
             _GameManager.EndTurn();
         }
 
-        private void GameManager_TurnEnded()
+        private void Game_TurnEnded()
         {
-            _TurnIndicator.SetCurrentPlayer(_GameManager.CurrentPlayerFaction);
-            _FactionInfoPanel.Setup(_GameManager.CurrentPlayerFaction);
-            _Notifier.ShowNotification($"{_GameManager.CurrentPlayerFaction.Name} turn");
+            _TurnIndicator.SetCurrentPlayer(_GameManager.Game.CurrentTurnFaction);
+            _FactionInfoPanel.Setup(_GameManager.Game.CurrentTurnFaction);
+            _Notifier.ShowNotification($"{_GameManager.Game.CurrentTurnFaction.Name} turn");
         }
 
-        private void GameManager_GameEnded(Faction winner)
+        private void Game_GameEnded(Faction winner)
         {
             _EndGamePanel.gameObject.SetActive(true);
             _EndGamePanel.Setup(winner.Name);
