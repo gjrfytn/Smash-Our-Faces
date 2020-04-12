@@ -2,7 +2,7 @@
 
 namespace Sof.Object
 {
-    internal class Ground : MonoBehaviour
+    public class Ground : MonoBehaviour
     {
     }
 }

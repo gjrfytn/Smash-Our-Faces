@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace Sof.Auxiliary
 {
-    internal class XmlMap : XmlParser, IMapFile
+    public class XmlMap : XmlParser, IMapFile
     {
         private readonly string _Xml;
 

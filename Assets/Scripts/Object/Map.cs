@@ -11,7 +11,7 @@ namespace Sof.Object
     {
 #pragma warning disable 0649
         [System.Serializable]
-        internal class RoadTiles
+        public class RoadTiles
         {
             public MapObject Cross;
             public MapObject EndDown;

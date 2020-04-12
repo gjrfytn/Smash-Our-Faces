@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Sof.Model.Pathfinding
 {
-    internal class Pathfinder //TODO Refactor duplication
+    public class Pathfinder //TODO Refactor duplication
     {
         private readonly IMap _Map;
 
