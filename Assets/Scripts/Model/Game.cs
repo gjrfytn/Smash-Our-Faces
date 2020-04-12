@@ -18,6 +18,7 @@ namespace Sof.Model
 
         private IPlayer _ActingPlayer;
         private bool _GameEnded;
+        private bool _PlayerIsBeingAsked;
 
         public Faction CurrentTurnFaction => _FactionTurnEnumerator.Current;
         public IEnumerable<Faction> Factions => _Factions.Keys;
@@ -66,6 +67,9 @@ namespace Sof.Model
             if (_DefeatedFactions.Contains(_Factions.Single(f => f.Value == player).Key))
                 throw new System.InvalidOperationException("Player faction was defeated.");
 
+            if (_PlayerIsBeingAsked)
+                throw new System.InvalidOperationException($"You should not raise '{nameof(IPlayer.Acted)}' event in '{nameof(IPlayer.Act)}' method.");
+
             ProcessTurn();
         }
 
@@ -78,7 +82,9 @@ namespace Sof.Model
         private void AskPlayerToAct()
         {
             _ActingPlayer = _Factions[CurrentTurnFaction];
+            _PlayerIsBeingAsked = true;
             _ActingPlayer.Act();
+            _PlayerIsBeingAsked = false;
         }
 
         private void EndTurn()

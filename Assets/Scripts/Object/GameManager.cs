@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Sof.Object
 {
-    public class GameManager : MonoBehaviour, XmlScenario.IUnitRegistry
+    public class GameManager : MonoBehaviour, XmlScenario.IUnitRegistry, AI.Player.IGameLoop
     {
         private class HumanPlayer : Game.IPlayer
         {
@@ -34,7 +34,7 @@ namespace Sof.Object
         private Unit _CommanderUnit;
 #pragma warning restore 0649
 
-        private Dictionary<Faction, HumanPlayer> _Players;
+        private Dictionary<Faction, HumanPlayer> _HumanPlayers;
 
         public Game Game { get; private set; }
 
@@ -57,6 +57,8 @@ namespace Sof.Object
             }
         }
 
+        public event System.Action Ticked;
+
         private void Awake()
         {
             var palette = new Palette();
@@ -68,9 +70,17 @@ namespace Sof.Object
 
         private void Start()
         {
-            _Players = CurrentScenario.Factions.ToDictionary(f1 => f1, f2 => new HumanPlayer());
+            const int humanCount = 1;
+            _HumanPlayers = CurrentScenario.Factions.Take(humanCount).ToDictionary(f1 => f1, f2 => new HumanPlayer());
 
-            Game = new Game(_Players.ToDictionary(p1 => p1.Key, p2 => (Game.IPlayer)p2.Value));
+            var players = new Dictionary<Faction, Game.IPlayer>();
+            foreach (var player in _HumanPlayers)
+                players.Add(player.Key, player.Value);
+
+            foreach (var faction in CurrentScenario.Factions.Skip(humanCount))
+                players.Add(faction, new AI.Player(this));
+
+            Game = new Game(players);
 
 
             _Map.Initialize(Game);
@@ -82,6 +92,11 @@ namespace Sof.Object
             _UIManager.Initialize();
 
             Game.Start();
+        }
+
+        private void Update()
+        {
+            Ticked?.Invoke();
         }
 
         public void DebugSpawnUnit(Unit unitInstance, Model.Tile tile, Faction faction)
@@ -105,7 +120,7 @@ namespace Sof.Object
 
         public void EndTurn()
         {
-            _Players[Game.CurrentTurnFaction].OnEndTurnClick();
+            _HumanPlayers[Game.CurrentTurnFaction].OnEndTurnClick();
         }
 
         public Unit GetUnitObject(Model.Unit unit) => _Units.Single(u => u.ModelUnit == unit);
