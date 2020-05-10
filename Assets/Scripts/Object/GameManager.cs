@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Sof.Object
 {
-    public class GameManager : MonoBehaviour, XmlScenario.IUnitRegistry, AI.Player.IGameLoop
+    public class GameManager : MonoBehaviour, XmlScenario.IUnitRegistry, AI.Player.IGameLoop, AI.Player.IGame
     {
         private class HumanPlayer : Game.IPlayer
         {
@@ -44,6 +44,11 @@ namespace Sof.Object
         public IEnumerable<Unit> UnitPrefabs => _UnitPrefabs;
         public IScenario CurrentScenario { get; private set; }
 
+        public IEnumerable<Model.MapObject.Property.Castle.IUnitTemplate> AvailableUnits => _UnitPrefabs;
+        public IEnumerable<Model.MapObject.Property.Castle> Castles => _Map.ModelMap.Castles;
+        public IEnumerable<Model.MapObject.Property.House> Houses => _Map.ModelMap.Houses;
+        public IEnumerable<Model.Unit> Units => _Map.ModelMap.Units;
+
         public Model.Map.IUnitTemplate this[string name]
         {
             get
@@ -78,10 +83,9 @@ namespace Sof.Object
                 players.Add(player.Key, player.Value);
 
             foreach (var faction in CurrentScenario.Factions.Skip(humanCount))
-                players.Add(faction, new AI.Player(this));
+                players.Add(faction, new AI.Player(this, this, faction));
 
             Game = new Game(players);
-
 
             _Map.Initialize(Game);
 

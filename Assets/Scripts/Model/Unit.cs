@@ -1,6 +1,6 @@
-﻿using Sof.Auxiliary;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Sof.Auxiliary;
 
 namespace Sof.Model
 {
@@ -99,6 +99,14 @@ namespace Sof.Model
 
                 MovedAlongPath?.Invoke(traversedPath);
             }
+        }
+
+        public void Move(MapObject.Property.Property property)
+        {
+            if (property == null)
+                throw new System.ArgumentNullException(nameof(property));
+
+            Move(_Map.GetMapObjectTile(property));
         }
 
         public bool CanAttack(Unit unit)
