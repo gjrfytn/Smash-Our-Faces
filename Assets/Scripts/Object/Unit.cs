@@ -1,7 +1,7 @@
-﻿using Sof.Auxiliary;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Sof.Auxiliary;
 using UnityEngine;
 
 namespace Sof.Object
@@ -129,38 +129,44 @@ namespace Sof.Object
 
         private IEnumerator FollowPath(IEnumerable<Model.Tile> path)
         {
-            _UIManager.DisableUIInteraction = true;
-            var shouldRestoreUI = _UI_Sprites.Any();
-            HideUI();
+            yield return SuspendUI(followPath);
 
-            foreach (var tile in path)
+            IEnumerator followPath()
             {
-                Vector3 tilePos = _Map.GetWorldPos(tile);
-                while (transform.position != tilePos)
+                foreach (var tile in path)
                 {
-                    transform.position = Vector3.MoveTowards(transform.position, tilePos, Time.deltaTime);
+                    Vector3 tilePos = _Map.GetWorldPos(tile);
+                    while (transform.position != tilePos)
+                    {
+                        transform.position = Vector3.MoveTowards(transform.position, tilePos, Time.deltaTime);
 
-                    yield return null;
+                        yield return null;
+                    }
                 }
             }
-
-            if(shouldRestoreUI)
-                ShowUI();
-
-            _UIManager.DisableUIInteraction = false;
         }
 
         private IEnumerator PlayAttack()
+        {
+            yield return SuspendUI(playAttack);
+
+            IEnumerator playAttack()
+            {
+                transform.localRotation = Quaternion.Euler(0, 0, -30);
+
+                yield return new WaitForSeconds(0.5f);
+
+                transform.localRotation = Quaternion.Euler(0, 0, 0);
+            }
+        }
+
+        private IEnumerator SuspendUI(System.Func<IEnumerator> action)
         {
             _UIManager.DisableUIInteraction = true;
             var shouldRestoreUI = _UI_Sprites.Any();
             HideUI();
 
-            transform.localRotation = Quaternion.Euler(0, 0, -30);
-
-            yield return new WaitForSeconds(0.5f);
-
-            transform.localRotation = Quaternion.Euler(0, 0, 0);
+            yield return action();
 
             if (shouldRestoreUI)
                 ShowUI();
