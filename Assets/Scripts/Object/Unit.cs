@@ -130,6 +130,7 @@ namespace Sof.Object
         private IEnumerator FollowPath(IEnumerable<Model.Tile> path)
         {
             _UIManager.DisableUIInteraction = true;
+            var shouldRestoreUI = _UI_Sprites.Any();
             HideUI();
 
             foreach (var tile in path)
@@ -143,13 +144,16 @@ namespace Sof.Object
                 }
             }
 
-            ShowUI();
+            if(shouldRestoreUI)
+                ShowUI();
+
             _UIManager.DisableUIInteraction = false;
         }
 
         private IEnumerator PlayAttack()
         {
             _UIManager.DisableUIInteraction = true;
+            var shouldRestoreUI = _UI_Sprites.Any();
             HideUI();
 
             transform.localRotation = Quaternion.Euler(0, 0, -30);
@@ -158,7 +162,9 @@ namespace Sof.Object
 
             transform.localRotation = Quaternion.Euler(0, 0, 0);
 
-            ShowUI();
+            if (shouldRestoreUI)
+                ShowUI();
+
             _UIManager.DisableUIInteraction = false;
         }
 
