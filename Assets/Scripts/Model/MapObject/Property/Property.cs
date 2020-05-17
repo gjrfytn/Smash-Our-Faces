@@ -22,6 +22,7 @@ namespace Sof.Model.MapObject.Property
 
         public event System.Action OwnerChanged;
 
+        public Tile Tile => _Map.GetTileOf(this);
         public Unit Unit => _Map.GetUnitIn(this);
 
         public Property(ITime time, IMap map, PositiveInt income, PositiveInt heal)

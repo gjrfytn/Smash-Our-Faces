@@ -193,22 +193,6 @@ namespace Sof.Model
             return Tiles.SingleOrDefault(t => t.tile.Object == mapObject).pos;
         }
 
-        public Tile GetMapObjectTile(MapObject.MapObject mapObject)
-        {
-            if (mapObject is null)
-                throw new System.ArgumentNullException(nameof(mapObject));
-
-            return TryGetMapObjectTile(mapObject) ?? throw new System.ArgumentException("Map does not contain specified object.", nameof(mapObject));
-        }
-
-        public Tile TryGetMapObjectTile(MapObject.MapObject mapObject)
-        {
-            if (mapObject is null)
-                throw new System.ArgumentNullException(nameof(mapObject));
-
-            return Tiles.SingleOrDefault(t => t.tile.Object == mapObject).tile;
-        }
-
         public Position GetUnitPos(Unit unit)
         {
             if (unit == null)
@@ -249,11 +233,16 @@ namespace Sof.Model
             return GetMapObjectTile(property).Unit;
         }
 
+        public Tile GetTileOf(Property property) => GetMapObjectTile(property);
+
         private void Spawn(Unit unit, Tile tile) => tile.PlaceUnit(unit);
         private void Remove(Unit unit) => this[GetUnitPos(unit)].RemoveUnit();
 
         private Position GetTilePos(Tile tile) => TryGetTilePos(tile) ?? throw new System.ArgumentException("Map does not contain specified tile.", nameof(tile));
         private Position TryGetTilePos(Tile tile) => Tiles.SingleOrDefault(t => t.tile == tile).pos;
+
+        private Tile GetMapObjectTile(MapObject.MapObject mapObject) => TryGetMapObjectTile(mapObject) ?? throw new System.ArgumentException("Map does not contain specified object.", nameof(mapObject));
+        private Tile TryGetMapObjectTile(MapObject.MapObject mapObject) => Tiles.SingleOrDefault(t => t.tile.Object == mapObject).tile;
 
         private Tile[,] ConstructTiles(TileDefinition[,] definitions)
         {

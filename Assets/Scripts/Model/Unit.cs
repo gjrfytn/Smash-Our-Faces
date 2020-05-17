@@ -47,6 +47,8 @@ namespace Sof.Model
 
         public event System.Action MovePointsChanged;
 
+        public Tile Tile => _Map.GetUnitTile(this);
+
         private bool Dead => Health.Value == 0;
 
         public event System.Action<IEnumerable<Tile>> MovedAlongPath;
@@ -106,7 +108,7 @@ namespace Sof.Model
             if (property == null)
                 throw new System.ArgumentNullException(nameof(property));
 
-            Move(_Map.GetMapObjectTile(property));
+            Move(property.Tile);
         }
 
         public bool CanAttack(Unit unit)

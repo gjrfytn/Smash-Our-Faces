@@ -2,6 +2,7 @@
 {
     public interface IMap
     {
+        Tile GetTileOf(Property property);
         Unit GetUnitIn(Property property);
     }
 }

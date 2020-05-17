@@ -179,7 +179,7 @@ namespace Sof.Object
             healText.Heal = heal;
         }
 
-        public void OnCriticalUnitDeath(Faction faction)
+        public void OnCriticalUnitDeath(Faction faction) //TODO Game.FactionDefeated?
         {
             if (faction == null)
                 throw new System.ArgumentNullException(nameof(faction));

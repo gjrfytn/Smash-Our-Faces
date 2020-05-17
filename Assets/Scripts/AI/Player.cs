@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Sof.Model;
+using UnityEngine;
 
 namespace Sof.AI
 {
@@ -54,31 +55,50 @@ namespace Sof.AI
 
         private void Control()
         {
-            Recruit();
+            var watchdog = 0;
 
-            var enemyHouses = _Game.Houses.Where(h => h.Owner != _Faction).ToArray();
-            if (enemyHouses.Any())
-                CaptureProperty(enemyHouses.First());
-            else
+            while (Recruit() || HasReadyUnits())
             {
+                var enemyHouses = _Game.Houses.Where(h => h.Owner != _Faction).ToArray();
+                if (enemyHouses.Any())
+                    CaptureProperty(enemyHouses.First());
+
                 var enemyCastles = _Game.Castles.Where(h => h.Owner != _Faction).ToArray();
                 if (enemyCastles.Any())
                     CaptureProperty(enemyCastles.First());
+
+                AttackEnemyUnits();
+
+                watchdog++;
+                if (watchdog == 1000)
+                {
+                    Debug.LogWarning("Infinite loop detected.");
+
+                    return;
+                }
             }
         }
 
-        private void Recruit()
+        private bool HasReadyUnits() => _Game.Units.Where(u => u.Faction == _Faction).Any(u => u.MovePoints.Value != 0);
+
+        private bool Recruit()
         {
             foreach (var castle in _Game.Castles.Where(h => h.Owner == _Faction))
             {
-                if (castle.Unit == null) //TODO move before
+                if (castle.Unit == null)
                 {
                     var unitToBuy = FindMostExpensiveUnitToBuy();
 
                     if (unitToBuy != null)
+                    {
                         castle.PurchaseUnit(unitToBuy);
+
+                        return true;
+                    }
                 }
             }
+
+            return false;
         }
 
         private Model.MapObject.Property.Castle.IUnitTemplate FindMostExpensiveUnitToBuy()
@@ -92,6 +112,21 @@ namespace Sof.AI
 
             foreach (var unit in myUnits)
                 unit.Move(property);
+        }
+
+        private void AttackEnemyUnits()
+        {
+            var myUnits = _Game.Units.Where(u => u.Faction == _Faction);
+            var enemyUnit = _Game.Units.FirstOrDefault(u => u.Faction != _Faction);
+
+            if (enemyUnit != null)
+                foreach (var unit in myUnits)
+                {
+                    if (unit.CanAttack(enemyUnit))
+                        unit.Attack(enemyUnit);
+                    else
+                        unit.Move(enemyUnit.Tile);
+                }
         }
     }
 }
