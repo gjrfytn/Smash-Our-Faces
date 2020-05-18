@@ -29,6 +29,7 @@ namespace Sof.Object
 #pragma warning restore 0649
 
         private readonly List<SpriteRenderer> _UI_Sprites = new List<SpriteRenderer>();
+        private readonly Queue<IEnumerable<Model.Tile>> _PathQueue = new Queue<IEnumerable<Model.Tile>>();
 
         public Model.Unit ModelUnit { get; private set; }
 
@@ -41,6 +42,14 @@ namespace Sof.Object
         private GameManager _GameManager;
         private UIManager _UIManager;
         private Map _Map;
+
+        private bool _FollowingPath;
+
+        private void Update()
+        {
+            if (!_FollowingPath && _PathQueue.Any())
+                StartCoroutine(FollowPath(_PathQueue.Dequeue()));
+        }
 
         public void Initialize(Model.Unit unit, GameManager gameManager, UIManager uiManager, Map map)
         {
@@ -88,7 +97,7 @@ namespace Sof.Object
             if (path == null)
                 throw new System.ArgumentNullException(nameof(path));
 
-            StartCoroutine(FollowPath(path));
+            _PathQueue.Enqueue(path);
         }
 
         private void ModelUnit_Attacked()
@@ -129,7 +138,11 @@ namespace Sof.Object
 
         private IEnumerator FollowPath(IEnumerable<Model.Tile> path)
         {
+            _FollowingPath = true;
+
             yield return SuspendUI(followPath);
+
+            _FollowingPath = false;
 
             IEnumerator followPath()
             {
