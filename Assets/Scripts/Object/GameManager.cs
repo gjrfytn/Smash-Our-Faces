@@ -116,11 +116,7 @@ namespace Sof.Object
             return _FactionColors[faction];
         }
 
-        public void PurchaseUnitInCastle(Unit unit, Model.MapObject.Property.Castle castle)
-        {
-            var unitInstance = Instantiate(unit, Map.ConvertToWorldPos(_Map.ModelMap.GetMapObjectPos(castle)), Quaternion.identity, transform);
-            castle.PurchaseUnit(unitInstance);
-        }
+        public void PurchaseUnitInCastle(Unit unit, Model.MapObject.Property.Castle castle) => castle.PurchaseUnit(unit);
 
         public void EndTurn()
         {
