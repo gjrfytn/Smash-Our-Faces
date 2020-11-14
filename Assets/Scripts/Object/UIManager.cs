@@ -3,6 +3,7 @@ using Sof.Model;
 using Sof.UI;
 using System.Linq;
 using UnityEngine;
+using Task = System.Threading.Tasks.Task;
 
 namespace Sof.Object
 {
@@ -70,7 +71,7 @@ namespace Sof.Object
             }
         }
 
-        public void OnTileLeftClick(Tile tile)
+        public async Task OnTileLeftClick(Tile tile)
         {
             if (tile == null)
                 throw new System.ArgumentNullException(nameof(tile));
@@ -105,7 +106,7 @@ namespace Sof.Object
             }
             else
             {
-                _SelectedUnit.Move(tile.ModelTile);
+                await _SelectedUnit.Move(tile.ModelTile);
                 _Map.ClearPath();
             }
         }

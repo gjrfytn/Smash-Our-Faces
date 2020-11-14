@@ -1,15 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Sof.Auxiliary;
+using Task = System.Threading.Tasks.Task;
 
 namespace Sof.Model
 {
     public class Unit
     {
+        public interface IObserver
+        {
+            Task UnitMovedAlongPath(IEnumerable<Tile> path);
+        }
+
         private readonly ITime _Time;
         private readonly Map _Map;
         private readonly PositiveInt _Damage;
         private readonly PositiveInt _AttackRange;
+
+        public IObserver Observer { private get; set; }
 
         public Faction Faction { get; private set; }
         public bool Critical { get; private set; }
@@ -51,7 +59,6 @@ namespace Sof.Model
 
         private bool Dead => Health.Value == 0;
 
-        public event System.Action<IEnumerable<Tile>> MovedAlongPath;
         public event System.Action Attacked;
         public event System.Action<PositiveInt> TookHit;
         public event System.Action<PositiveInt> Healed;
@@ -74,7 +81,7 @@ namespace Sof.Model
             _Time.TurnEnded += Time_TurnEnded;
         }
 
-        public void Move(Tile tile)
+        public async Task Move(Tile tile)
         {
             if (tile == null)
                 throw new System.ArgumentNullException(nameof(tile));
@@ -99,16 +106,16 @@ namespace Sof.Model
             {
                 _Map.MoveUnit(this, traversedPath.Last());
 
-                MovedAlongPath?.Invoke(traversedPath);
+                await Observer?.UnitMovedAlongPath(traversedPath);
             }
         }
 
-        public void Move(MapObject.Property.Property property)
+        public Task Move(MapObject.Property.Property property)
         {
             if (property == null)
                 throw new System.ArgumentNullException(nameof(property));
 
-            Move(property.Tile);
+            return Move(property.Tile);
         }
 
         public bool CanAttack(Unit unit)

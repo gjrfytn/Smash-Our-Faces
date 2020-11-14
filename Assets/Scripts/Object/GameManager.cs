@@ -4,6 +4,7 @@ using Sof.Model.Scenario;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Task = System.Threading.Tasks.Task;
 
 namespace Sof.Object
 {
@@ -13,9 +14,7 @@ namespace Sof.Object
         {
             public event System.Action Acted;
 
-            public void Act()
-            {
-            }
+            public Task Act() => Task.CompletedTask;
 
             public void OnEndTurnClick() => Acted?.Invoke();
         }
@@ -73,7 +72,7 @@ namespace Sof.Object
             _FactionColors = CurrentScenario.Factions.ToDictionary(f1 => f1, f2 => palette.GetNewRandomColor());
         }
 
-        private void Start()
+        private async void Start()
         {
             const int humanCount = 1;
             _HumanPlayers = CurrentScenario.Factions.Take(humanCount).ToDictionary(f1 => f1, f2 => new HumanPlayer());
@@ -95,7 +94,7 @@ namespace Sof.Object
 
             _UIManager.Initialize();
 
-            Game.Start();
+            await Game.Start();
         }
 
         private void Update()
@@ -135,14 +134,14 @@ namespace Sof.Object
             InstantiateUnit((Unit)template, unit);
         }
 
-        private void Unit_Died(Model.Unit unit) => Game.OnUnitDeath(unit);
+        private Task Unit_Died(Model.Unit unit) => Game.OnUnitDeath(unit);
 
         private void InstantiateUnit(Unit prefab, Model.Unit modelUnit)
         {
             var unitInstance = Instantiate(prefab, Map.ConvertToWorldPos(_Map.ModelMap.GetUnitPos(modelUnit)), Quaternion.identity, transform);
             unitInstance.Initialize(modelUnit, this, _UIManager, _Map);
             _Units.Add(unitInstance);
-            modelUnit.Died += () => Unit_Died(modelUnit);
+            modelUnit.Died += () => Unit_Died(modelUnit); //TODO Task
         }
     }
 }

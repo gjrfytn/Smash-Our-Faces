@@ -36,12 +36,12 @@ namespace Sof.Object
                 _UIManager.OnTileHover(this);
         }
 
-        private void OnMouseOver()
+        private async void OnMouseOver()
         {
             if (Input.GetMouseButtonUp(0))
             {
                 if (_Object == null || !_Object.OnLeftClick())
-                    _UIManager.OnTileLeftClick(this);
+                    await _UIManager.OnTileLeftClick(this);
             }
             else if (Input.GetMouseButtonUp(1))
             {

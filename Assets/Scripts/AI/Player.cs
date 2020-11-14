@@ -2,6 +2,7 @@
 using System.Linq;
 using Sof.Model;
 using UnityEngine;
+using Task = System.Threading.Tasks.Task;
 
 namespace Sof.AI
 {
@@ -37,9 +38,9 @@ namespace Sof.AI
             _Faction = faction ?? throw new System.ArgumentNullException(nameof(faction));
         }
 
-        public void Act()
+        public async Task Act()
         {
-            Control();
+            await Control();
 
             _ShouldAct = true;
         }
@@ -53,7 +54,7 @@ namespace Sof.AI
             }
         }
 
-        private void Control()
+        private async Task Control()
         {
             var watchdog = 0;
 
@@ -61,13 +62,13 @@ namespace Sof.AI
             {
                 var enemyHouses = _Game.Houses.Where(h => h.Owner != _Faction).ToArray();
                 if (enemyHouses.Any())
-                    CaptureProperty(enemyHouses.First());
+                    await CaptureProperty(enemyHouses.First());
 
                 var enemyCastles = _Game.Castles.Where(h => h.Owner != _Faction).ToArray();
                 if (enemyCastles.Any())
-                    CaptureProperty(enemyCastles.First());
+                    await CaptureProperty(enemyCastles.First());
 
-                AttackEnemyUnits();
+                await AttackEnemyUnits();
 
                 watchdog++;
                 if (watchdog == 1000)
@@ -106,15 +107,15 @@ namespace Sof.AI
             return _Game.AvailableUnits.OrderByDescending(u => ((Faction.IUnit)u).GoldCost.Value).FirstOrDefault(u => ((Faction.IUnit)u).GoldCost.Value <= _Faction.Gold.Value);
         }
 
-        private void CaptureProperty(Model.MapObject.Property.Property property)
+        private async Task CaptureProperty(Model.MapObject.Property.Property property)
         {
             var myUnits = _Game.Units.Where(u => u.Faction == _Faction);
 
             foreach (var unit in myUnits)
-                unit.Move(property);
+                await unit.Move(property);
         }
 
-        private void AttackEnemyUnits()
+        private async Task AttackEnemyUnits()
         {
             var myUnits = _Game.Units.Where(u => u.Faction == _Faction);
             var enemyUnit = _Game.Units.FirstOrDefault(u => u.Faction != _Faction);
@@ -125,7 +126,7 @@ namespace Sof.AI
                     if (unit.CanAttack(enemyUnit))
                         unit.Attack(enemyUnit);
                     else
-                        unit.Move(enemyUnit.Tile);
+                        await unit.Move(enemyUnit.Tile);
                 }
         }
     }

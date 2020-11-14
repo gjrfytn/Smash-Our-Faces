@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Sof.Auxiliary;
 using UnityEngine;
+using Task = System.Threading.Tasks.Task;
 
 namespace Sof.Object
 {
-    public class Unit : MonoBehaviour, Model.MapObject.Property.Castle.IUnitTemplate
+    public class Unit : MonoBehaviour, Model.Unit.IObserver, Model.MapObject.Property.Castle.IUnitTemplate
     {
 #pragma warning disable 0649
         [SerializeField]
@@ -29,7 +30,6 @@ namespace Sof.Object
 #pragma warning restore 0649
 
         private readonly List<SpriteRenderer> _UI_Sprites = new List<SpriteRenderer>();
-        private readonly Queue<IEnumerable<Model.Tile>> _PathQueue = new Queue<IEnumerable<Model.Tile>>();
 
         public Model.Unit ModelUnit { get; private set; }
 
@@ -43,14 +43,6 @@ namespace Sof.Object
         private UIManager _UIManager;
         private Map _Map;
 
-        private bool _FollowingPath;
-
-        private void Update()
-        {
-            if (!_FollowingPath && _PathQueue.Any())
-                StartCoroutine(FollowPath(_PathQueue.Dequeue()));
-        }
-
         public void Initialize(Model.Unit unit, GameManager gameManager, UIManager uiManager, Map map)
         {
             _GameManager = gameManager != null ? gameManager : throw new System.ArgumentNullException(nameof(gameManager));
@@ -58,11 +50,12 @@ namespace Sof.Object
             _Map = map != null ? map : throw new System.ArgumentNullException(nameof(map));
 
             ModelUnit = unit ?? throw new System.ArgumentNullException(nameof(unit));
-            ModelUnit.MovedAlongPath += ModelUnit_MovedAlongPath;
             ModelUnit.Attacked += ModelUnit_Attacked;
             ModelUnit.TookHit += ModelUnit_TookHit;
             ModelUnit.Healed += ModelUnit_Healed;
             ModelUnit.Died += ModelUnit_Died;
+
+            ModelUnit.Observer = this;
 
             map.ModelMap.UnitBanished += ModelMap_UnitBanished;
 
@@ -92,12 +85,12 @@ namespace Sof.Object
             _UI_Sprites.Clear();
         }
 
-        private void ModelUnit_MovedAlongPath(IEnumerable<Model.Tile> path)
+        public Task UnitMovedAlongPath(IEnumerable<Model.Tile> path)
         {
             if (path == null)
                 throw new System.ArgumentNullException(nameof(path));
 
-            _PathQueue.Enqueue(path);
+            return FollowPath(path);
         }
 
         private void ModelUnit_Attacked()
@@ -136,15 +129,11 @@ namespace Sof.Object
 
         private void DestroySelf() => Destroy(gameObject);
 
-        private IEnumerator FollowPath(IEnumerable<Model.Tile> path)
+        private Task FollowPath(IEnumerable<Model.Tile> path)
         {
-            _FollowingPath = true;
+            return SuspendUI(followPath);
 
-            yield return SuspendUI(followPath);
-
-            _FollowingPath = false;
-
-            IEnumerator followPath()
+            async Task followPath()
             {
                 foreach (var tile in path)
                 {
@@ -153,7 +142,7 @@ namespace Sof.Object
                     {
                         transform.position = Vector3.MoveTowards(transform.position, tilePos, Time.deltaTime);
 
-                        yield return null;
+                        await Task.Yield();
                     }
                 }
             }
@@ -180,6 +169,20 @@ namespace Sof.Object
             HideUI();
 
             yield return action();
+
+            if (shouldRestoreUI)
+                ShowUI();
+
+            _UIManager.DisableUIInteraction = false;
+        }
+
+        private async Task SuspendUI(System.Func<Task> action)
+        {
+            _UIManager.DisableUIInteraction = true;
+            var shouldRestoreUI = _UI_Sprites.Any();
+            HideUI();
+
+            await action();
 
             if (shouldRestoreUI)
                 ShowUI();

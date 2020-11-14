@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Task = System.Threading.Tasks.Task;
 
 namespace Sof.Model
 {
@@ -7,7 +8,7 @@ namespace Sof.Model
     {
         public interface IPlayer
         {
-            void Act();
+            Task Act();
 
             event System.Action Acted;
         }
@@ -44,16 +45,16 @@ namespace Sof.Model
                 if (_Factions.Values.Count(p => p == faction.Value) > 1)
                     throw new System.ArgumentException("Player cannot control more than 1 faction.", nameof(factions)); //TODO or can?..
 
-                faction.Value.Acted += () => Player_Acted(faction.Value);
+                faction.Value.Acted += () => Player_Acted(faction.Value); //TODO Task
             }
 
             _FactionTurnEnumerator = Factions.GetEnumerator();
             _FactionTurnEnumerator.MoveNext();
         }
 
-        public void Start() => AskPlayerToAct();
+        public Task Start() => AskPlayerToAct();
 
-        private void Player_Acted(IPlayer player)
+        private Task Player_Acted(IPlayer player)
         {
             if (_ActingPlayer == null)
                 throw new System.InvalidOperationException("Game wasn't started.");
@@ -70,20 +71,20 @@ namespace Sof.Model
             if (_PlayerIsBeingAsked)
                 throw new System.InvalidOperationException($"You should not raise '{nameof(IPlayer.Acted)}' event in '{nameof(IPlayer.Act)}' method.");
 
-            ProcessTurn();
+            return ProcessTurn();
         }
 
-        private void ProcessTurn()
+        private Task ProcessTurn()
         {
             EndTurn();
-            AskPlayerToAct();
+            return AskPlayerToAct();
         }
 
-        private void AskPlayerToAct()
+        private async Task AskPlayerToAct()
         {
             _ActingPlayer = _Factions[CurrentTurnFaction];
             _PlayerIsBeingAsked = true;
-            _ActingPlayer.Act();
+            await _ActingPlayer.Act();
             _PlayerIsBeingAsked = false;
         }
 
@@ -107,7 +108,7 @@ namespace Sof.Model
             _GameEnded = true;
         }
 
-        public void OnUnitDeath(Unit unit) //TODO
+        public async Task OnUnitDeath(Unit unit) //TODO
         {
             if (unit.Critical)
             {
@@ -116,7 +117,7 @@ namespace Sof.Model
                 if (_Factions.Count - _DefeatedFactions.Count == 1)
                     EndGame();
                 else if (CurrentTurnFaction == unit.Faction)
-                    ProcessTurn();
+                    await ProcessTurn();
             }
         }
     }
