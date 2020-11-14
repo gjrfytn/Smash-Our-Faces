@@ -7,7 +7,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Sof.Object
 {
-    public class Unit : MonoBehaviour, Model.Unit.IObserver, Model.MapObject.Property.Castle.IUnitTemplate
+    public class Unit : MonoBehaviour, Model.MapObject.Property.Castle.IUnitTemplate
     {
 #pragma warning disable 0649
         [SerializeField]
@@ -50,12 +50,11 @@ namespace Sof.Object
             _Map = map != null ? map : throw new System.ArgumentNullException(nameof(map));
 
             ModelUnit = unit ?? throw new System.ArgumentNullException(nameof(unit));
+            ModelUnit.MovedAlongPath.AddSubscriber(ModelUnit_MovedAlongPath);
             ModelUnit.Attacked += ModelUnit_Attacked;
             ModelUnit.TookHit += ModelUnit_TookHit;
             ModelUnit.Healed += ModelUnit_Healed;
             ModelUnit.Died += ModelUnit_Died;
-
-            ModelUnit.Observer = this;
 
             map.ModelMap.UnitBanished += ModelMap_UnitBanished;
 
@@ -85,7 +84,7 @@ namespace Sof.Object
             _UI_Sprites.Clear();
         }
 
-        public Task UnitMovedAlongPath(IEnumerable<Model.Tile> path)
+        private Task ModelUnit_MovedAlongPath(IEnumerable<Model.Tile> path)
         {
             if (path == null)
                 throw new System.ArgumentNullException(nameof(path));

@@ -7,17 +7,10 @@ namespace Sof.Model
 {
     public class Unit
     {
-        public interface IObserver
-        {
-            Task UnitMovedAlongPath(IEnumerable<Tile> path);
-        }
-
         private readonly ITime _Time;
         private readonly Map _Map;
         private readonly PositiveInt _Damage;
         private readonly PositiveInt _AttackRange;
-
-        public IObserver Observer { private get; set; }
 
         public Faction Faction { get; private set; }
         public bool Critical { get; private set; }
@@ -58,6 +51,8 @@ namespace Sof.Model
         public Tile Tile => _Map.GetUnitTile(this);
 
         private bool Dead => Health.Value == 0;
+
+        public AsyncEvent<IEnumerable<Tile>> MovedAlongPath { get; } = new AsyncEvent<IEnumerable<Tile>>();
 
         public event System.Action Attacked;
         public event System.Action<PositiveInt> TookHit;
@@ -106,7 +101,7 @@ namespace Sof.Model
             {
                 _Map.MoveUnit(this, traversedPath.Last());
 
-                await Observer?.UnitMovedAlongPath(traversedPath);
+                await MovedAlongPath.Invoke(traversedPath);
             }
         }
 
