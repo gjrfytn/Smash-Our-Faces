@@ -26,7 +26,7 @@ namespace Sof.Model
                 throw new System.InvalidOperationException("Tile cannot contain more than one unit.");
 
             Unit = unit;
-            Unit.Died += Unit_Died;
+            Unit.Died.AddSubscriber(Unit_Died);
 
             if (Object is MapObject.Property.Property property) //TODO
                 property.Owner = unit.Faction;
@@ -37,10 +37,15 @@ namespace Sof.Model
             if (Unit == null)
                 throw new System.InvalidOperationException("Tile has no unit.");
 
-            Unit.Died -= Unit_Died;
+            Unit.Died.RemoveSubscriber(Unit_Died);
             Unit = null;
         }
 
-        private void Unit_Died() => RemoveUnit();
+        private System.Threading.Tasks.Task Unit_Died()
+        {
+            RemoveUnit();
+
+            return System.Threading.Tasks.Task.CompletedTask;
+        }
     }
 }

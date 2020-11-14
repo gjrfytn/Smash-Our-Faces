@@ -57,7 +57,8 @@ namespace Sof.Model
         public event System.Action Attacked;
         public event System.Action<PositiveInt> TookHit;
         public event System.Action<PositiveInt> Healed;
-        public event System.Action Died;
+
+        public AsyncEvent Died { get; } = new AsyncEvent();
 
         public Unit(ITime time, Map map, PositiveInt movePoints, PositiveInt health, PositiveInt damage, PositiveInt attackRange, Faction faction, bool critical, PositiveInt goldCost)
         {
@@ -157,7 +158,7 @@ namespace Sof.Model
             {
                 _Time.TurnEnded -= Time_TurnEnded;
 
-                Died?.Invoke();
+                Died.Invoke();
             }
         }
 

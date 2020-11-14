@@ -141,7 +141,7 @@ namespace Sof.Object
             var unitInstance = Instantiate(prefab, Map.ConvertToWorldPos(_Map.ModelMap.GetUnitPos(modelUnit)), Quaternion.identity, transform);
             unitInstance.Initialize(modelUnit, this, _UIManager, _Map);
             _Units.Add(unitInstance);
-            modelUnit.Died += () => Unit_Died(modelUnit); //TODO Task
+            modelUnit.Died.AddSubscriber(() => Unit_Died(modelUnit));
         }
     }
 }

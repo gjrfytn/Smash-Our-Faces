@@ -54,7 +54,7 @@ namespace Sof.Object
             ModelUnit.Attacked += ModelUnit_Attacked;
             ModelUnit.TookHit += ModelUnit_TookHit;
             ModelUnit.Healed += ModelUnit_Healed;
-            ModelUnit.Died += ModelUnit_Died;
+            ModelUnit.Died.AddSubscriber(ModelUnit_Died);
 
             map.ModelMap.UnitBanished += ModelMap_UnitBanished;
 
@@ -107,7 +107,7 @@ namespace Sof.Object
             _UIManager.OnUnitHeal(this, heal);
         }
 
-        private void ModelUnit_Died()
+        private Task ModelUnit_Died()
         {
             if (ModelUnit.Critical)
             {
@@ -115,6 +115,8 @@ namespace Sof.Object
             }
 
             DestroySelf();
+
+            return Task.CompletedTask;
         }
 
         private void ModelMap_UnitBanished(Model.Unit unit)
