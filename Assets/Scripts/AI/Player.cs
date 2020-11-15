@@ -124,7 +124,7 @@ namespace Sof.AI
                 foreach (var unit in myUnits)
                 {
                     if (unit.CanAttack(enemyUnit))
-                        unit.Attack(enemyUnit);
+                        await unit.Attack(enemyUnit);
                     else
                         await unit.Move(enemyUnit.Tile);
                 }

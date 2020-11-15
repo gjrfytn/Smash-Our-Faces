@@ -53,8 +53,8 @@ namespace Sof.Model
         private bool Dead => Health.Value == 0;
 
         public AsyncEvent<IEnumerable<Tile>> MovedAlongPath { get; } = new AsyncEvent<IEnumerable<Tile>>();
+        public AsyncEvent Attacked { get; } = new AsyncEvent();
 
-        public event System.Action Attacked;
         public event System.Action<PositiveInt> TookHit;
         public event System.Action<PositiveInt> Healed;
 
@@ -122,7 +122,7 @@ namespace Sof.Model
             return Faction != unit.Faction && IsInAttackRange(unit) && MovePoints.Value != 0;
         }
 
-        public void Attack(Unit unit)
+        public Task Attack(Unit unit)
         {
             if (unit == null)
                 throw new System.ArgumentNullException(nameof(unit));
@@ -141,7 +141,7 @@ namespace Sof.Model
             unit.TakeHit(_Damage);
             MovePoints = new PositiveInt(0);
 
-            Attacked?.Invoke();
+            return Attacked.Invoke();
         }
 
         public void TakeHit(PositiveInt damage)

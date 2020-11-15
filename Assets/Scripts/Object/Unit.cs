@@ -51,7 +51,7 @@ namespace Sof.Object
 
             ModelUnit = unit ?? throw new System.ArgumentNullException(nameof(unit));
             ModelUnit.MovedAlongPath.AddSubscriber(ModelUnit_MovedAlongPath);
-            ModelUnit.Attacked += ModelUnit_Attacked;
+            ModelUnit.Attacked.AddSubscriber(ModelUnit_Attacked);
             ModelUnit.TookHit += ModelUnit_TookHit;
             ModelUnit.Healed += ModelUnit_Healed;
             ModelUnit.Died.AddSubscriber(ModelUnit_Died);
@@ -92,9 +92,9 @@ namespace Sof.Object
             return FollowPath(path);
         }
 
-        private void ModelUnit_Attacked()
+        private Task ModelUnit_Attacked()
         {
-            StartCoroutine(PlayAttack());
+            return PlayAttack();
         }
 
         private void ModelUnit_TookHit(PositiveInt damage)
@@ -149,32 +149,18 @@ namespace Sof.Object
             }
         }
 
-        private IEnumerator PlayAttack()
+        private Task PlayAttack()
         {
-            yield return SuspendUI(playAttack);
+            return SuspendUI(playAttack);
 
-            IEnumerator playAttack()
+            async Task playAttack()
             {
                 transform.localRotation = Quaternion.Euler(0, 0, -30);
 
-                yield return new WaitForSeconds(0.5f);
+                await Task.Delay(500);
 
                 transform.localRotation = Quaternion.Euler(0, 0, 0);
             }
-        }
-
-        private IEnumerator SuspendUI(System.Func<IEnumerator> action)
-        {
-            _UIManager.DisableUIInteraction = true;
-            var shouldRestoreUI = _UI_Sprites.Any();
-            HideUI();
-
-            yield return action();
-
-            if (shouldRestoreUI)
-                ShowUI();
-
-            _UIManager.DisableUIInteraction = false;
         }
 
         private async Task SuspendUI(System.Func<Task> action)

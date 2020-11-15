@@ -102,7 +102,7 @@ namespace Sof.Object
             else if (tile.ModelTile.Unit != null)
             {
                 if (_SelectedUnit.CanAttack(tile.ModelTile.Unit))
-                    _SelectedUnit.Attack(tile.ModelTile.Unit);
+                    await _SelectedUnit.Attack(tile.ModelTile.Unit);
             }
             else
             {
