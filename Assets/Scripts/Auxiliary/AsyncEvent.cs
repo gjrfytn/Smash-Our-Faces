@@ -8,7 +8,7 @@ namespace Sof.Auxiliary
     {
         private readonly List<System.Func<Task>> _Subscribers = new List<System.Func<Task>>();
 
-        public Task Invoke() => Task.WhenAll(_Subscribers.Select(s => s()));
+        public Task Invoke() => Task.WhenAll(_Subscribers.Select(s => s()).ToArray());
 
         public void AddSubscriber(System.Func<Task> action) => _Subscribers.Add(action);
         public void RemoveSubscriber(System.Func<Task> action) => _Subscribers.Remove(action);
