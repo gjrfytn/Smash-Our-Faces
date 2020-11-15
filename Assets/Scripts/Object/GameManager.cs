@@ -8,15 +8,21 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Sof.Object
 {
-    public class GameManager : MonoBehaviour, XmlScenario.IUnitRegistry, AI.Player.IGameLoop, AI.Player.IGame
+    public class GameManager : MonoBehaviour, XmlScenario.IUnitRegistry, AI.Player.IGame
     {
         private class HumanPlayer : Game.IPlayer
         {
-            public event System.Action Acted;
+            private bool _EndedTurn;
 
-            public Task Act() => Task.CompletedTask;
+            public async Task Act()
+            {
+                _EndedTurn = false;
 
-            public void OnEndTurnClick() => Acted?.Invoke();
+                while (!_EndedTurn)
+                    await Task.Yield();
+            }
+
+            public void OnEndTurnClick() => _EndedTurn = true;
         }
 
 #pragma warning disable 0649
@@ -61,8 +67,6 @@ namespace Sof.Object
             }
         }
 
-        public event System.Action Ticked;
-
         private void Awake()
         {
             var palette = new Palette();
@@ -82,7 +86,7 @@ namespace Sof.Object
                 players.Add(player.Key, player.Value);
 
             foreach (var faction in CurrentScenario.Factions.Skip(humanCount))
-                players.Add(faction, new AI.Player(this, this, faction));
+                players.Add(faction, new AI.Player(this, faction));
 
             Game = new Game(players);
 
@@ -95,11 +99,6 @@ namespace Sof.Object
             _UIManager.Initialize();
 
             await Game.Start();
-        }
-
-        private void Update()
-        {
-            Ticked?.Invoke();
         }
 
         public void DebugSpawnUnit(Unit unitInstance, Model.Tile tile, Faction faction)
@@ -134,7 +133,12 @@ namespace Sof.Object
             InstantiateUnit((Unit)template, unit);
         }
 
-        private Task Unit_Died(Model.Unit unit) => Game.OnUnitDeath(unit);
+        private Task Unit_Died(Model.Unit unit)
+        {
+            Game.OnUnitDeath(unit);
+
+            return Task.CompletedTask;
+        }
 
         private void InstantiateUnit(Unit prefab, Model.Unit modelUnit)
         {

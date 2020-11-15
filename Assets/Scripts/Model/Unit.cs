@@ -50,7 +50,7 @@ namespace Sof.Model
 
         public Tile Tile => _Map.GetUnitTile(this);
 
-        private bool Dead => Health.Value == 0;
+        public bool Dead => Health.Value == 0;
 
         public AsyncEvent<IEnumerable<Tile>> MovedAlongPath { get; } = new AsyncEvent<IEnumerable<Tile>>();
         public AsyncEvent Attacked { get; } = new AsyncEvent();

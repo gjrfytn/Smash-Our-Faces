@@ -9,17 +9,13 @@ namespace Sof.Model
         public interface IPlayer
         {
             Task Act();
-
-            event System.Action Acted;
         }
 
         private readonly IDictionary<Faction, IPlayer> _Factions;
         private readonly IEnumerator<Faction> _FactionTurnEnumerator;
         private readonly List<Faction> _DefeatedFactions = new List<Faction>();
 
-        private IPlayer _ActingPlayer;
         private bool _GameEnded;
-        private bool _PlayerIsBeingAsked;
 
         public Faction CurrentTurnFaction => _FactionTurnEnumerator.Current;
         public IEnumerable<Faction> Factions => _Factions.Keys;
@@ -44,48 +40,23 @@ namespace Sof.Model
 
                 if (_Factions.Values.Count(p => p == faction.Value) > 1)
                     throw new System.ArgumentException("Player cannot control more than 1 faction.", nameof(factions)); //TODO or can?..
-
-                faction.Value.Acted += () => Player_Acted(faction.Value); //TODO Task
             }
 
             _FactionTurnEnumerator = Factions.GetEnumerator();
             _FactionTurnEnumerator.MoveNext();
         }
 
-        public Task Start() => AskPlayerToAct();
-
-        private Task Player_Acted(IPlayer player)
+        public async Task Start()
         {
-            if (_ActingPlayer == null)
-                throw new System.InvalidOperationException("Game wasn't started.");
+            while(true)
+            {
+                await _Factions[CurrentTurnFaction].Act();
 
-            if (_GameEnded)
-                throw new System.InvalidOperationException("Game ended.");
+                if (_GameEnded)
+                    break;
 
-            if (_ActingPlayer != player)
-                throw new System.InvalidOperationException("Expected another player to act.");
-
-            if (_DefeatedFactions.Contains(_Factions.Single(f => f.Value == player).Key))
-                throw new System.InvalidOperationException("Player faction was defeated.");
-
-            if (_PlayerIsBeingAsked)
-                throw new System.InvalidOperationException($"You should not raise '{nameof(IPlayer.Acted)}' event in '{nameof(IPlayer.Act)}' method.");
-
-            return ProcessTurn();
-        }
-
-        private Task ProcessTurn()
-        {
-            EndTurn();
-            return AskPlayerToAct();
-        }
-
-        private async Task AskPlayerToAct()
-        {
-            _ActingPlayer = _Factions[CurrentTurnFaction];
-            _PlayerIsBeingAsked = true;
-            await _ActingPlayer.Act();
-            _PlayerIsBeingAsked = false;
+                EndTurn();
+            }
         }
 
         private void EndTurn()
@@ -108,7 +79,7 @@ namespace Sof.Model
             _GameEnded = true;
         }
 
-        public async Task OnUnitDeath(Unit unit) //TODO
+        public void OnUnitDeath(Unit unit) //TODO
         {
             if (unit.Critical)
             {
@@ -117,7 +88,7 @@ namespace Sof.Model
                 if (_Factions.Count - _DefeatedFactions.Count == 1)
                     EndGame();
                 else if (CurrentTurnFaction == unit.Faction)
-                    await ProcessTurn();
+                    EndTurn(); //TODO don't work properly (should also stop player turn processing).
             }
         }
     }

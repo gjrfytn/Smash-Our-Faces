@@ -8,11 +8,6 @@ namespace Sof.AI
 {
     public class Player : Game.IPlayer
     {
-        public interface IGameLoop
-        {
-            event System.Action Ticked;
-        }
-
         public interface IGame
         {
             IEnumerable<Model.MapObject.Property.Castle.IUnitTemplate> AvailableUnits { get; }
@@ -23,36 +18,14 @@ namespace Sof.AI
 
         private readonly IGame _Game;
         private readonly Faction _Faction;
-        private bool _ShouldAct;
 
-        public event System.Action Acted;
-
-        public Player(IGameLoop gameLoop, IGame game, Faction faction)
+        public Player(IGame game, Faction faction)
         {
-            if (gameLoop == null)
-                throw new System.ArgumentNullException(nameof(gameLoop));
-
-            gameLoop.Ticked += GameLoop_Ticked;
-
             _Game = game ?? throw new System.ArgumentNullException(nameof(game));
             _Faction = faction ?? throw new System.ArgumentNullException(nameof(faction));
         }
 
-        public async Task Act()
-        {
-            await Control();
-
-            _ShouldAct = true;
-        }
-
-        private void GameLoop_Ticked()
-        {
-            if (_ShouldAct)
-            {
-                _ShouldAct = false;
-                Acted?.Invoke();
-            }
-        }
+        public Task Act() => Control();
 
         private async Task Control()
         {
