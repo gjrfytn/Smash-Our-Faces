@@ -85,7 +85,12 @@ namespace Sof.AI
             var myUnits = _Game.Units.Where(u => u.Faction == _Faction);
 
             foreach (var unit in myUnits)
+            {
                 await unit.Move(property);
+
+                if (IsOurs(property))
+                    break;
+            }
         }
 
         private async Task AttackEnemyUnits()
@@ -107,5 +112,7 @@ namespace Sof.AI
                         await unit.Move(enemyUnit.Tile);
                 }
         }
+
+        private bool IsOurs(Model.MapObject.Property.Property property) => property.Owner == _Faction;
     }
 }
