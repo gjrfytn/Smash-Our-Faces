@@ -97,7 +97,12 @@ namespace Sof.AI
                 foreach (var unit in myUnits)
                 {
                     if (unit.CanAttack(enemyUnit))
+                    {
                         await unit.Attack(enemyUnit);
+
+                        if (enemyUnit.Dead)
+                            break;
+                    }
                     else
                         await unit.Move(enemyUnit.Tile);
                 }
