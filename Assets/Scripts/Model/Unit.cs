@@ -52,7 +52,7 @@ namespace Sof.Model
 
         public bool Dead => Health.Value == 0;
 
-        public AsyncEvent<IEnumerable<Tile>> MovedAlongPath { get; } = new AsyncEvent<IEnumerable<Tile>>();
+        public AsyncEvent<IEnumerable<Tile>> MovingAlongPath { get; } = new AsyncEvent<IEnumerable<Tile>>();
         public AsyncEvent Attacked { get; } = new AsyncEvent();
 
         public event System.Action<PositiveInt> TookHit;
@@ -100,9 +100,9 @@ namespace Sof.Model
 
             if (traversedPath.Any())
             {
-                _Map.MoveUnit(this, traversedPath.Last());
+                await MovingAlongPath.Invoke(traversedPath);
 
-                await MovedAlongPath.Invoke(traversedPath);
+                _Map.MoveUnit(this, traversedPath.Last());
             }
         }
 

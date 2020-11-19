@@ -50,7 +50,7 @@ namespace Sof.Object
             _Map = map != null ? map : throw new System.ArgumentNullException(nameof(map));
 
             ModelUnit = unit ?? throw new System.ArgumentNullException(nameof(unit));
-            ModelUnit.MovedAlongPath.AddSubscriber(ModelUnit_MovedAlongPath);
+            ModelUnit.MovingAlongPath.AddSubscriber(ModelUnit_MovingAlongPath);
             ModelUnit.Attacked.AddSubscriber(ModelUnit_Attacked);
             ModelUnit.TookHit += ModelUnit_TookHit;
             ModelUnit.Healed += ModelUnit_Healed;
@@ -84,7 +84,7 @@ namespace Sof.Object
             _UI_Sprites.Clear();
         }
 
-        private Task ModelUnit_MovedAlongPath(IEnumerable<Model.Tile> path)
+        private Task ModelUnit_MovingAlongPath(IEnumerable<Model.Tile> path)
         {
             if (path == null)
                 throw new System.ArgumentNullException(nameof(path));
