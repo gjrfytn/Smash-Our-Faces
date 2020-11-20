@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _GameManager: {fileID: 808029996}
-  _UIManager: {fileID: 1420254273}
+  _UIManager: {fileID: 1021611981}
   _Map: {fileID: 1403569718}
   _SpawnUnitButton: {fileID: 1690977442}
   _UnitFactionDropdown: {fileID: 1981377042}
@@ -1755,7 +1755,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d472260431bf08a409babf96a0f7756a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _UIManager: {fileID: 1420254273}
+  _UIManager: {fileID: 1021611981}
   _Map: {fileID: 1403569718}
   _ScenarioFile: {fileID: 4900000, guid: c481c4b0744ad164fbdd7b1c27a3ac09, type: 3}
   _UnitPrefabs:
@@ -2012,6 +2012,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1021611980}
+  - component: {fileID: 1021611981}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -2027,13 +2028,40 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1021611979}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.4757999, y: 0.17745812, z: -0.8318057}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 665777956}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1021611981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1021611979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aa081d01cb4e4e43b9d957febc1d8c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _GameManager: {fileID: 808029996}
+  _Canvas: {fileID: 665777959}
+  _TurnIndicator: {fileID: 22389941}
+  _Notifier: {fileID: 1493122846}
+  _Map: {fileID: 1403569718}
+  _DamageText: {fileID: 6599352221744685332, guid: e1ff80df3cf974646b53f1c1a68be909,
+    type: 3}
+  _HealText: {fileID: 5098237769707768307, guid: 7835f9e5e3f67fb4cbc31132c76c8cd1,
+    type: 3}
+  _CaptureIcon: {fileID: 5874431863016707943, guid: bbb8b1e72b7514d4983efa46738f99ae,
+    type: 3}
+  _FactionInfoPanel: {fileID: 212499036}
+  _UnitInfoPanel: {fileID: 1091137329}
+  _UnitPurchasePanel: {fileID: 699895282}
+  _EndGamePanel: {fileID: 1999169104}
 --- !u!1 &1036088143
 GameObject:
   m_ObjectHideFlags: 0
@@ -2453,7 +2481,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1420254273}
+      - m_Target: {fileID: 1021611981}
         m_MethodName: OnEndTurnClick
         m_Mode: 1
         m_Arguments:
@@ -2565,7 +2593,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1258830407
 GameObject:
@@ -3373,7 +3401,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _GameManager: {fileID: 808029996}
-  _UIManager: {fileID: 1420254273}
+  _UIManager: {fileID: 1021611981}
   _MapFile: {fileID: 4900000, guid: e38f2e639322129419cba90867340f25, type: 3}
   _Water: {fileID: -458843704545115546, guid: 2961d39438b75954ea8926016e236921, type: 3}
   _Grass: {fileID: 158238395368309876, guid: 0109718ed645207468c266e92967eb59, type: 3}
@@ -3424,7 +3452,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!120 &1403569720
 LineRenderer:
@@ -3521,64 +3549,6 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!1 &1420254272
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1420254274}
-  - component: {fileID: 1420254273}
-  m_Layer: 0
-  m_Name: UIManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1420254273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1420254272}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4aa081d01cb4e4e43b9d957febc1d8c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _GameManager: {fileID: 808029996}
-  _Canvas: {fileID: 665777959}
-  _TurnIndicator: {fileID: 22389941}
-  _Notifier: {fileID: 1493122846}
-  _Map: {fileID: 1403569718}
-  _DamageText: {fileID: 6599352221744685332, guid: e1ff80df3cf974646b53f1c1a68be909,
-    type: 3}
-  _HealText: {fileID: 5098237769707768307, guid: 7835f9e5e3f67fb4cbc31132c76c8cd1,
-    type: 3}
-  _CaptureIcon: {fileID: 5874431863016707943, guid: bbb8b1e72b7514d4983efa46738f99ae,
-    type: 3}
-  _FactionInfoPanel: {fileID: 212499036}
-  _UnitInfoPanel: {fileID: 1091137329}
-  _UnitPurchasePanel: {fileID: 699895282}
-  _EndGamePanel: {fileID: 1999169104}
---- !u!4 &1420254274
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1420254272}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1460299565
 GameObject:
   m_ObjectHideFlags: 0
