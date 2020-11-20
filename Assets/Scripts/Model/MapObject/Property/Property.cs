@@ -14,9 +14,12 @@ namespace Sof.Model.MapObject.Property
             get => _Owner;
             set
             {
-                _Owner = value;
+                if (_Owner != value)
+                {
+                    _Owner = value;
 
-                OwnerChanged?.Invoke();
+                    OwnerChanged?.Invoke();
+                }
             }
         }
 
