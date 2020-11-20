@@ -109,7 +109,7 @@ namespace Sof.Object
                             break;
                         case Model.MapObject.Property.House modelHouse:
                             var house = tile.InstantiateMapObject(_House);
-                            house.Initialize(modelHouse, _GameManager);
+                            house.Initialize(modelHouse, _GameManager, _UIManager);
                             break;
                         case Model.MapObject.Bridge _:
                             tile.InstantiateMapObject(_Bridge);

@@ -28,6 +28,9 @@ namespace Sof.Object
         private HealText _HealText;
 
         [SerializeField]
+        private FlyingIcon _CaptureIcon;
+
+        [SerializeField]
         private FactionInfoPanel _FactionInfoPanel;
         [SerializeField]
         private UnitInfoPanel _UnitInfoPanel;
@@ -199,6 +202,14 @@ namespace Sof.Object
             _GameManager.EndTurn();
         }
 
+        public void OnPropertyCapture(Property property)
+        {
+            if (property == null)
+                throw new System.ArgumentNullException(nameof(property));
+
+            InstantiateIconAboveProperty(property, _CaptureIcon);
+        }
+
         private void Game_TurnEnded()
         {
             _TurnIndicator.SetCurrentPlayer(_GameManager.Game.CurrentTurnFaction);
@@ -225,6 +236,13 @@ namespace Sof.Object
             const float offset = 0.3f;
 
             return Instantiate(text, Camera.main.WorldToScreenPoint(unit.transform.position + offset * Vector3.up), Quaternion.identity, _Canvas.transform);
+        }
+
+        private T InstantiateIconAboveProperty<T>(Property property, T icon) where T : FlyingIcon
+        {
+            const float offset = 0.3f;
+
+            return Instantiate(icon, property.transform.position + offset * Vector3.up, Quaternion.identity, transform);
         }
     }
 }

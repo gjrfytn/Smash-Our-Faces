@@ -8,6 +8,7 @@
         public Model.MapObject.Property.Castle ModelCastle { get; private set; }
 
         protected override GameManager GameManager => _GameManager;
+        protected override UIManager UIManager => _UIManager;
         protected override Model.MapObject.Property.Property ModelProperty => ModelCastle;
 
         public void Initialize(Model.MapObject.Property.Castle castle, GameManager gameManager, UIManager uiManager)

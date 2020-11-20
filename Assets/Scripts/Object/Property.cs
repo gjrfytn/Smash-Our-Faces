@@ -10,6 +10,7 @@ namespace Sof.Object
 #pragma warning restore 0649
 
         protected abstract GameManager GameManager { get; }
+        protected abstract UIManager UIManager { get; }
         protected abstract Model.MapObject.Property.Property ModelProperty { get; }
 
         private void Start()
@@ -22,11 +23,17 @@ namespace Sof.Object
         private void Property_OwnerChanged()
         {
             SetOwnerColor();
+            ShowCapture();
         }
 
         private void SetOwnerColor()
         {
             _OwnerFactionSprite.color = GameManager.GetFactionColor(ModelProperty.Owner);
+        }
+
+        private void ShowCapture()
+        {
+            UIManager.OnPropertyCapture(this);
         }
     }
 }

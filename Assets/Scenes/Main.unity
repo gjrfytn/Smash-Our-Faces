@@ -3559,6 +3559,8 @@ MonoBehaviour:
     type: 3}
   _HealText: {fileID: 5098237769707768307, guid: 7835f9e5e3f67fb4cbc31132c76c8cd1,
     type: 3}
+  _CaptureIcon: {fileID: 5874431863016707943, guid: bbb8b1e72b7514d4983efa46738f99ae,
+    type: 3}
   _FactionInfoPanel: {fileID: 212499036}
   _UnitInfoPanel: {fileID: 1091137329}
   _UnitPurchasePanel: {fileID: 699895282}
