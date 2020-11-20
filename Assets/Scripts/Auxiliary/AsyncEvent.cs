@@ -10,8 +10,21 @@ namespace Sof.Auxiliary
 
         public Task Invoke() => Task.WhenAll(_Subscribers.Select(s => s()).ToArray());
 
-        public void AddSubscriber(System.Func<Task> action) => _Subscribers.Add(action);
-        public void RemoveSubscriber(System.Func<Task> action) => _Subscribers.Remove(action);
+        public void AddSubscriber(System.Func<Task> action)
+        {
+            if (action == null)
+                throw new System.ArgumentNullException(nameof(action));
+
+            _Subscribers.Add(action);
+        }
+
+        public void RemoveSubscriber(System.Func<Task> action)
+        {
+            if (action == null)
+                throw new System.ArgumentNullException(nameof(action));
+
+            _Subscribers.Remove(action);
+        }
     }
 
     public class AsyncEvent<T>
@@ -20,7 +33,20 @@ namespace Sof.Auxiliary
 
         public Task Invoke(T arg) => Task.WhenAll(_Subscribers.Select(s => s(arg)));
 
-        public void AddSubscriber(System.Func<T, Task> action) => _Subscribers.Add(action);
-        public void RemoveSubscriber(System.Func<T, Task> action) => _Subscribers.Remove(action);
+        public void AddSubscriber(System.Func<T, Task> action)
+        {
+            if (action == null)
+                throw new System.ArgumentNullException(nameof(action));
+
+            _Subscribers.Add(action);
+        }
+
+        public void RemoveSubscriber(System.Func<T, Task> action)
+        {
+            if (action == null)
+                throw new System.ArgumentNullException(nameof(action));
+
+            _Subscribers.Remove(action);
+        }
     }
 }

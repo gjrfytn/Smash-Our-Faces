@@ -3,6 +3,7 @@ using UnityEngine.UIElements;
 
 namespace Sof.Object
 {
+    [RequireComponent(typeof(Camera))]
     public class MainCamera : Auxiliary.SofSceneMonoBehaviour
     {
 #pragma warning disable 0649

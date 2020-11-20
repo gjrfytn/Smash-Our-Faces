@@ -36,7 +36,16 @@ namespace Sof.Model
         public PositiveInt Width => new PositiveInt(_Tiles.GetLength(0));
         public PositiveInt Height => new PositiveInt(_Tiles.GetLength(1));
 
-        public Tile this[Position pos] => _Tiles[pos.X, pos.Y];
+        public Tile this[Position pos]
+        {
+            get
+            {
+                if (pos == null)
+                    throw new System.ArgumentNullException(nameof(pos));
+
+                return _Tiles[pos.X, pos.Y];
+            }
+        }
 
         public IEnumerable<Castle> Castles => Tiles.Select(t => t.tile.Object as Castle).Where(c => c != null);
         public IEnumerable<House> Houses => Tiles.Select(t => t.tile.Object as House).Where(h => h != null);
@@ -233,7 +242,13 @@ namespace Sof.Model
             return GetMapObjectTile(property).Unit;
         }
 
-        public Tile GetTileOf(Property property) => GetMapObjectTile(property);
+        public Tile GetTileOf(Property property)
+        {
+            if (property == null)
+                throw new System.ArgumentNullException(nameof(property));
+
+            return GetMapObjectTile(property);
+        }
 
         private void Spawn(Unit unit, Tile tile) => tile.PlaceUnit(unit);
         private void Remove(Unit unit) => this[GetUnitPos(unit)].RemoveUnit();
