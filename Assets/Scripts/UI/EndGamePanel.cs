@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Sof.UI
 {
-    public class EndGamePanel : MonoBehaviour
+    public class EndGamePanel : Auxiliary.SofSceneMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

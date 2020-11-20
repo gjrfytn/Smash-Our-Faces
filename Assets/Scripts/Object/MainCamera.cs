@@ -3,12 +3,14 @@ using UnityEngine.UIElements;
 
 namespace Sof.Object
 {
-    public class MainCamera : MonoBehaviour
+    public class MainCamera : Auxiliary.SofSceneMonoBehaviour
     {
+#pragma warning disable 0649
         [SerializeField]
         private float _MoveSpeedByKey;
         [SerializeField]
         private MouseButton _MoveMouseButton;
+#pragma warning restore 0649
 
         private Camera _Camera;
         private Vector3 _PrevMousePos;

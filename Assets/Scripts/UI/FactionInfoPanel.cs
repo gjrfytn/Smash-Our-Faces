@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Sof.UI
 {
-    public class FactionInfoPanel : MonoBehaviour
+    public class FactionInfoPanel : Auxiliary.SofSceneMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

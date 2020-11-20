@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Sof.UI
 {
-    public class Notifier : MonoBehaviour
+    public class Notifier : Auxiliary.SofSceneMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

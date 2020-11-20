@@ -8,7 +8,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Sof.Object
 {
-    public class GameManager : MonoBehaviour, XmlScenario.IUnitRegistry, AI.Player.IGame
+    public class GameManager : SofSceneMonoBehaviour, XmlScenario.IUnitRegistry, AI.Player.IGame
     {
         private class HumanPlayer : Game.IPlayer
         {
@@ -67,7 +67,7 @@ namespace Sof.Object
             }
         }
 
-        private void Awake()
+        protected override void OnAwake()
         {
             var palette = new Palette();
 

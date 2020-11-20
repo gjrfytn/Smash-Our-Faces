@@ -3,7 +3,7 @@
 namespace Sof.UI
 {
     [RequireComponent(typeof(UnityEngine.UI.Text))]
-    public abstract class FlyingText : MonoBehaviour
+    public abstract class FlyingText : Auxiliary.SofSceneMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

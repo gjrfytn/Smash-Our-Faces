@@ -7,7 +7,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Sof.Object
 {
-    public class UIManager : MonoBehaviour
+    public class UIManager : Auxiliary.SofSceneMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

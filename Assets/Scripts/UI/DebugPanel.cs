@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Sof.UI
 {
-    public class DebugPanel : MonoBehaviour
+    public class DebugPanel : Auxiliary.SofSceneMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]
