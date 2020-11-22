@@ -3407,6 +3407,31 @@ MonoBehaviour:
   _Grass: {fileID: 158238395368309876, guid: 0109718ed645207468c266e92967eb59, type: 3}
   _Mountain: {fileID: 5768340995302293268, guid: cd47d77b46ff99349962869f06bd0be8,
     type: 3}
+  _WaterTransitions:
+    WaterTopLeftOutward: {fileID: 3786248058215868015, guid: 84949f48310ca1b4da99b80226ba1cf4,
+      type: 3}
+    WaterTopLeftInward: {fileID: 7053564284282932783, guid: b6ccbde9e1563ef4a82bce0c171d7b83,
+      type: 3}
+    WaterTop: {fileID: 8100509001771380408, guid: 2643215a78e609c4cbc1195c26392302,
+      type: 3}
+    WaterTopRightOutward: {fileID: 7650821806688182144, guid: ab11dcdc26713164c80b719fa9846a9b,
+      type: 3}
+    WaterTopRightInward: {fileID: 8762415880712160737, guid: 6d03642ae90a8ab48b838c4ddb4feec1,
+      type: 3}
+    WaterRight: {fileID: 9008684436501947834, guid: 00baa04671ef31d4fb59a48fb2217185,
+      type: 3}
+    WaterBottomRightOutward: {fileID: 7471864616736587583, guid: c0a958197e0d31f4989a5174bd5cd657,
+      type: 3}
+    WaterBottomRightInward: {fileID: 8187627341292369507, guid: 46169677d7a54bc4eb6962ecaa4c34e6,
+      type: 3}
+    WaterBottom: {fileID: 556684140496474512, guid: 0d336cd7d219e0b43b0d62bb2cbe2a69,
+      type: 3}
+    WaterBottomLeftOutward: {fileID: 4164532511602765350, guid: 68a2ccf8de4d35f4a80541b4bdd4282a,
+      type: 3}
+    WaterBottomLeftInward: {fileID: 873352029468788974, guid: 16292b39147d85e42a753f78327f2eca,
+      type: 3}
+    WaterLeft: {fileID: 1701581983004389325, guid: 00790e4d7f6a8404ab566045f864fc94,
+      type: 3}
   _Castle: {fileID: -334192172217497059, guid: 82d071842c790f746b48c0ad9693f8a6, type: 3}
   _House: {fileID: 5140713474472990778, guid: 0be3a6ae2b025ea49a75949ecd851940, type: 3}
   _Bridge: {fileID: -1516250077583184794, guid: 1c49b0db164183544946aa861f3772ec,

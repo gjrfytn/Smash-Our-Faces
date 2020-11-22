@@ -11,6 +11,23 @@ namespace Sof.Object
     {
 #pragma warning disable 0649
         [System.Serializable]
+        public class WaterTransitions
+        {
+            public Ground WaterTopLeftOutward;
+            public Ground WaterTopLeftInward;
+            public Ground WaterTop;
+            public Ground WaterTopRightOutward;
+            public Ground WaterTopRightInward;
+            public Ground WaterRight;
+            public Ground WaterBottomRightOutward;
+            public Ground WaterBottomRightInward;
+            public Ground WaterBottom;
+            public Ground WaterBottomLeftOutward;
+            public Ground WaterBottomLeftInward;
+            public Ground WaterLeft;
+        }
+
+        [System.Serializable]
         public class RoadTiles
         {
             public MapObject Cross;
@@ -44,6 +61,8 @@ namespace Sof.Object
         private Ground _Grass;
         [SerializeField]
         private Ground _Mountain;
+        [SerializeField]
+        private WaterTransitions _WaterTransitions;
 
         [SerializeField]
         private Castle _Castle;
@@ -81,23 +100,28 @@ namespace Sof.Object
 
                     tile.Initialize(ModelMap[pos], _UIManager);
 
-                    Ground ground;
+                    bool isWaterTile = false;
+                    Ground groundPrefab;
                     switch (ModelMap[pos].Ground)
                     {
                         case Model.Ground.Water _:
-                            ground = _Water;
+                            groundPrefab = _Water;
+                            isWaterTile = true;
                             break;
                         case Model.Ground.Grass _:
-                            ground = _Grass;
+                            groundPrefab = _Grass;
                             break;
                         case Model.Ground.Mountain _:
-                            ground = _Mountain;
+                            groundPrefab = _Mountain;
                             break;
                         default:
                             throw new System.Exception("todo");
                     }
 
-                    Instantiate(ground, new Vector3(x, y, 0), Quaternion.identity, tile.transform);
+                    var ground = Instantiate(groundPrefab, new Vector3(x, y, 0), Quaternion.identity, tile.transform);
+
+                    if (!isWaterTile)
+                        AddWaterTransitions(ground, pos);
 
                     switch (ModelMap[pos].Object)
                     {
@@ -156,6 +180,74 @@ namespace Sof.Object
                 throw new System.ArgumentNullException(nameof(position));
 
             return new Vector2(position.X, position.Y);
+        }
+
+        private void AddWaterTransitions(Ground ground, Position pos)
+        {
+            var waterAtLeft = false;
+            var waterAtTop = false;
+            var waterAtRight = false;
+            var waterAtBottom = false;
+
+            if (pos.Left.X >= 0 && ModelMap[pos.Left].Ground is Model.Ground.Water)
+            {
+                Instantiate(_WaterTransitions.WaterLeft, ground.transform);
+                waterAtLeft = true;
+            }
+
+            if (pos.Above.Y >= 0 && ModelMap[pos.Above].Ground is Model.Ground.Water)
+            {
+                Instantiate(_WaterTransitions.WaterTop, ground.transform);
+                waterAtTop = true;
+            }
+
+            if (pos.Right.X < ModelMap.Width.Value && ModelMap[pos.Right].Ground is Model.Ground.Water)
+            {
+                Instantiate(_WaterTransitions.WaterRight, ground.transform);
+                waterAtRight = true;
+            }
+
+            if (pos.Below.Y >= 0 && ModelMap[pos.Below].Ground is Model.Ground.Water)
+            {
+                Instantiate(_WaterTransitions.WaterBottom, ground.transform);
+                waterAtBottom = true;
+            }
+
+            var topLeft = pos.Left.Above;
+            if (topLeft.X >= 0 && topLeft.Y < ModelMap.Height.Value && ModelMap[topLeft].Ground is Model.Ground.Water)
+            {
+                if (waterAtLeft && waterAtTop)
+                    Instantiate(_WaterTransitions.WaterTopLeftOutward, ground.transform);
+                else if (!waterAtLeft && !waterAtTop)
+                    Instantiate(_WaterTransitions.WaterTopLeftInward, ground.transform);
+            }
+
+            var topRight = pos.Right.Above;
+            if (topRight.X < ModelMap.Width.Value && topRight.Y < ModelMap.Height.Value && ModelMap[topRight].Ground is Model.Ground.Water)
+            {
+                if (waterAtRight && waterAtTop)
+                    Instantiate(_WaterTransitions.WaterTopRightOutward, ground.transform);
+                else if (!waterAtRight && !waterAtTop)
+                    Instantiate(_WaterTransitions.WaterTopRightInward, ground.transform);
+            }
+
+            var bottomRight = pos.Right.Below;
+            if (bottomRight.X < ModelMap.Width.Value && bottomRight.Y >= 0 && ModelMap[bottomRight].Ground is Model.Ground.Water)
+            {
+                if (waterAtRight && waterAtBottom)
+                    Instantiate(_WaterTransitions.WaterBottomRightOutward, ground.transform);
+                else if (!waterAtRight && !waterAtBottom)
+                    Instantiate(_WaterTransitions.WaterBottomRightInward, ground.transform);
+            }
+
+            var bottomLeft = pos.Right.Below;
+            if (bottomLeft.X >= 0 && bottomLeft.Y >= 0 && ModelMap[bottomLeft].Ground is Model.Ground.Water)
+            {
+                if (waterAtLeft && waterAtBottom)
+                    Instantiate(_WaterTransitions.WaterBottomLeftOutward, ground.transform);
+                else if (!waterAtLeft && !waterAtBottom)
+                    Instantiate(_WaterTransitions.WaterBottomLeftInward, ground.transform);
+            }
         }
 
         private MapObject ChooseRoadPiece(Position pos)
