@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Sof.UI
 {
-    public class UnitPurchasePanel : Auxiliary.SofSceneMonoBehaviour
+    public class UnitPurchasePanel : Auxiliary.SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

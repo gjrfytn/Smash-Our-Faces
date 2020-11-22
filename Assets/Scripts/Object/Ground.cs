@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Sof.Object
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    public class Ground : Auxiliary.SofSceneMonoBehaviour
+    public class Ground : Auxiliary.SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

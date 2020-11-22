@@ -2,7 +2,7 @@
 
 namespace Sof.Object
 {
-    public class Tile : MonoBehaviour
+    public class Tile : Auxiliary.SofMonoBehaviour
     {
         private UIManager _UIManager;
         private MapObject _Object;

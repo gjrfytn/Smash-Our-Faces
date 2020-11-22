@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Sof.UI
 {
     [RequireComponent(typeof(Button))]
-    public class UIToggleButton : Auxiliary.SofSceneMonoBehaviour
+    public class UIToggleButton : Auxiliary.SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

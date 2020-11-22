@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 namespace Sof.UI.MainMenu
 {
-    public class MainMenu : MonoBehaviour
+    public class MainMenu : Auxiliary.SofMonoBehaviour
     {
         public void StartGame()
         {

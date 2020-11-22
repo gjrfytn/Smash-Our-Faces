@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Sof.UI
 {
     [RequireComponent(typeof(Text))]
-    public class TurnIndicator : MonoBehaviour
+    public class TurnIndicator : Auxiliary.SofMonoBehaviour
     {
         private Text _Text;
 

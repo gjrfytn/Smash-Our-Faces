@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Sof.Object
 {
     [RequireComponent(typeof(LineRenderer))]
-    public class Map : Auxiliary.SofSceneMonoBehaviour
+    public class Map : Auxiliary.SofMonoBehaviour
     {
 #pragma warning disable 0649
         [System.Serializable]

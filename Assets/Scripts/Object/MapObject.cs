@@ -2,7 +2,7 @@
 
 namespace Sof.Object
 {
-    public abstract class MapObject : Auxiliary.SofSceneMonoBehaviour
+    public abstract class MapObject : Auxiliary.SofMonoBehaviour
     {
         public abstract bool OnHover();
         public abstract bool OnLeftClick();

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Sof.Auxiliary
 {
-    public abstract class SofSceneMonoBehaviour : MonoBehaviour
+    public abstract class SofMonoBehaviour : MonoBehaviour
     {
         protected void Awake()
         {

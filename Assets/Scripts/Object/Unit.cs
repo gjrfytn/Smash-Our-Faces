@@ -7,7 +7,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Sof.Object
 {
-    public class Unit : Auxiliary.SofSceneMonoBehaviour, Model.MapObject.Property.Castle.IUnitTemplate
+    public class Unit : Auxiliary.SofMonoBehaviour, Model.MapObject.Property.Castle.IUnitTemplate
     {
 #pragma warning disable 0649
         [SerializeField]

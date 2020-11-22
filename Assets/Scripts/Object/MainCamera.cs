@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 namespace Sof.Object
 {
     [RequireComponent(typeof(Camera))]
-    public class MainCamera : Auxiliary.SofSceneMonoBehaviour
+    public class MainCamera : Auxiliary.SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

@@ -3,7 +3,7 @@
 namespace Sof.UI
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    public class FlyingIcon : Auxiliary.SofSceneMonoBehaviour
+    public class FlyingIcon : Auxiliary.SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]
