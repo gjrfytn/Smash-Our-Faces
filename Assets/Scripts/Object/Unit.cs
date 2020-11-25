@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Sof.Auxiliary;
 using UnityEngine;
@@ -7,7 +6,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Sof.Object
 {
-    public class Unit : Auxiliary.SofMonoBehaviour, Model.MapObject.Property.Castle.IUnitTemplate
+    public class Unit : SofMonoBehaviour, Model.MapObject.Property.Castle.IUnitTemplate
     {
 #pragma warning disable 0649
         [SerializeField]
@@ -39,9 +38,16 @@ namespace Sof.Object
         public PositiveInt AttackRange => new PositiveInt(_AttackRange);
         public PositiveInt GoldCost => new PositiveInt(_GoldCost);
 
+        private Animator _Animator;
+
         private GameManager _GameManager;
         private UIManager _UIManager;
         private Map _Map;
+
+        private void Start()
+        {
+            _Animator = GetComponent<Animator>();
+        }
 
         public void Initialize(Model.Unit unit, GameManager gameManager, UIManager uiManager, Map map)
         {
@@ -151,7 +157,20 @@ namespace Sof.Object
 
         private Task PlayAttack()
         {
+            if(_Animator != null) //TODO Temporary condition. Don't forget to add a RequiredComponent after all units have an animation.
+                return SuspendUI(playAttackAnimation);
+
             return SuspendUI(playAttack);
+
+            async Task playAttackAnimation()
+            {
+                const string attackStateName = "InfantryAttack";
+
+                _Animator.Play(attackStateName);
+
+                while (_Animator.GetCurrentAnimatorStateInfo(0).IsName(attackStateName))
+                    await Task.Yield();
+            }
 
             async Task playAttack()
             {
