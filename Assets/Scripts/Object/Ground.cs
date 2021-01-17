@@ -1,10 +1,11 @@
 ﻿using System.Linq;
+using Gjrfytn.Dim.Object;
 using UnityEngine;
 
 namespace Sof.Object
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    public class Ground : Auxiliary.SofMonoBehaviour
+    public class Ground : SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

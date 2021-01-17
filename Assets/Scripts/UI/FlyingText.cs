@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using Gjrfytn.Dim.Object;
+using UnityEngine;
 
 namespace Sof.UI
 {
     [RequireComponent(typeof(UnityEngine.UI.Text))]
-    public abstract class FlyingText : Auxiliary.SofMonoBehaviour
+    public abstract class FlyingText : SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

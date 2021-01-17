@@ -1,11 +1,12 @@
-﻿using Sof.Object;
+﻿using Gjrfytn.Dim.Object;
+using Sof.Object;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Sof.UI
 {
-    public class DebugPanel : Auxiliary.SofMonoBehaviour
+    public class DebugPanel : SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

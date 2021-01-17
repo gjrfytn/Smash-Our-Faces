@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using Gjrfytn.Dim.Object;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Sof.UI.MainMenu
 {
-    public class MainMenu : Auxiliary.SofMonoBehaviour
+    public class MainMenu : SofMonoBehaviour
     {
         public void StartGame()
         {

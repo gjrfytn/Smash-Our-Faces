@@ -1,4 +1,5 @@
-﻿using Sof.Auxiliary;
+﻿using Gjrfytn.Dim;
+using Gjrfytn.Dim.Object;
 using Sof.Model;
 using Sof.UI;
 using System.Linq;
@@ -7,7 +8,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Sof.Object
 {
-    public class UIManager : Auxiliary.SofMonoBehaviour
+    public class UIManager : SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

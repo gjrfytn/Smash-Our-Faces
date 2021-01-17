@@ -1,4 +1,5 @@
-﻿using Sof.Auxiliary;
+﻿using Gjrfytn.Dim.Object;
+using Sof.Auxiliary;
 using Sof.Model;
 using Sof.Model.Scenario;
 using System.Collections.Generic;

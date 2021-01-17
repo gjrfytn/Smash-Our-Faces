@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Sof.Auxiliary;
+using Gjrfytn.Dim;
+using Gjrfytn.Dim.Pathfinding;
 using Sof.Model.Ground;
 using Sof.Model.MapObject;
 using Sof.Model.MapObject.Property;
 
 namespace Sof.Model
 {
-    public class Map : Pathfinding.IMap, IMap
+    public class Map : Gjrfytn.Dim.Pathfinding.IMap, MapObject.Property.IMap
     {
         public interface IUnitTemplate
         {
@@ -18,7 +19,7 @@ namespace Sof.Model
             PositiveInt GoldCost { get; }
         }
 
-        private readonly Pathfinding.Pathfinder _Pathfinder;
+        private readonly Pathfinder _Pathfinder;
         private readonly ITime _Time;
 
         private readonly Tile[,] _Tiles;
@@ -59,7 +60,7 @@ namespace Sof.Model
             if (mapFile == null)
                 throw new System.ArgumentNullException(nameof(mapFile));
 
-            _Pathfinder = new Pathfinding.Pathfinder(this);
+            _Pathfinder = new Pathfinder(this);
             _Time = time ?? throw new System.ArgumentNullException(nameof(time));
 
             _Tiles = ConstructTiles(mapFile.Load());

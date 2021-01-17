@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using Gjrfytn.Dim.Object;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Sof.UI
 {
-    public class EndGamePanel : Auxiliary.SofMonoBehaviour
+    public class EndGamePanel : SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

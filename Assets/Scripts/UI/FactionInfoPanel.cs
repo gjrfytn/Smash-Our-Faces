@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using Gjrfytn.Dim.Object;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Sof.UI
 {
-    public class FactionInfoPanel : Auxiliary.SofMonoBehaviour
+    public class FactionInfoPanel : SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

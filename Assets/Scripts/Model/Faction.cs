@@ -1,4 +1,4 @@
-﻿using Sof.Auxiliary;
+﻿using Gjrfytn.Dim;
 using System.Collections.Generic;
 
 namespace Sof.Model

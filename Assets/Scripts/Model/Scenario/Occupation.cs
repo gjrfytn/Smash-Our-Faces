@@ -1,4 +1,6 @@
-﻿namespace Sof.Model.Scenario
+﻿using Gjrfytn.Dim;
+
+namespace Sof.Model.Scenario
 {
     public class Occupation
     {

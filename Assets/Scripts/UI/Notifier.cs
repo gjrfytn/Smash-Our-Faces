@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Gjrfytn.Dim.Object;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Sof.UI
 {
-    public class Notifier : Auxiliary.SofMonoBehaviour
+    public class Notifier : SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

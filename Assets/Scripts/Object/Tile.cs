@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using Gjrfytn.Dim.Object;
+using UnityEngine;
 
 namespace Sof.Object
 {
-    public class Tile : Auxiliary.SofMonoBehaviour
+    public class Tile : SofMonoBehaviour
     {
         private UIManager _UIManager;
         private MapObject _Object;

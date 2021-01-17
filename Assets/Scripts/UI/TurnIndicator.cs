@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using Gjrfytn.Dim.Object;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Sof.UI
 {
     [RequireComponent(typeof(Text))]
-    public class TurnIndicator : Auxiliary.SofMonoBehaviour
+    public class TurnIndicator : SofMonoBehaviour
     {
         private Text _Text;
 

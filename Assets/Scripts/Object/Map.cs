@@ -1,4 +1,6 @@
-﻿using Sof.Auxiliary;
+﻿using Gjrfytn.Dim;
+using Gjrfytn.Dim.Object;
+using Sof.Auxiliary;
 using Sof.Model;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +9,7 @@ using UnityEngine;
 namespace Sof.Object
 {
     [RequireComponent(typeof(LineRenderer))]
-    public class Map : Auxiliary.SofMonoBehaviour
+    public class Map : SofMonoBehaviour
     {
 #pragma warning disable 0649
         [System.Serializable]

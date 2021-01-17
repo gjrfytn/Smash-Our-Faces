@@ -1,4 +1,4 @@
-﻿using Sof.Auxiliary;
+﻿using Gjrfytn.Dim;
 
 namespace Sof.UI
 {

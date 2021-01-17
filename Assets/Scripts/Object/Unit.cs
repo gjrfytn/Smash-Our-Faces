@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Sof.Auxiliary;
+using Gjrfytn.Dim;
+using Gjrfytn.Dim.Object;
 using UnityEngine;
 using Task = System.Threading.Tasks.Task;
 

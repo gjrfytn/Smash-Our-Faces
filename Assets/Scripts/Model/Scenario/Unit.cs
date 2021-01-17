@@ -1,4 +1,5 @@
 ﻿using System;
+using Gjrfytn.Dim;
 
 namespace Sof.Model.Scenario
 {

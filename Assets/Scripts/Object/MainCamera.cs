@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using Gjrfytn.Dim.Object;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Sof.Object
 {
     [RequireComponent(typeof(Camera))]
-    public class MainCamera : Auxiliary.SofMonoBehaviour
+    public class MainCamera : SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using Gjrfytn.Dim.Object;
+using UnityEngine;
 
 namespace Sof.UI
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    public class FlyingIcon : Auxiliary.SofMonoBehaviour
+    public class FlyingIcon : SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

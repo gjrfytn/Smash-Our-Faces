@@ -1,4 +1,5 @@
-﻿using Sof.Object;
+﻿using Gjrfytn.Dim.Object;
+using Sof.Object;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Sof.UI
 {
-    public class UnitPurchasePanel : Auxiliary.SofMonoBehaviour
+    public class UnitPurchasePanel : SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]

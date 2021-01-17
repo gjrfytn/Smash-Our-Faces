@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using Gjrfytn.Dim.Object;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Sof.UI
 {
     [RequireComponent(typeof(Button))]
-    public class UIToggleButton : Auxiliary.SofMonoBehaviour
+    public class UIToggleButton : SofMonoBehaviour
     {
 #pragma warning disable 0649
         [SerializeField]
